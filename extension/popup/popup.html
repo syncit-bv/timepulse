@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>TimePulse</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <span class="logo">⏱ TimePulse</span>
+    <span class="status-dot" id="connDot" title="Serverstatus"></span>
+  </header>
+
+  <!-- Current session -->
+  <section class="card" id="currentSection">
+    <div class="label">Nu bijgehouden</div>
+    <div class="current-domain" id="currentDomain">—</div>
+    <div class="current-meta" id="currentMeta"></div>
+  </section>
+
+  <!-- Today summary -->
+  <section class="card">
+    <div class="label">Vandaag in Harvest</div>
+    <div class="harvest-total" id="harvestTotal">…</div>
+    <div class="entries" id="harvestEntries"></div>
+  </section>
+
+  <!-- Gaps -->
+  <section id="gapsSection" style="display:none">
+    <div class="gaps-header">
+      <span class="label">Gaten in tijdsregistratie</span>
+      <span class="gaps-count" id="gapsCount"></span>
+    </div>
+    <div id="gapsList"></div>
+  </section>
+
+  <footer>
+    <a href="#" id="dashboardLink">Dashboard openen</a>
+    <a href="#" id="optionsLink">Instellingen</a>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
