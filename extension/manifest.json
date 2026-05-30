@@ -24,6 +24,12 @@
       "js": ["content.js"],
       "run_at": "document_idle",
       "all_frames": false
+    },
+    {
+      "matches": ["https://*.harvestapp.com/*"],
+      "js": ["harvest-panel.js"],
+      "run_at": "document_idle",
+      "all_frames": false
     }
   ],
   "action": {
