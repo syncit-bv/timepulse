@@ -15,7 +15,8 @@ export function buildSessions(heartbeats) {
   let current = {
     start: sorted[0].timestamp,
     end: sorted[0].timestamp,
-    domains: new Set([sorted[0].domain])
+    domains: new Set([sorted[0].domain]),
+    activityTypes: new Set([sorted[0].activity_type || sorted[0].activityType].filter(Boolean))
   };
 
   for (let i = 1; i < sorted.length; i++) {
@@ -24,10 +25,17 @@ export function buildSessions(heartbeats) {
 
     if (gap > SESSION_BREAK_MS) {
       sessions.push(finalizeSession(current));
-      current = { start: hb.timestamp, end: hb.timestamp, domains: new Set([hb.domain]) };
+      current = {
+        start: hb.timestamp,
+        end: hb.timestamp,
+        domains: new Set([hb.domain]),
+        activityTypes: new Set([hb.activity_type || hb.activityType].filter(Boolean))
+      };
     } else {
       current.end = hb.timestamp;
       if (hb.domain) current.domains.add(hb.domain);
+      const type = hb.activity_type || hb.activityType;
+      if (type) current.activityTypes.add(type);
     }
   }
   sessions.push(finalizeSession(current));
@@ -40,7 +48,8 @@ function finalizeSession(s) {
     start: s.start,
     end: s.end,
     durationMinutes: Math.round((s.end - s.start) / 60000),
-    domains: [...s.domains].filter(Boolean)
+    domains: [...s.domains].filter(Boolean),
+    activityTypes: [...s.activityTypes].filter(Boolean)
   };
 }
 

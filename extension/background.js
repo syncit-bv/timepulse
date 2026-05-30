@@ -6,8 +6,13 @@
 
 const HEARTBEAT_ALARM = 'timepulse-heartbeat';
 const HEARTBEAT_PERIOD_MINUTES = 0.5; // every 30 seconds
-const IDLE_THRESHOLD_SECONDS = 300;   // 5 minutes of no input = idle
+const IDLE_THRESHOLD_SECONDS = 300;   // 5 minutes fallback (Chrome idle API)
 const BUFFER_MAX = 2880;              // ~24 hours of 30s heartbeats
+
+// Content script reports real user movement every 15s.
+// We track the last seen timestamp so the alarm knows if the user was
+// actually active, rather than relying only on Chrome's coarse idle API.
+const CONTENT_ACTIVE_WINDOW_MS = 20_000; // consider active if seen within 20s
 
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
 
@@ -35,6 +40,29 @@ async function getActiveTab() {
 async function setActiveTab(tab) {
   await chrome.storage.session.set({ activeTab: tab });
 }
+
+// ─── Content script messages ──────────────────────────────────────────────────
+// Content script sends real-time activity with movement confirmation and rich context.
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action !== 'contentActivity') return;
+
+  const data = message.data;
+  if (!data?.url || !data?.domain) return;
+
+  // Update active tab with richer content-script data
+  setActiveTab({
+    url: data.url,
+    domain: data.domain,
+    title: data.title,
+    favicon: data.favicon || null,
+    activityType: data.activityType || 'website',
+    docName: data.docName || null,
+    tabId: sender.tab?.id,
+    since: Date.now(),
+    lastContentReport: Date.now()
+  });
+});
 
 // ─── Tab tracking ─────────────────────────────────────────────────────────────
 
@@ -83,16 +111,26 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 });
 
 async function tick() {
-  const idleState = await new Promise(resolve => chrome.idle.queryState(IDLE_THRESHOLD_SECONDS, resolve));
-  if (idleState !== 'active') return; // don't track idle time
-
   const tab = await getActiveTab();
   if (!tab) return;
+
+  // Prefer content-script movement signal (10s granularity) over Chrome idle API (5min).
+  // Fall back to Chrome idle API for tabs where content script can't run (e.g. PDFs, new tab).
+  const contentScriptRecent = tab.lastContentReport
+    && (Date.now() - tab.lastContentReport) < CONTENT_ACTIVE_WINDOW_MS;
+
+  if (!contentScriptRecent) {
+    const idleState = await new Promise(resolve => chrome.idle.queryState(IDLE_THRESHOLD_SECONDS, resolve));
+    if (idleState !== 'active') return;
+  }
 
   const heartbeat = {
     url: tab.url,
     domain: tab.domain,
     title: tab.title,
+    favicon: tab.favicon || null,
+    activityType: tab.activityType || 'website',
+    docName: tab.docName || null,
     timestamp: Date.now()
   };
 

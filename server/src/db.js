@@ -15,12 +15,15 @@ db.pragma('foreign_keys = ON');
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS heartbeats (
-    id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    timestamp INTEGER NOT NULL,
-    url       TEXT    NOT NULL,
-    domain    TEXT    NOT NULL,
-    title     TEXT    DEFAULT '',
-    date      TEXT    GENERATED ALWAYS AS (date(timestamp / 1000, 'unixepoch', 'localtime')) VIRTUAL
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp     INTEGER NOT NULL,
+    url           TEXT    NOT NULL,
+    domain        TEXT    NOT NULL,
+    title         TEXT    DEFAULT '',
+    favicon       TEXT    DEFAULT NULL,
+    activity_type TEXT    DEFAULT 'website',
+    doc_name      TEXT    DEFAULT NULL,
+    date          TEXT    GENERATED ALWAYS AS (date(timestamp / 1000, 'unixepoch', 'localtime')) VIRTUAL
   );
 
   CREATE INDEX IF NOT EXISTS idx_heartbeats_timestamp ON heartbeats(timestamp);

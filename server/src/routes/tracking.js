@@ -5,16 +5,16 @@ const router = Router();
 
 // Single heartbeat from extension
 router.post('/heartbeat', (req, res) => {
-  const { url, domain, title, timestamp } = req.body;
+  const { url, domain, title, timestamp, favicon, activityType, docName } = req.body;
 
   if (!url || !domain || !timestamp) {
     return res.status(400).json({ error: 'url, domain and timestamp required' });
   }
 
   db.prepare(`
-    INSERT INTO heartbeats (timestamp, url, domain, title)
-    VALUES (?, ?, ?, ?)
-  `).run(timestamp, url, domain, title || '');
+    INSERT INTO heartbeats (timestamp, url, domain, title, favicon, activity_type, doc_name)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(timestamp, url, domain, title || '', favicon || null, activityType || 'website', docName || null);
 
   res.json({ ok: true });
 });
@@ -28,14 +28,17 @@ router.post('/heartbeat/bulk', (req, res) => {
   }
 
   const insert = db.prepare(`
-    INSERT OR IGNORE INTO heartbeats (timestamp, url, domain, title)
-    VALUES (?, ?, ?, ?)
+    INSERT OR IGNORE INTO heartbeats (timestamp, url, domain, title, favicon, activity_type, doc_name)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
 
   const insertMany = db.transaction((items) => {
     for (const hb of items) {
       if (hb.url && hb.domain && hb.timestamp) {
-        insert.run(hb.timestamp, hb.url, hb.domain, hb.title || '');
+        insert.run(
+          hb.timestamp, hb.url, hb.domain, hb.title || '',
+          hb.favicon || null, hb.activityType || 'website', hb.docName || null
+        );
       }
     }
   });
