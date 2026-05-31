@@ -38,6 +38,7 @@
   let harvestTotal = 0;
   let panelOpen  = false;
   let expandedCard = null; // currently open card element
+  let platformMap  = {};   // slug → platform object (icon, logo_dev, color)
 
   // ─── Boot ───────────────────────────────────────────────────────────────────
 
@@ -48,6 +49,10 @@
 
     recentProjects = await loadRecent();
     usedSessions   = await loadUsed(currentDate);
+
+    // Build slug → platform lookup for icon rendering
+    const { tp_platforms = [] } = await chrome.storage.local.get('tp_platforms');
+    tp_platforms.forEach(p => { platformMap[p.slug] = p; });
 
     injectStyles();
     buildPanel();
@@ -246,6 +251,23 @@
     return wrap;
   }
 
+  // ─── Platform icon helper ─────────────────────────────────────────────────────
+  // Returns an <img> with 3-level fallback: primary CDN → logo.dev → hidden
+
+  function platformIconHtml(slug) {
+    const p = platformMap[slug];
+    if (!p) return '';
+    const primary  = p.icon    || '';
+    const fallback = p.logo_dev || '';
+    if (!primary && !fallback) return '';
+    const src = primary || fallback;
+    const fb  = primary ? fallback : '';
+    const onerror = fb
+      ? `if(!this.dataset.tried){this.dataset.tried=1;this.src='${fb}';}else{this.style.display='none';}`
+      : `this.style.display='none'`;
+    return `<img class="tp-platform-ico" src="${src}" data-fallback="${fb}" onerror="${onerror}" alt="">`;
+  }
+
   // ─── Session card ─────────────────────────────────────────────────────────────
 
   function buildSessionCard(session, used = false) {
@@ -262,7 +284,7 @@
           <div class="tp-card-meta">
             <span class="tp-card-dur">${formatDuration(dur)}</span>
             ${domains ? `<span class="tp-card-sep">·</span><span class="tp-card-domains">${escHtml(domains)}</span>` : ''}
-            ${types.map(t => `<span class="tp-badge">${escHtml(t)}</span>`).join('')}
+            ${types.map(t => `<span class="tp-badge">${platformIconHtml(t)}<span>${escHtml(t)}</span></span>`).join('')}
           </div>
         </div>
         <div class="tp-card-right">
@@ -994,7 +1016,8 @@
 .tp-card-used .tp-card-dur { color: var(--tp-subtle); }
 .tp-card-sep { color: var(--tp-subtle); font-size: 11px; }
 .tp-card-domains { font-size: 11px; color: var(--tp-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
-.tp-badge { background: #e0e7ff; color: #4338ca; font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 4px; }
+.tp-badge { background: #e0e7ff; color: #4338ca; font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px; }
+.tp-platform-ico { width: 12px; height: 12px; object-fit: contain; border-radius: 2px; flex-shrink: 0; }
 .tp-card-right { flex-shrink: 0; margin-left: 8px; }
 .tp-chevron { width: 16px; height: 16px; color: var(--tp-subtle); transition: transform .2s; }
 .tp-card-open .tp-chevron { transform: rotate(180deg); }

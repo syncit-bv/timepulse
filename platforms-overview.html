@@ -7,7 +7,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f1f5f9; color: #1e293b; padding: 40px 32px; }
   header { margin-bottom: 36px; }
-  header h1 { font-size: 26px; font-weight: 800; color: #1e293b; }
+  header h1 { font-size: 26px; font-weight: 800; }
   header p { color: #64748b; margin-top: 6px; font-size: 14px; }
   .total { display: inline-block; background: #6366f1; color: white; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 10px; vertical-align: middle; }
   .group { margin-bottom: 32px; }
@@ -15,8 +15,8 @@
   .count { background: #e2e8f0; color: #475569; font-size: 11px; padding: 1px 7px; border-radius: 999px; font-weight: 600; letter-spacing: 0; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
   .card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
-  .logo { width: 32px; height: 32px; flex-shrink: 0; }
-  .logo img { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; }
+  .logo { width: 32px; height: 32px; flex-shrink: 0; position: relative; }
+  .logo img { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; display: block; }
   .swatch { width: 32px; height: 32px; border-radius: 6px; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
   .info { flex: 1; min-width: 0; }
   .name { font-size: 13px; font-weight: 600; }
@@ -27,13 +27,13 @@
 <body>
 <header>
   <h1>TimePulse Platforms <span class="total">67 totaal</span></h1>
-  <p>Alle ingebouwde platform-definities. Iconen worden geladen van de officiële CDN van elk platform.</p>
+  <p>Iconen: officieel platform-CDN → logo.dev fallback → gekleurde letter.</p>
 </header>
 <div class="group"><h2>⏱ Tijdregistratie <span class="count">16</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/simplicate.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#FF6B35">S</div>
+            <img src="https://cdn.clockassist.com/icons/simplicate.png" data-fallback="https://img.logo.dev/simplicate.app?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#FF6B35">S</div>
           </div>
           <div class="info">
             <div class="name">Simplicate</div>
@@ -43,8 +43,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/harvest.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#F04B23">H</div>
+            <img src="https://cdn.clockassist.com/icons/harvest.png" data-fallback="https://img.logo.dev/harvestapp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#F04B23">H</div>
           </div>
           <div class="info">
             <div class="name">Harvest</div>
@@ -54,8 +54,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/gripp.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#FF6600">G</div>
+            <img src="https://cdn.clockassist.com/icons/gripp.png" data-fallback="https://img.logo.dev/gripp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#FF6600">G</div>
           </div>
           <div class="info">
             <div class="name">Gripp</div>
@@ -65,8 +65,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/admin_pulse.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#005B96">A</div>
+            <img src="https://cdn.clockassist.com/icons/admin_pulse.png" data-fallback="https://img.logo.dev/app.adminpulse.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#005B96">A</div>
           </div>
           <div class="info">
             <div class="name">AdminPulse</div>
@@ -76,8 +76,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/timechimp.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00C4A7">T</div>
+            <img src="https://cdn.clockassist.com/icons/timechimp.png" data-fallback="https://img.logo.dev/app.timechimp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00C4A7">T</div>
           </div>
           <div class="info">
             <div class="name">TimeChimp</div>
@@ -87,8 +87,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/yoobi.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#FF4F00">Y</div>
+            <img src="https://cdn.clockassist.com/icons/yoobi.png" data-fallback="https://img.logo.dev/yoobi.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#FF4F00">Y</div>
           </div>
           <div class="info">
             <div class="name">Yoobi</div>
@@ -98,8 +98,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/productive.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#7B4FBF">P</div>
+            <img src="https://cdn.clockassist.com/icons/productive.png" data-fallback="https://img.logo.dev/app.productive.io?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#7B4FBF">P</div>
           </div>
           <div class="info">
             <div class="name">Productive</div>
@@ -109,8 +109,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/afas.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#EE3124">A</div>
+            <img src="https://cdn.clockassist.com/icons/afas.png" data-fallback="https://img.logo.dev/afasinsite.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#EE3124">A</div>
           </div>
           <div class="info">
             <div class="name">AFAS</div>
@@ -120,8 +120,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/radar360.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#004B87">R</div>
+            <img src="https://cdn.clockassist.com/icons/radar360.png" data-fallback="https://img.logo.dev/web.radarcloud.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#004B87">R</div>
           </div>
           <div class="info">
             <div class="name">Radar</div>
@@ -131,8 +131,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/fortes.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#003865">F</div>
+            <img src="https://cdn.clockassist.com/icons/fortes.png" data-fallback="https://img.logo.dev/fortesmilestones.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#003865">F</div>
           </div>
           <div class="info">
             <div class="name">FortesMilestones</div>
@@ -142,8 +142,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/fid_manager.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#1A3A6B">F</div>
+            <img src="https://cdn.clockassist.com/icons/fid_manager.png" data-fallback="https://img.logo.dev/fid-manager.be?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#1A3A6B">F</div>
           </div>
           <div class="info">
             <div class="name">FID-manager</div>
@@ -153,8 +153,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/teamwork.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#F06A35">T</div>
+            <img src="https://cdn.clockassist.com/icons/teamwork.png" data-fallback="https://img.logo.dev/teamwork.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#F06A35">T</div>
           </div>
           <div class="info">
             <div class="name">Teamwork</div>
@@ -164,8 +164,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/zoho.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#E42527">Z</div>
+            <img src="https://cdn.clockassist.com/icons/zoho.png" data-fallback="https://img.logo.dev/projects.zoho.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#E42527">Z</div>
           </div>
           <div class="info">
             <div class="name">Zoho Projects</div>
@@ -175,8 +175,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/clio.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00B388">C</div>
+            <img src="https://cdn.clockassist.com/icons/clio.png" data-fallback="https://img.logo.dev/app.clio.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00B388">C</div>
           </div>
           <div class="info">
             <div class="name">Clio</div>
@@ -186,8 +186,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://toggl.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#E57CD8">T</div>
+            <img src="https://toggl.com/favicon.ico" data-fallback="https://img.logo.dev/toggl.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#E57CD8">T</div>
           </div>
           <div class="info">
             <div class="name">Toggl</div>
@@ -197,8 +197,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://clockify.me/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#03A9F4">C</div>
+            <img src="https://clockify.me/favicon.ico" data-fallback="https://img.logo.dev/clockify.me?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#03A9F4">C</div>
           </div>
           <div class="info">
             <div class="name">Clockify</div>
@@ -208,8 +208,8 @@
         </div></div></div><div class="group"><h2>👥 CRM <span class="count">5</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/teamleader.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00B0CA">T</div>
+            <img src="https://cdn.clockassist.com/icons/teamleader.png" data-fallback="https://img.logo.dev/focus.teamleader.eu?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00B0CA">T</div>
           </div>
           <div class="info">
             <div class="name">Teamleader</div>
@@ -219,8 +219,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/tribe.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#E8344A">T</div>
+            <img src="https://cdn.clockassist.com/icons/tribe.png" data-fallback="https://img.logo.dev/app.tribecrm.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#E8344A">T</div>
           </div>
           <div class="info">
             <div class="name">TribeCRM</div>
@@ -230,8 +230,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.salesforce.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00A1E0">S</div>
+            <img src="https://www.salesforce.com/favicon.ico" data-fallback="https://img.logo.dev/salesforce.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00A1E0">S</div>
           </div>
           <div class="info">
             <div class="name">Salesforce</div>
@@ -241,8 +241,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.hubspot.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#FF7A59">H</div>
+            <img src="https://www.hubspot.com/favicon.ico" data-fallback="https://img.logo.dev/hubspot.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#FF7A59">H</div>
           </div>
           <div class="info">
             <div class="name">HubSpot</div>
@@ -252,8 +252,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.pipedrive.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#1A1F36">P</div>
+            <img src="https://www.pipedrive.com/favicon.ico" data-fallback="https://img.logo.dev/pipedrive.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#1A1F36">P</div>
           </div>
           <div class="info">
             <div class="name">Pipedrive</div>
@@ -263,8 +263,8 @@
         </div></div></div><div class="group"><h2>📊 Boekhouding <span class="count">6</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/exact.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#E31837">E</div>
+            <img src="https://cdn.clockassist.com/icons/exact.png" data-fallback="https://img.logo.dev/start.exactonline.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#E31837">E</div>
           </div>
           <div class="info">
             <div class="name">Exact Online</div>
@@ -274,8 +274,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/visma_advisor.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#004C97">V</div>
+            <img src="https://cdn.clockassist.com/icons/visma_advisor.png" data-fallback="https://img.logo.dev/advisor.vismaonline.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#004C97">V</div>
           </div>
           <div class="info">
             <div class="name">Visma Advisor</div>
@@ -285,8 +285,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/xero.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#13B5EA">X</div>
+            <img src="https://cdn.clockassist.com/icons/xero.png" data-fallback="https://img.logo.dev/go.xero.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#13B5EA">X</div>
           </div>
           <div class="info">
             <div class="name">Xero</div>
@@ -296,8 +296,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.billtobox.be/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0D6EFD">B</div>
+            <img src="https://www.billtobox.be/favicon.ico" data-fallback="https://img.logo.dev/billtobox.be?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0D6EFD">B</div>
           </div>
           <div class="info">
             <div class="name">BillToBox</div>
@@ -307,8 +307,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://app.yuki.nl/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#E8650A">Y</div>
+            <img src="https://app.yuki.nl/favicon.ico" data-fallback="https://img.logo.dev/yuki.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#E8650A">Y</div>
           </div>
           <div class="info">
             <div class="name">Yuki</div>
@@ -318,8 +318,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.winbooks.be/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#004B8D">W</div>
+            <img src="https://www.winbooks.be/favicon.ico" data-fallback="https://img.logo.dev/winbooks.be?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#004B8D">W</div>
           </div>
           <div class="info">
             <div class="name">Winbooks</div>
@@ -329,8 +329,8 @@
         </div></div></div><div class="group"><h2>📋 Project management <span class="count">10</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/click_up.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#7B68EE">C</div>
+            <img src="https://cdn.clockassist.com/icons/click_up.png" data-fallback="https://img.logo.dev/app.clickup.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#7B68EE">C</div>
           </div>
           <div class="info">
             <div class="name">ClickUp</div>
@@ -340,8 +340,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0052CC">J</div>
+            <img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" data-fallback="https://img.logo.dev/atlassian.net?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0052CC">J</div>
           </div>
           <div class="info">
             <div class="name">Jira</div>
@@ -351,8 +351,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://linear.app/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#5E6AD2">L</div>
+            <img src="https://linear.app/favicon.ico" data-fallback="https://img.logo.dev/linear.app?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#5E6AD2">L</div>
           </div>
           <div class="info">
             <div class="name">Linear</div>
@@ -362,8 +362,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://app.asana.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#F06A6A">A</div>
+            <img src="https://app.asana.com/favicon.ico" data-fallback="https://img.logo.dev/asana.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#F06A6A">A</div>
           </div>
           <div class="info">
             <div class="name">Asana</div>
@@ -373,8 +373,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://monday.com/static/img/favicons/favicon-32x32.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#FF3D57">M</div>
+            <img src="https://monday.com/static/img/favicons/favicon-32x32.png" data-fallback="https://img.logo.dev/monday.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#FF3D57">M</div>
           </div>
           <div class="info">
             <div class="name">Monday.com</div>
@@ -384,8 +384,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://trello.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0079BF">T</div>
+            <img src="https://trello.com/favicon.ico" data-fallback="https://img.logo.dev/trello.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0079BF">T</div>
           </div>
           <div class="info">
             <div class="name">Trello</div>
@@ -395,8 +395,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://basecamp.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#1D2D35">B</div>
+            <img src="https://basecamp.com/favicon.ico" data-fallback="https://img.logo.dev/basecamp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#1D2D35">B</div>
           </div>
           <div class="info">
             <div class="name">Basecamp</div>
@@ -406,8 +406,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.notion.so/images/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#000000">N</div>
+            <img src="https://www.notion.so/images/favicon.ico" data-fallback="https://img.logo.dev/notion.so?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#000000">N</div>
           </div>
           <div class="info">
             <div class="name">Notion</div>
@@ -417,8 +417,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0052CC">C</div>
+            <img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" data-fallback="https://img.logo.dev/confluence.atlassian.net?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0052CC">C</div>
           </div>
           <div class="info">
             <div class="name">Confluence</div>
@@ -428,8 +428,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/wrike.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00C875">W</div>
+            <img src="https://cdn.clockassist.com/icons/wrike.png" data-fallback="https://img.logo.dev/app.wrike.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00C875">W</div>
           </div>
           <div class="info">
             <div class="name">Wrike</div>
@@ -439,8 +439,8 @@
         </div></div></div><div class="group"><h2>✉️ E-mail <span class="count">2</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#EA4335">G</div>
+            <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico" data-fallback="https://img.logo.dev/mail.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#EA4335">G</div>
           </div>
           <div class="info">
             <div class="name">Gmail</div>
@@ -450,8 +450,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://res-1.cdn.office.net/elf/prod/shared/resources/prod/favicons/outlook/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0078D4">O</div>
+            <img src="https://res-1.cdn.office.net/elf/prod/shared/resources/prod/favicons/outlook/favicon.ico" data-fallback="https://img.logo.dev/outlook.live.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0078D4">O</div>
           </div>
           <div class="info">
             <div class="name">Outlook</div>
@@ -461,8 +461,8 @@
         </div></div></div><div class="group"><h2>💬 Communicatie <span class="count">6</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#4A154B">S</div>
+            <img src="https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png" data-fallback="https://img.logo.dev/slack.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#4A154B">S</div>
           </div>
           <div class="info">
             <div class="name">Slack</div>
@@ -472,8 +472,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/teams/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#6264A7">M</div>
+            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/teams/favicon.ico" data-fallback="https://img.logo.dev/teams.microsoft.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#6264A7">M</div>
           </div>
           <div class="info">
             <div class="name">Microsoft Teams</div>
@@ -483,8 +483,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://zoom.us/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#2D8CFF">Z</div>
+            <img src="https://zoom.us/favicon.ico" data-fallback="https://img.logo.dev/zoom.us?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#2D8CFF">Z</div>
           </div>
           <div class="info">
             <div class="name">Zoom</div>
@@ -494,8 +494,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://ssl.gstatic.com/meet/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00BCD4">G</div>
+            <img src="https://ssl.gstatic.com/meet/favicon.ico" data-fallback="https://img.logo.dev/meet.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00BCD4">G</div>
           </div>
           <div class="info">
             <div class="name">Google Meet</div>
@@ -505,8 +505,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://discord.com/assets/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#5865F2">D</div>
+            <img src="https://discord.com/assets/favicon.ico" data-fallback="https://img.logo.dev/discord.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#5865F2">D</div>
           </div>
           <div class="info">
             <div class="name">Discord</div>
@@ -516,8 +516,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://static.whatsapp.net/rsrc.php/v3/yP/r/rYZqPCBaG70.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#25D366">W</div>
+            <img src="https://static.whatsapp.net/rsrc.php/v3/yP/r/rYZqPCBaG70.png" data-fallback="https://img.logo.dev/web.whatsapp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#25D366">W</div>
           </div>
           <div class="info">
             <div class="name">WhatsApp Web</div>
@@ -527,8 +527,8 @@
         </div></div></div><div class="group"><h2>💻 Development <span class="count">6</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://github.githubassets.com/favicons/favicon.svg" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#24292F">G</div>
+            <img src="https://github.githubassets.com/favicons/favicon.svg" data-fallback="https://img.logo.dev/github.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#24292F">G</div>
           </div>
           <div class="info">
             <div class="name">GitHub</div>
@@ -538,8 +538,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://gitlab.com/assets/favicon-72a2cad5025aa931d6ea56c3201d1f18e68a8cd39788c7c80d5b2b82aa5143ef.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#FC6D26">G</div>
+            <img src="https://gitlab.com/assets/favicon-72a2cad5025aa931d6ea56c3201d1f18e68a8cd39788c7c80d5b2b82aa5143ef.png" data-fallback="https://img.logo.dev/gitlab.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#FC6D26">G</div>
           </div>
           <div class="info">
             <div class="name">GitLab</div>
@@ -549,8 +549,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://bitbucket.org/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0052CC">B</div>
+            <img src="https://bitbucket.org/favicon.ico" data-fallback="https://img.logo.dev/bitbucket.org?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0052CC">B</div>
           </div>
           <div class="info">
             <div class="name">Bitbucket</div>
@@ -560,8 +560,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://assets.vercel.com/image/upload/front/favicon/vercel/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#000000">V</div>
+            <img src="https://assets.vercel.com/image/upload/front/favicon/vercel/favicon.ico" data-fallback="https://img.logo.dev/vercel.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#000000">V</div>
           </div>
           <div class="info">
             <div class="name">Vercel</div>
@@ -571,8 +571,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.netlify.com/favicon/icon.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00C7B7">N</div>
+            <img src="https://www.netlify.com/favicon/icon.png" data-fallback="https://img.logo.dev/netlify.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00C7B7">N</div>
           </div>
           <div class="info">
             <div class="name">Netlify</div>
@@ -582,8 +582,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#F48024">S</div>
+            <img src="https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico" data-fallback="https://img.logo.dev/stackoverflow.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#F48024">S</div>
           </div>
           <div class="info">
             <div class="name">Stack Overflow</div>
@@ -593,8 +593,8 @@
         </div></div></div><div class="group"><h2>📄 Documenten <span class="count">8</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#4285F4">G</div>
+            <img src="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" data-fallback="https://img.logo.dev/docs.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#4285F4">G</div>
           </div>
           <div class="info">
             <div class="name">Google Docs</div>
@@ -604,8 +604,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0F9D58">G</div>
+            <img src="https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico" data-fallback="https://img.logo.dev/docs.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0F9D58">G</div>
           </div>
           <div class="info">
             <div class="name">Google Sheets</div>
@@ -615,8 +615,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://ssl.gstatic.com/docs/presentations/images/favicon5.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#F4B400">G</div>
+            <img src="https://ssl.gstatic.com/docs/presentations/images/favicon5.ico" data-fallback="https://img.logo.dev/docs.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#F4B400">G</div>
           </div>
           <div class="info">
             <div class="name">Google Slides</div>
@@ -626,8 +626,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#4285F4">G</div>
+            <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" data-fallback="https://img.logo.dev/drive.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#4285F4">G</div>
           </div>
           <div class="info">
             <div class="name">Google Drive</div>
@@ -637,8 +637,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/sharepoint/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0078D4">S</div>
+            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/sharepoint/favicon.ico" data-fallback="https://img.logo.dev/sharepoint.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0078D4">S</div>
           </div>
           <div class="info">
             <div class="name">SharePoint</div>
@@ -648,8 +648,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/onedrive/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0078D4">O</div>
+            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/onedrive/favicon.ico" data-fallback="https://img.logo.dev/onedrive.live.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0078D4">O</div>
           </div>
           <div class="info">
             <div class="name">OneDrive</div>
@@ -659,8 +659,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://cfl.dropboxstatic.com/static/images/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0061FF">D</div>
+            <img src="https://cfl.dropboxstatic.com/static/images/favicon.ico" data-fallback="https://img.logo.dev/dropbox.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0061FF">D</div>
           </div>
           <div class="info">
             <div class="name">Dropbox</div>
@@ -670,8 +670,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            
-            <div class="swatch" style="display:flex" style="background:#FF0000">P</div>
+            <img src="https://img.logo.dev/.pdf?token=pk_free" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none;background:#FF0000">P</div>
           </div>
           <div class="info">
             <div class="name">PDF</div>
@@ -681,8 +681,8 @@
         </div></div></div><div class="group"><h2>🎨 Design <span class="count">4</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://static.figma.com/app/icon/1/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#F24E1E">F</div>
+            <img src="https://static.figma.com/app/icon/1/favicon.ico" data-fallback="https://img.logo.dev/figma.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#F24E1E">F</div>
           </div>
           <div class="info">
             <div class="name">Figma</div>
@@ -692,8 +692,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://miro.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#FFD02F">M</div>
+            <img src="https://miro.com/favicon.ico" data-fallback="https://img.logo.dev/miro.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#FFD02F">M</div>
           </div>
           <div class="info">
             <div class="name">Miro</div>
@@ -703,8 +703,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://static.canva.com/web/images/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00C4CC">C</div>
+            <img src="https://static.canva.com/web/images/favicon.ico" data-fallback="https://img.logo.dev/canva.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00C4CC">C</div>
           </div>
           <div class="info">
             <div class="name">Canva</div>
@@ -714,8 +714,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.sketch.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#F7B500">S</div>
+            <img src="https://www.sketch.com/favicon.ico" data-fallback="https://img.logo.dev/sketch.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#F7B500">S</div>
           </div>
           <div class="info">
             <div class="name">Sketch</div>
@@ -725,8 +725,8 @@
         </div></div></div><div class="group"><h2>🤖 AI tools <span class="count">4</span></h2><div class="grid">
         <div class="card">
           <div class="logo">
-            <img src="https://chatgpt.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#00A67E">C</div>
+            <img src="https://chatgpt.com/favicon.ico" data-fallback="https://img.logo.dev/chatgpt.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#00A67E">C</div>
           </div>
           <div class="info">
             <div class="name">ChatGPT</div>
@@ -736,8 +736,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://claude.ai/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#CC785C">C</div>
+            <img src="https://claude.ai/favicon.ico" data-fallback="https://img.logo.dev/claude.ai?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#CC785C">C</div>
           </div>
           <div class="info">
             <div class="name">Claude</div>
@@ -747,8 +747,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06.svg" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#4285F4">G</div>
+            <img src="https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06.svg" data-fallback="https://img.logo.dev/gemini.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#4285F4">G</div>
           </div>
           <div class="info">
             <div class="name">Gemini</div>
@@ -758,8 +758,8 @@
         </div>
         <div class="card">
           <div class="logo">
-            <img src="https://copilot.microsoft.com/favicon.ico" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none" style="background:#0078D4">M</div>
+            <img src="https://copilot.microsoft.com/favicon.ico" data-fallback="https://img.logo.dev/copilot.microsoft.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
+            <div class="swatch" style="display:none;background:#0078D4">M</div>
           </div>
           <div class="info">
             <div class="name">Microsoft Copilot</div>

@@ -111,12 +111,24 @@ BUILTIN_PLATFORMS = [
 ]
 
 
+def _logo_dev_url(platform: dict) -> str:
+    """Derive logo.dev fallback URL from the first URL pattern."""
+    if not platform.get("urls"):
+        return None
+    domain = platform["urls"][0].lstrip("/").split("/")[0]
+    return f"https://img.logo.dev/{domain}?token=pk_free"
+
+
 def get_platforms() -> list:
-    """Returns merged list: builtins + user-defined custom platforms."""
+    """Returns merged list: builtins + user-defined custom platforms, with logo_dev fallback URLs."""
     custom = _load_custom()
     slugs_custom = {p["slug"] for p in custom}
     merged = [p for p in BUILTIN_PLATFORMS if p["slug"] not in slugs_custom]
     merged.extend(custom)
+    # Inject logo_dev fallback for every platform that has URLs
+    for p in merged:
+        if "logo_dev" not in p:
+            p["logo_dev"] = _logo_dev_url(p)
     return merged
 
 
