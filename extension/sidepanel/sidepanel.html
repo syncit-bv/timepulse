@@ -8,7 +8,10 @@
 <body>
 
   <header>
-    <span class="wordmark">⏱ TimePulse</span>
+    <div class="header-left">
+      <button class="icon-btn back-btn" id="backBtn" style="display:none" title="Terug">←</button>
+      <span class="wordmark">⏱ TimePulse</span>
+    </div>
     <div class="header-right">
       <span class="conn-dot" id="connDot"></span>
       <span class="conn-label" id="connLabel">…</span>
@@ -16,7 +19,8 @@
     </div>
   </header>
 
-  <main>
+  <!-- ── Main view ─────────────────────────────────────────────────── -->
+  <main id="viewMain">
 
     <!-- Pomodoro timer -->
     <section class="card pomo-card">
@@ -83,6 +87,49 @@
 
   </main>
 
+  <!-- ── Settings view ─────────────────────────────────────────────── -->
+  <main id="viewSettings" style="display:none">
+
+    <div class="settings-section">
+      <div class="settings-label">Server URL</div>
+      <input class="settings-input" id="cfgServerUrl" type="url"
+             placeholder="http://nas.local:3456" autocomplete="off" spellcheck="false"/>
+      <div class="conn-test-row">
+        <span class="conn-dot" id="cfgDot"></span>
+        <span class="conn-test-label" id="cfgTestLabel">Nog niet getest</span>
+        <button class="settings-btn-small" id="cfgTestBtn">Verbinding testen</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Werkdag (uren)</div>
+      <input class="settings-input settings-input-sm" id="cfgWorkday" type="number"
+             min="1" max="24" step="0.5" placeholder="8"/>
+      <div class="settings-hint">Wordt gebruikt voor de voortgangsbalk.</div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Inactiviteitsdrempel (minuten)</div>
+      <input class="settings-input settings-input-sm" id="cfgIdle" type="number"
+             min="1" max="60" placeholder="5"/>
+      <div class="settings-hint">Na hoeveel minuten stilte stopt de tracking.</div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-label">Uitgesloten domeinen</div>
+      <textarea class="settings-input settings-textarea" id="cfgExcluded"
+                placeholder="example.com&#10;privatesite.be" rows="4"></textarea>
+      <div class="settings-hint">Één domein per regel. Deze sites worden niet bijgehouden.</div>
+    </div>
+
+    <div class="settings-actions">
+      <button class="settings-save-btn" id="cfgSaveBtn">Opslaan</button>
+      <span class="settings-saved-msg" id="cfgSavedMsg"></span>
+    </div>
+
+  </main>
+
+  <!-- ── Shared footer ──────────────────────────────────────────────── -->
   <footer>
     <button class="footer-link" id="dashBtn">Dashboard</button>
     <button class="footer-link" id="optFooterBtn">Instellingen</button>

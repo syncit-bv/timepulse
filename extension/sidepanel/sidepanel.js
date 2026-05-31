@@ -1,5 +1,5 @@
 const $ = id => document.getElementById(id);
-const WORKDAY_HOURS = 8;
+let WORKDAY_HOURS = 8; // overridden from storage on init
 
 // ─── Pomodoro ─────────────────────────────────────────────────────────────────
 const POMO_WORK_SECS    = 25 * 60;
@@ -142,8 +142,11 @@ chrome.storage.onChanged.addListener((changes, area) => {
 
 // ─── Settings ─────────────────────────────────────────────────────────────────
 async function getSettings() {
-  const r = await chrome.storage.sync.get(['serverUrl']);
-  return { serverUrl: (r.serverUrl || '').replace(/\/$/, '') };
+  const r = await chrome.storage.sync.get(['serverUrl', 'workdayHours']);
+  return {
+    serverUrl:    (r.serverUrl || '').replace(/\/$/, ''),
+    workdayHours: r.workdayHours || 8
+  };
 }
 
 // ─── Fetch helper ─────────────────────────────────────────────────────────────
@@ -269,20 +272,84 @@ function renderGaps(gaps, serverUrl) {
   });
 }
 
+// ─── View navigation ──────────────────────────────────────────────────────────
+function showView(name) {
+  $('viewMain').style.display     = name === 'main'     ? 'flex' : 'none';
+  $('viewSettings').style.display = name === 'settings' ? 'flex' : 'none';
+  $('backBtn').style.display      = name === 'main'     ? 'none' : 'inline-block';
+  $('optBtn').style.display       = name === 'main'     ? 'inline-block' : 'none';
+  $('connDot').style.display      = name === 'main'     ? 'inline-block' : 'none';
+  $('connLabel').style.display    = name === 'main'     ? 'inline-block' : 'none';
+  // Refresh button only relevant on main view
+  $('refreshBtn').style.display   = name === 'main'     ? 'block' : 'none';
+  if (name === 'settings') loadSettingsForm();
+}
+
+async function loadSettingsForm() {
+  const r = await chrome.storage.sync.get(['serverUrl', 'idleMinutes', 'excludedDomains', 'workdayHours']);
+  $('cfgServerUrl').value  = r.serverUrl || '';
+  $('cfgIdle').value       = r.idleMinutes || 5;
+  $('cfgWorkday').value    = r.workdayHours || 8;
+  $('cfgExcluded').value   = (r.excludedDomains || []).join('\n');
+  $('cfgTestLabel').textContent = 'Nog niet getest';
+  $('cfgDot').className = 'conn-dot';
+}
+
+$('cfgTestBtn').addEventListener('click', async () => {
+  const url = $('cfgServerUrl').value.trim().replace(/\/$/, '');
+  const dot   = $('cfgDot');
+  const label = $('cfgTestLabel');
+  label.textContent = 'Testen…';
+  dot.className = 'conn-dot pulse';
+  try {
+    const resp = await fetch(`${url}/api/health`, { signal: AbortSignal.timeout(5000) });
+    if (resp.ok) {
+      dot.className = 'conn-dot ok';
+      label.textContent = 'Verbonden';
+    } else {
+      throw new Error(`HTTP ${resp.status}`);
+    }
+  } catch (err) {
+    dot.className = 'conn-dot error';
+    label.textContent = `Niet bereikbaar`;
+  }
+});
+
+$('cfgSaveBtn').addEventListener('click', async () => {
+  const serverUrl      = $('cfgServerUrl').value.trim().replace(/\/$/, '');
+  const idleMinutes    = parseInt($('cfgIdle').value, 10) || 5;
+  const workdayHours   = parseFloat($('cfgWorkday').value) || 8;
+  const excludedDomains = $('cfgExcluded').value
+    .split('\n').map(s => s.trim()).filter(Boolean);
+
+  await chrome.storage.sync.set({ serverUrl, idleMinutes, workdayHours, excludedDomains });
+
+  const msg = $('cfgSavedMsg');
+  msg.textContent = 'Opgeslagen!';
+  msg.classList.add('visible');
+  setTimeout(() => msg.classList.remove('visible'), 2000);
+});
+
+$('backBtn').addEventListener('click', () => showView('main'));
+
 // ─── Navigation ───────────────────────────────────────────────────────────────
 $('dashBtn').addEventListener('click', async () => {
   const { serverUrl } = await getSettings();
   if (serverUrl) chrome.tabs.create({ url: serverUrl });
-  else chrome.runtime.openOptionsPage();
+  else showView('settings');
 });
 
-$('optBtn').addEventListener('click', () => chrome.runtime.openOptionsPage());
-$('optFooterBtn').addEventListener('click', () => chrome.runtime.openOptionsPage());
+$('optBtn').addEventListener('click', () => showView('settings'));
+$('optFooterBtn').addEventListener('click', () => showView('settings'));
 $('refreshBtn').addEventListener('click', () => loadData());
-$('setupBtn')?.addEventListener('click', () => chrome.runtime.openOptionsPage());
+$('setupBtn')?.addEventListener('click', () => showView('settings'));
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
+  const { workdayHours } = await getSettings();
+  WORKDAY_HOURS = workdayHours;
+
+  showView('main');
   await renderPomo();
   const state = await getPomoState();
   if (state.running) startPomoInterval();
