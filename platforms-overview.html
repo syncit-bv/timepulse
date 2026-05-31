@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>TimePulse — Platform Overzicht</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f1f5f9; color: #1e293b; padding: 40px 32px; }
+  header { margin-bottom: 36px; }
+  header h1 { font-size: 26px; font-weight: 800; color: #1e293b; }
+  header p { color: #64748b; margin-top: 6px; font-size: 14px; }
+  .total { display: inline-block; background: #6366f1; color: white; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 10px; vertical-align: middle; }
+  .group { margin-bottom: 32px; }
+  .group h2 { font-size: 13px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .count { background: #e2e8f0; color: #475569; font-size: 11px; padding: 1px 7px; border-radius: 999px; font-weight: 600; letter-spacing: 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+  .logo { width: 32px; height: 32px; flex-shrink: 0; }
+  .logo img { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; }
+  .swatch { width: 32px; height: 32px; border-radius: 6px; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+  .info { flex: 1; min-width: 0; }
+  .name { font-size: 13px; font-weight: 600; }
+  .urls { font-size: 11px; color: #94a3b8; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>TimePulse Platforms <span class="total">67 totaal</span></h1>
+  <p>Alle ingebouwde platform-definities die automatisch herkend worden op basis van URL. Platforms met een logo gebruiken het officiële icoon van ClockAssist.</p>
+</header>
+<div class="group"><h2>⏱ Tijdregistratie <span class="count">16</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/simplicate.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#FF6B35">S</div>
+          </div>
+          <div class="info">
+            <div class="name">Simplicate</div>
+            <div class="urls">simplicate.app, simplicate.com, simplicate.nl</div>
+          </div>
+          <div class="dot" style="background:#FF6B35"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/harvest.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#F04B23">H</div>
+          </div>
+          <div class="info">
+            <div class="name">Harvest</div>
+            <div class="urls">harvestapp.com, harvest.is</div>
+          </div>
+          <div class="dot" style="background:#F04B23"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/gripp.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#FF6600">G</div>
+          </div>
+          <div class="info">
+            <div class="name">Gripp</div>
+            <div class="urls">gripp.com</div>
+          </div>
+          <div class="dot" style="background:#FF6600"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/admin_pulse.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#005B96">A</div>
+          </div>
+          <div class="info">
+            <div class="name">AdminPulse</div>
+            <div class="urls">app.adminpulse.nl, app.adminpulse.be</div>
+          </div>
+          <div class="dot" style="background:#005B96"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/timechimp.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#00C4A7">T</div>
+          </div>
+          <div class="info">
+            <div class="name">TimeChimp</div>
+            <div class="urls">app.timechimp.com</div>
+          </div>
+          <div class="dot" style="background:#00C4A7"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/yoobi.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#FF4F00">Y</div>
+          </div>
+          <div class="info">
+            <div class="name">Yoobi</div>
+            <div class="urls">yoobi.nl/vue</div>
+          </div>
+          <div class="dot" style="background:#FF4F00"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/productive.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#7B4FBF">P</div>
+          </div>
+          <div class="info">
+            <div class="name">Productive</div>
+            <div class="urls">app.productive.io</div>
+          </div>
+          <div class="dot" style="background:#7B4FBF"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/afas.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#EE3124">A</div>
+          </div>
+          <div class="info">
+            <div class="name">AFAS</div>
+            <div class="urls">afasinsite.nl</div>
+          </div>
+          <div class="dot" style="background:#EE3124"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/radar360.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#004B87">R</div>
+          </div>
+          <div class="info">
+            <div class="name">Radar</div>
+            <div class="urls">web.radarcloud.nl</div>
+          </div>
+          <div class="dot" style="background:#004B87"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/fortes.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#003865">F</div>
+          </div>
+          <div class="info">
+            <div class="name">FortesMilestones</div>
+            <div class="urls">fortesmilestones.com</div>
+          </div>
+          <div class="dot" style="background:#003865"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/fid_manager.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#1A3A6B">F</div>
+          </div>
+          <div class="info">
+            <div class="name">FID-manager</div>
+            <div class="urls">fid-manager.be</div>
+          </div>
+          <div class="dot" style="background:#1A3A6B"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/teamwork.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#F06A35">T</div>
+          </div>
+          <div class="info">
+            <div class="name">Teamwork</div>
+            <div class="urls">teamwork.com/app</div>
+          </div>
+          <div class="dot" style="background:#F06A35"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/zoho.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#E42527">Z</div>
+          </div>
+          <div class="info">
+            <div class="name">Zoho Projects</div>
+            <div class="urls">projects.zoho.com, projects.zoho.eu</div>
+          </div>
+          <div class="dot" style="background:#E42527"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/clio.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#00B388">C</div>
+          </div>
+          <div class="info">
+            <div class="name">Clio</div>
+            <div class="urls">app.clio.com</div>
+          </div>
+          <div class="dot" style="background:#00B388"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#E57CD8">T</div>
+          </div>
+          <div class="info">
+            <div class="name">Toggl</div>
+            <div class="urls">toggl.com</div>
+          </div>
+          <div class="dot" style="background:#E57CD8"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#03A9F4">C</div>
+          </div>
+          <div class="info">
+            <div class="name">Clockify</div>
+            <div class="urls">clockify.me</div>
+          </div>
+          <div class="dot" style="background:#03A9F4"></div>
+        </div></div></div><div class="group"><h2>👥 CRM <span class="count">5</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/teamleader.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#00B0CA">T</div>
+          </div>
+          <div class="info">
+            <div class="name">Teamleader</div>
+            <div class="urls">focus.teamleader.eu, teamleader.eu</div>
+          </div>
+          <div class="dot" style="background:#00B0CA"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/tribe.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#E8344A">T</div>
+          </div>
+          <div class="info">
+            <div class="name">TribeCRM</div>
+            <div class="urls">app.tribecrm.nl</div>
+          </div>
+          <div class="dot" style="background:#E8344A"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#00A1E0">S</div>
+          </div>
+          <div class="info">
+            <div class="name">Salesforce</div>
+            <div class="urls">salesforce.com</div>
+          </div>
+          <div class="dot" style="background:#00A1E0"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#FF7A59">H</div>
+          </div>
+          <div class="info">
+            <div class="name">HubSpot</div>
+            <div class="urls">hubspot.com, app.hubspot.com</div>
+          </div>
+          <div class="dot" style="background:#FF7A59"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#1A1F36">P</div>
+          </div>
+          <div class="info">
+            <div class="name">Pipedrive</div>
+            <div class="urls">pipedrive.com</div>
+          </div>
+          <div class="dot" style="background:#1A1F36"></div>
+        </div></div></div><div class="group"><h2>📊 Boekhouding <span class="count">6</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/exact.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#E31837">E</div>
+          </div>
+          <div class="info">
+            <div class="name">Exact Online</div>
+            <div class="urls">start.exactonline.nl, start.exactonline.be</div>
+          </div>
+          <div class="dot" style="background:#E31837"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/visma_advisor.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#004C97">V</div>
+          </div>
+          <div class="info">
+            <div class="name">Visma Advisor</div>
+            <div class="urls">advisor.vismaonline.com</div>
+          </div>
+          <div class="dot" style="background:#004C97"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/xero.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#13B5EA">X</div>
+          </div>
+          <div class="info">
+            <div class="name">Xero</div>
+            <div class="urls">go.xero.com</div>
+          </div>
+          <div class="dot" style="background:#13B5EA"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0D6EFD">B</div>
+          </div>
+          <div class="info">
+            <div class="name">BillToBox</div>
+            <div class="urls">billtobox.be</div>
+          </div>
+          <div class="dot" style="background:#0D6EFD"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#E8650A">Y</div>
+          </div>
+          <div class="info">
+            <div class="name">Yuki</div>
+            <div class="urls">yuki.nl, app.yuki.nl</div>
+          </div>
+          <div class="dot" style="background:#E8650A"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#004B8D">W</div>
+          </div>
+          <div class="info">
+            <div class="name">Winbooks</div>
+            <div class="urls">winbooks.be</div>
+          </div>
+          <div class="dot" style="background:#004B8D"></div>
+        </div></div></div><div class="group"><h2>📋 Project management <span class="count">10</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/click_up.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#7B68EE">C</div>
+          </div>
+          <div class="info">
+            <div class="name">ClickUp</div>
+            <div class="urls">app.clickup.com</div>
+          </div>
+          <div class="dot" style="background:#7B68EE"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0052CC">J</div>
+          </div>
+          <div class="info">
+            <div class="name">Jira</div>
+            <div class="urls">atlassian.net, /jira/</div>
+          </div>
+          <div class="dot" style="background:#0052CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#5E6AD2">L</div>
+          </div>
+          <div class="info">
+            <div class="name">Linear</div>
+            <div class="urls">linear.app</div>
+          </div>
+          <div class="dot" style="background:#5E6AD2"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#F06A6A">A</div>
+          </div>
+          <div class="info">
+            <div class="name">Asana</div>
+            <div class="urls">asana.com</div>
+          </div>
+          <div class="dot" style="background:#F06A6A"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#FF3D57">M</div>
+          </div>
+          <div class="info">
+            <div class="name">Monday.com</div>
+            <div class="urls">monday.com</div>
+          </div>
+          <div class="dot" style="background:#FF3D57"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0079BF">T</div>
+          </div>
+          <div class="info">
+            <div class="name">Trello</div>
+            <div class="urls">trello.com</div>
+          </div>
+          <div class="dot" style="background:#0079BF"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#1D2D35">B</div>
+          </div>
+          <div class="info">
+            <div class="name">Basecamp</div>
+            <div class="urls">basecamp.com, 3.basecamp.com</div>
+          </div>
+          <div class="dot" style="background:#1D2D35"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#000000">N</div>
+          </div>
+          <div class="info">
+            <div class="name">Notion</div>
+            <div class="urls">notion.so, notion.site</div>
+          </div>
+          <div class="dot" style="background:#000000"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0052CC">C</div>
+          </div>
+          <div class="info">
+            <div class="name">Confluence</div>
+            <div class="urls">confluence.atlassian.net, /wiki/spaces/</div>
+          </div>
+          <div class="dot" style="background:#0052CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            <img src="https://cdn.clockassist.com/icons/wrike.png" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+            <div class="swatch" style="display:none" style="background:#00C875">W</div>
+          </div>
+          <div class="info">
+            <div class="name">Wrike</div>
+            <div class="urls">app.wrike.com</div>
+          </div>
+          <div class="dot" style="background:#00C875"></div>
+        </div></div></div><div class="group"><h2>✉️ E-mail <span class="count">2</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#EA4335">G</div>
+          </div>
+          <div class="info">
+            <div class="name">Gmail</div>
+            <div class="urls">mail.google.com</div>
+          </div>
+          <div class="dot" style="background:#EA4335"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0078D4">O</div>
+          </div>
+          <div class="info">
+            <div class="name">Outlook</div>
+            <div class="urls">outlook.live.com, outlook.office.com, outlook.office365.com</div>
+          </div>
+          <div class="dot" style="background:#0078D4"></div>
+        </div></div></div><div class="group"><h2>💬 Communicatie <span class="count">6</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#4A154B">S</div>
+          </div>
+          <div class="info">
+            <div class="name">Slack</div>
+            <div class="urls">slack.com</div>
+          </div>
+          <div class="dot" style="background:#4A154B"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#6264A7">M</div>
+          </div>
+          <div class="info">
+            <div class="name">Microsoft Teams</div>
+            <div class="urls">teams.microsoft.com, teams.live.com</div>
+          </div>
+          <div class="dot" style="background:#6264A7"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#2D8CFF">Z</div>
+          </div>
+          <div class="info">
+            <div class="name">Zoom</div>
+            <div class="urls">zoom.us</div>
+          </div>
+          <div class="dot" style="background:#2D8CFF"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#00BCD4">G</div>
+          </div>
+          <div class="info">
+            <div class="name">Google Meet</div>
+            <div class="urls">meet.google.com</div>
+          </div>
+          <div class="dot" style="background:#00BCD4"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#5865F2">D</div>
+          </div>
+          <div class="info">
+            <div class="name">Discord</div>
+            <div class="urls">discord.com</div>
+          </div>
+          <div class="dot" style="background:#5865F2"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#25D366">W</div>
+          </div>
+          <div class="info">
+            <div class="name">WhatsApp Web</div>
+            <div class="urls">web.whatsapp.com</div>
+          </div>
+          <div class="dot" style="background:#25D366"></div>
+        </div></div></div><div class="group"><h2>💻 Development <span class="count">6</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#24292F">G</div>
+          </div>
+          <div class="info">
+            <div class="name">GitHub</div>
+            <div class="urls">github.com</div>
+          </div>
+          <div class="dot" style="background:#24292F"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#FC6D26">G</div>
+          </div>
+          <div class="info">
+            <div class="name">GitLab</div>
+            <div class="urls">gitlab.com</div>
+          </div>
+          <div class="dot" style="background:#FC6D26"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0052CC">B</div>
+          </div>
+          <div class="info">
+            <div class="name">Bitbucket</div>
+            <div class="urls">bitbucket.org</div>
+          </div>
+          <div class="dot" style="background:#0052CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#000000">V</div>
+          </div>
+          <div class="info">
+            <div class="name">Vercel</div>
+            <div class="urls">vercel.com</div>
+          </div>
+          <div class="dot" style="background:#000000"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#00C7B7">N</div>
+          </div>
+          <div class="info">
+            <div class="name">Netlify</div>
+            <div class="urls">netlify.com</div>
+          </div>
+          <div class="dot" style="background:#00C7B7"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#F48024">S</div>
+          </div>
+          <div class="info">
+            <div class="name">Stack Overflow</div>
+            <div class="urls">stackoverflow.com</div>
+          </div>
+          <div class="dot" style="background:#F48024"></div>
+        </div></div></div><div class="group"><h2>📄 Documenten <span class="count">8</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#4285F4">G</div>
+          </div>
+          <div class="info">
+            <div class="name">Google Docs</div>
+            <div class="urls">docs.google.com/document</div>
+          </div>
+          <div class="dot" style="background:#4285F4"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0F9D58">G</div>
+          </div>
+          <div class="info">
+            <div class="name">Google Sheets</div>
+            <div class="urls">docs.google.com/spreadsheets</div>
+          </div>
+          <div class="dot" style="background:#0F9D58"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#F4B400">G</div>
+          </div>
+          <div class="info">
+            <div class="name">Google Slides</div>
+            <div class="urls">docs.google.com/presentation</div>
+          </div>
+          <div class="dot" style="background:#F4B400"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#4285F4">G</div>
+          </div>
+          <div class="info">
+            <div class="name">Google Drive</div>
+            <div class="urls">drive.google.com</div>
+          </div>
+          <div class="dot" style="background:#4285F4"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0078D4">S</div>
+          </div>
+          <div class="info">
+            <div class="name">SharePoint</div>
+            <div class="urls">sharepoint.com/Doc.aspx, sharepoint.com/:w:</div>
+          </div>
+          <div class="dot" style="background:#0078D4"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0078D4">O</div>
+          </div>
+          <div class="info">
+            <div class="name">OneDrive</div>
+            <div class="urls">onedrive.live.com, onedrive.com</div>
+          </div>
+          <div class="dot" style="background:#0078D4"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0061FF">D</div>
+          </div>
+          <div class="info">
+            <div class="name">Dropbox</div>
+            <div class="urls">dropbox.com</div>
+          </div>
+          <div class="dot" style="background:#0061FF"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#FF0000">P</div>
+          </div>
+          <div class="info">
+            <div class="name">PDF</div>
+            <div class="urls">.pdf</div>
+          </div>
+          <div class="dot" style="background:#FF0000"></div>
+        </div></div></div><div class="group"><h2>🎨 Design <span class="count">4</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#F24E1E">F</div>
+          </div>
+          <div class="info">
+            <div class="name">Figma</div>
+            <div class="urls">figma.com</div>
+          </div>
+          <div class="dot" style="background:#F24E1E"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#FFD02F">M</div>
+          </div>
+          <div class="info">
+            <div class="name">Miro</div>
+            <div class="urls">miro.com</div>
+          </div>
+          <div class="dot" style="background:#FFD02F"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#00C4CC">C</div>
+          </div>
+          <div class="info">
+            <div class="name">Canva</div>
+            <div class="urls">canva.com</div>
+          </div>
+          <div class="dot" style="background:#00C4CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#F7B500">S</div>
+          </div>
+          <div class="info">
+            <div class="name">Sketch</div>
+            <div class="urls">sketch.com</div>
+          </div>
+          <div class="dot" style="background:#F7B500"></div>
+        </div></div></div><div class="group"><h2>🤖 AI tools <span class="count">4</span></h2><div class="grid">
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#00A67E">C</div>
+          </div>
+          <div class="info">
+            <div class="name">ChatGPT</div>
+            <div class="urls">chatgpt.com, chat.openai.com</div>
+          </div>
+          <div class="dot" style="background:#00A67E"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#CC785C">C</div>
+          </div>
+          <div class="info">
+            <div class="name">Claude</div>
+            <div class="urls">claude.ai</div>
+          </div>
+          <div class="dot" style="background:#CC785C"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#4285F4">G</div>
+          </div>
+          <div class="info">
+            <div class="name">Gemini</div>
+            <div class="urls">gemini.google.com</div>
+          </div>
+          <div class="dot" style="background:#4285F4"></div>
+        </div>
+        <div class="card">
+          <div class="logo">
+            
+            <div class="swatch" style="display:flex" style="background:#0078D4">M</div>
+          </div>
+          <div class="info">
+            <div class="name">Microsoft Copilot</div>
+            <div class="urls">copilot.microsoft.com</div>
+          </div>
+          <div class="dot" style="background:#0078D4"></div>
+        </div></div></div>
+</body>
+</html>
