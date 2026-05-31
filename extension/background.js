@@ -4,10 +4,12 @@
 // MV3 service workers get killed after ~30s of inactivity.
 // We use chrome.alarms (not setInterval) to guarantee periodic wakeup.
 
-const HEARTBEAT_ALARM = 'timepulse-heartbeat';
-const HEARTBEAT_PERIOD_MINUTES = 0.5; // every 30 seconds
-const IDLE_THRESHOLD_SECONDS = 300;   // 5 minutes fallback (Chrome idle API)
-const BUFFER_MAX = 2880;              // ~24 hours of 30s heartbeats
+const HEARTBEAT_ALARM  = 'timepulse-heartbeat';
+const PLATFORMS_ALARM  = 'timepulse-platforms';
+const HEARTBEAT_PERIOD_MINUTES = 0.5;  // every 30 seconds
+const PLATFORMS_PERIOD_MINUTES = 1440; // refresh platforms once a day
+const IDLE_THRESHOLD_SECONDS   = 300;  // 5 minutes fallback (Chrome idle API)
+const BUFFER_MAX = 2880;               // ~24 hours of 30s heartbeats
 
 // Content script reports real user movement every 15s.
 // We track the last seen timestamp so the alarm knows if the user was
@@ -25,7 +27,14 @@ function setupAlarms() {
       chrome.alarms.create(HEARTBEAT_ALARM, { periodInMinutes: HEARTBEAT_PERIOD_MINUTES });
     }
   });
+  chrome.alarms.get(PLATFORMS_ALARM, (existing) => {
+    if (!existing) {
+      chrome.alarms.create(PLATFORMS_ALARM, { periodInMinutes: PLATFORMS_PERIOD_MINUTES });
+    }
+  });
   chrome.idle.setDetectionInterval(IDLE_THRESHOLD_SECONDS);
+  // Fetch platforms immediately on first run
+  refreshPlatforms();
 }
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -106,8 +115,8 @@ chrome.idle.onStateChanged.addListener(async (state) => {
 // ─── Heartbeat loop ───────────────────────────────────────────────────────────
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name !== HEARTBEAT_ALARM) return;
-  await tick();
+  if (alarm.name === HEARTBEAT_ALARM) await tick();
+  if (alarm.name === PLATFORMS_ALARM)  await refreshPlatforms();
 });
 
 async function tick() {
@@ -201,6 +210,26 @@ async function updateBadge(status) {
     chrome.action.setBadgeBackgroundColor({ color: '#f59e0b' });
   } else {
     chrome.action.setBadgeText({ text: '' });
+  }
+}
+
+// ─── Platform definitions ─────────────────────────────────────────────────────
+
+async function refreshPlatforms() {
+  const { serverUrl } = await getSettings();
+  if (!serverUrl) return;
+
+  try {
+    const resp = await fetch(`${serverUrl}/api/platforms`, {
+      signal: AbortSignal.timeout(10000)
+    });
+    if (!resp.ok) return;
+    const data = await resp.json();
+    if (data.platforms?.length) {
+      await chrome.storage.local.set({ tp_platforms: data.platforms });
+    }
+  } catch {
+    // Server unreachable — keep using cached platforms
   }
 }
 

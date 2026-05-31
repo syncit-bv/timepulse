@@ -14,6 +14,7 @@ from pydantic import BaseModel
 
 import db
 import harvest as hv
+import platforms as pf
 from gap_analysis import build_sessions, find_gaps
 
 load_dotenv()
@@ -71,6 +72,13 @@ class NewEntry(BaseModel):
     projectId:  int
     taskId:     int
     notes:      str = ""
+
+class CustomPlatform(BaseModel):
+    slug:     str
+    name:     str
+    urls:     list[str]
+    color:    str = "#6B7280"
+    category: str = "custom"
 
 # ── Health ────────────────────────────────────────────────────────────────────
 
@@ -135,6 +143,28 @@ async def projects():
 async def tasks(project_id: int):
     require_harvest()
     return {"tasks": await hv.get_task_assignments(project_id)}
+
+# ── Platforms ────────────────────────────────────────────────────────────────
+
+@app.get("/api/platforms")
+def get_platforms():
+    return {"platforms": pf.get_platforms()}
+
+@app.get("/api/platforms/custom")
+def get_custom_platforms():
+    return {"platforms": pf.get_custom_platforms()}
+
+@app.post("/api/platforms/custom", status_code=201)
+def save_custom_platform(body: CustomPlatform):
+    if not body.slug or not body.urls:
+        raise HTTPException(400, "slug en urls zijn verplicht")
+    pf.save_custom_platform(body.model_dump())
+    return {"ok": True}
+
+@app.delete("/api/platforms/custom/{slug}")
+def delete_custom_platform(slug: str):
+    pf.delete_custom_platform(slug)
+    return {"ok": True}
 
 # ── Gap analyse ───────────────────────────────────────────────────────────────
 

@@ -56,6 +56,23 @@
     .connection-dot.ok { background: #22c55e; }
     .connection-dot.error { background: #ef4444; }
     #connection-label { font-size: 13px; color: #64748b; }
+    .platform-list { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .platform-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; background: #f8fafc; border: 1px solid #e2e8f0;
+      border-radius: 8px; font-size: 13px;
+    }
+    .platform-item .swatch {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .platform-item .name { font-weight: 600; flex: 1; }
+    .platform-item .urls { color: #94a3b8; font-size: 12px; font-family: monospace; flex: 2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .platform-item .del { color: #ef4444; cursor: pointer; font-size: 16px; line-height: 1; padding: 2px 4px; }
+    .platform-item .del:hover { color: #b91c1c; }
+    .add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+    .add-form input { margin: 0; }
+    .add-form .full { grid-column: 1 / -1; }
+    .platforms-empty { font-size: 13px; color: #94a3b8; margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -88,6 +105,21 @@
       <textarea id="excludedDomains" rows="4" style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;resize:vertical;font-family:monospace"></textarea>
       <p class="hint">Bijv. mail.google.com, youtube.com — worden niet bijgehouden.</p>
     </div>
+  </div>
+
+  <div class="card">
+    <h2>Eigen platforms</h2>
+    <p class="hint" style="margin-bottom:12px">Voeg eigen URL-patronen toe die niet standaard herkend worden. De NAS-server bevat al 50+ ingebouwde platforms.</p>
+    <ul class="platform-list" id="customList">
+      <li class="platforms-empty" id="emptyMsg">Nog geen eigen platforms toegevoegd.</li>
+    </ul>
+    <div class="add-form">
+      <input type="text" id="newSlug"  placeholder="slug (bijv. teamleader)" />
+      <input type="text" id="newName"  placeholder="Naam (bijv. Teamleader)" />
+      <input type="text" id="newUrls"  placeholder="URL-patronen, kommagescheiden (bijv. teamleader.eu)" class="full" />
+      <button class="btn-secondary full" id="addPlatformBtn" style="margin:0">Platform toevoegen</button>
+    </div>
+    <p class="hint" style="margin-top:8px">Tip: de server beheert de volledige lijst via <code>/api/platforms/custom</code>. Eigen platforms hier worden lokaal opgeslagen en bij de volgende sync naar de NAS gestuurd.</p>
   </div>
 
   <div class="actions">

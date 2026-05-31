@@ -3,18 +3,18 @@
 // Responsibilities:
 // 1. Track real user movement (mousemove/keyboard/scroll) with a 10s timeout
 //    so we stop tracking much sooner than Chrome's idle API (5 min default).
-// 2. Detect the activity type (gmail, jira, googleDocs, etc.) for richer context.
+// 2. Detect the activity type using platform definitions fetched from the NAS
+//    and cached in chrome.storage.local. Falls back to a minimal hardcoded list.
 // 3. Capture favicon URL.
 // 4. Push enriched activity data to the background service worker.
 
 (function () {
   'use strict';
 
-  // Don't run in iframes or internal pages
   if (window.self !== window.top) return;
   if (!window.location.href.startsWith('http')) return;
 
-  const MOVEMENT_TIMEOUT_MS = 10_000; // 10 seconds without input = not active
+  const MOVEMENT_TIMEOUT_MS = 10_000;
 
   let movement = true;
   let movementTimer = null;
@@ -28,12 +28,11 @@
   }
 
   window.addEventListener('mousemove', resetMovementTimer, { passive: true });
-  window.addEventListener('keydown', resetMovementTimer, { passive: true });
-  window.addEventListener('scroll', resetMovementTimer, { passive: true });
-  window.addEventListener('click', resetMovementTimer, { passive: true });
+  window.addEventListener('keydown',   resetMovementTimer, { passive: true });
+  window.addEventListener('scroll',    resetMovementTimer, { passive: true });
+  window.addEventListener('click',     resetMovementTimer, { passive: true });
 
   window.addEventListener('blur', () => {
-    // If focus moved to an iframe, don't mark as inactive immediately
     if (document.activeElement?.tagName?.toLowerCase() === 'iframe') {
       resetMovementTimer();
     } else {
@@ -42,48 +41,64 @@
     }
   });
 
-  window.addEventListener('focus', () => {
-    resetMovementTimer();
-  });
-
-  // Start the first timer
+  window.addEventListener('focus', resetMovementTimer);
   resetMovementTimer();
 
-  // ─── Activity type detection ───────────────────────────────────────────────
+  // ─── Platform-based activity detection ────────────────────────────────────
 
-  function detectActivityType() {
-    const url = window.location.href;
-    const hostname = window.location.hostname;
+  // Minimal fallback used before NAS platforms are cached (first install).
+  const FALLBACK_PLATFORMS = [
+    { slug: 'gmail',        urls: ['mail.google.com'] },
+    { slug: 'outlook',      urls: ['outlook.live.com', 'outlook.office.com'] },
+    { slug: 'jira',         urls: ['atlassian.net', '/jira/'] },
+    { slug: 'github',       urls: ['github.com'] },
+    { slug: 'gitlab',       urls: ['gitlab.com'] },
+    { slug: 'googleDocs',   urls: ['docs.google.com/document'] },
+    { slug: 'googleSheets', urls: ['docs.google.com/spreadsheets'] },
+    { slug: 'googleSlides', urls: ['docs.google.com/presentation'] },
+    { slug: 'sharepointDoc',urls: ['sharepoint.com/Doc.aspx', 'sharepoint.com/:w:'] },
+    { slug: 'figma',        urls: ['figma.com'] },
+    { slug: 'notion',       urls: ['notion.so', 'notion.site'] },
+    { slug: 'slack',        urls: ['slack.com'] },
+    { slug: 'harvest',      urls: ['harvestapp.com', 'harvest.is'] },
+    { slug: 'pdf',          urls: ['.pdf'] },
+  ];
 
-    if (url.includes('mail.google.com')) return 'gmail';
-    if (url.includes('outlook.live.com') || url.includes('outlook.office') || hostname.includes('outlook')) return 'outlook';
-    if (url.includes('atlassian.net') || url.includes('/jira/')) return 'jira';
-    if (url.includes('linear.app')) return 'linear';
-    if (url.includes('github.com')) return 'github';
-    if (url.includes('gitlab.com')) return 'gitlab';
-    if (url.includes('docs.google.com/document')) return 'googleDocs';
-    if (url.includes('docs.google.com/spreadsheets')) return 'googleSheets';
-    if (url.includes('docs.google.com/presentation')) return 'googleSlides';
-    if (url.includes('sharepoint.com') && url.includes('Doc.aspx')) return 'sharepointDoc';
-    if (url.includes('figma.com')) return 'figma';
-    if (url.includes('notion.so') || url.includes('notion.site')) return 'notion';
-    if (url.includes('slack.com')) return 'slack';
-    if (url.includes('trello.com')) return 'trello';
-    if (url.includes('asana.com')) return 'asana';
-    if (url.includes('monday.com')) return 'monday';
-    if (url.includes('clickup.com')) return 'clickup';
-    if (url.includes('harvest.is') || url.includes('harvestapp.com')) return 'harvest';
-    if (url.endsWith('.pdf') || document.contentType === 'application/pdf') return 'pdf';
+  let cachedPlatforms = null;
 
+  function getPlatforms() {
+    return cachedPlatforms || FALLBACK_PLATFORMS;
+  }
+
+  // Load platforms cached by background.js on startup
+  chrome.storage.local.get('tp_platforms', (result) => {
+    if (result.tp_platforms?.length) {
+      cachedPlatforms = result.tp_platforms;
+    }
+  });
+
+  // React to platform refreshes without needing a page reload
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.tp_platforms?.newValue?.length) {
+      cachedPlatforms = changes.tp_platforms.newValue;
+    }
+  });
+
+  function detectActivityType(url) {
+    for (const p of getPlatforms()) {
+      if (p.urls.some(pattern => url.includes(pattern))) {
+        return p.slug;
+      }
+    }
     return 'website';
   }
 
   function getDocumentContext() {
-    const type = detectActivityType();
-    const url = window.location.href;
+    const url  = window.location.href;
+    const type = detectActivityType(url);
     let docName = null;
 
-    if (type === 'googleDocs' || type === 'googleSheets' || type === 'googleSlides') {
+    if (['googleDocs', 'googleSheets', 'googleSlides'].includes(type)) {
       docName = document.querySelector('meta[property="og:title"]')?.getAttribute('content')
         || document.title;
     }
@@ -94,7 +109,6 @@
     }
 
     if (type === 'jira') {
-      // Extract ticket ID from URL
       const match = url.match(/\/browse\/([A-Z]+-\d+)|\/issues\/([A-Z]+-\d+)/);
       if (match) docName = match[1] || match[2];
     }
@@ -118,23 +132,19 @@
     chrome.runtime.sendMessage({
       action: 'contentActivity',
       data: {
-        url: window.location.href,
-        domain: window.location.hostname,
-        title: document.title || '',
-        favicon: getFavicon(),
+        url:          window.location.href,
+        domain:       window.location.hostname,
+        title:        document.title || '',
+        favicon:      getFavicon(),
         activityType: type,
-        docName: docName || null,
-        timestamp: Date.now()
+        docName:      docName || null,
+        timestamp:    Date.now()
       }
-    }).catch(() => {
-      // Extension may be reloading — silently ignore
-    });
+    }).catch(() => {});
   }
 
-  // Report every 15 seconds (background will deduplicate/throttle further)
   setInterval(report, 15_000);
 
-  // Also report immediately on page load
   if (document.readyState === 'complete') {
     report();
   } else {
