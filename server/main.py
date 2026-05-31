@@ -1,7 +1,7 @@
 import os
 import warnings
 from contextlib import asynccontextmanager
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -224,6 +224,62 @@ async def _analyze_gaps(date_str: str):
     gaps     = find_gaps(heartbeats, harvest_entries)
     sessions = build_sessions(heartbeats)
     return {"date": date_str, "gaps": gaps, "sessions": sessions, "harvestEntries": harvest_entries}
+
+# ── Demo seed ────────────────────────────────────────────────────────────────
+
+DEMO_ENTRIES = [
+    # (dag_offset, uren, notities)
+    (0, 2.0,  "Ontwikkeling — TimePulse backend"),
+    (0, 1.5,  "Klantoverleg Octagon Finance"),
+    (0, 1.0,  "Code review & testing"),
+    (1, 3.0,  "Ontwikkeling — Chrome extensie"),
+    (1, 1.5,  "Documentatie bijwerken"),
+    (2, 2.5,  "Ontwikkeling — dashboard UI"),
+    (2, 1.0,  "Klantoverleg — voortgangsbespreking"),
+    (2, 0.5,  "Facturatie & administratie"),
+]
+
+@app.post("/api/demo/seed", status_code=201)
+async def seed_demo_entries(project_id: Optional[int] = None, task_id: Optional[int] = None):
+    require_harvest()
+
+    # Auto-detect eerste beschikbare project + taak als niet opgegeven
+    if not project_id or not task_id:
+        projects = await hv.get_projects()
+        if not projects:
+            raise HTTPException(404, "Geen actieve projecten gevonden in Harvest")
+        project_id = project_id or projects[0]["id"]
+        tasks = await hv.get_task_assignments(project_id)
+        if not tasks:
+            raise HTTPException(404, f"Geen taken gevonden voor project {project_id}")
+        task_id = task_id or tasks[0]["id"]
+
+    created = []
+    errors  = []
+    today   = date.today()
+
+    for day_offset, hours, notes in DEMO_ENTRIES:
+        spent_date = (today - timedelta(days=day_offset)).isoformat()
+        try:
+            entry = await hv.create_time_entry(spent_date, hours, project_id, task_id, notes)
+            created.append({
+                "id":        entry.get("id"),
+                "spentDate": spent_date,
+                "hours":     hours,
+                "notes":     notes,
+            })
+        except Exception as e:
+            errors.append({"spentDate": spent_date, "notes": notes, "error": str(e)})
+
+    return {
+        "ok":        True,
+        "created":   len(created),
+        "errors":    len(errors),
+        "projectId": project_id,
+        "taskId":    task_id,
+        "entries":   created,
+        "failed":    errors,
+    }
 
 # ── Statische bestanden (dashboard) ──────────────────────────────────────────
 
