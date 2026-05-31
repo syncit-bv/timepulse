@@ -20,22 +20,28 @@
 
     <!-- Pomodoro timer -->
     <section class="card pomo-card">
-      <div class="pomo-ring-wrap">
-        <svg class="pomo-svg" viewBox="0 0 120 120">
-          <circle class="ring-bg" cx="60" cy="60" r="54"/>
-          <circle id="pomoRing" class="ring-fg" cx="60" cy="60" r="54"
-                  stroke-dasharray="339.3" stroke-dashoffset="0"/>
-        </svg>
-        <div class="pomo-center">
-          <div class="pomo-time" id="pomoTime">25:00</div>
-          <div class="pomo-phase" id="pomoPhase">Focus</div>
+      <div class="pomo-main">
+        <div class="pomo-ring-wrap">
+          <svg class="pomo-svg" viewBox="0 0 80 80">
+            <circle class="ring-bg" cx="40" cy="40" r="34"/>
+            <circle id="pomoRing" class="ring-fg" cx="40" cy="40" r="34"
+                    stroke-dasharray="213.6" stroke-dashoffset="0"/>
+          </svg>
+          <div class="pomo-center">
+            <div class="pomo-time" id="pomoTime">25:00</div>
+          </div>
         </div>
-      </div>
-      <div class="pomo-cycles" id="pomoCycles"></div>
-      <div class="pomo-controls">
-        <button class="pomo-btn secondary" id="pomoBtnReset" title="Reset">↺</button>
-        <button class="pomo-btn primary" id="pomoBtnStart">Starten</button>
-        <button class="pomo-btn secondary" id="pomoBtnSkip" title="Volgende fase">⏭</button>
+        <div class="pomo-info">
+          <div class="pomo-phase-row">
+            <span class="pomo-phase" id="pomoPhase">Focus</span>
+            <div class="pomo-cycles" id="pomoCycles"></div>
+          </div>
+          <div class="pomo-controls">
+            <button class="pomo-btn secondary" id="pomoBtnReset" title="Reset">↺</button>
+            <button class="pomo-btn primary" id="pomoBtnStart">Starten</button>
+            <button class="pomo-btn secondary" id="pomoBtnSkip" title="Volgende fase">⏭</button>
+          </div>
+        </div>
       </div>
     </section>
 

@@ -124,26 +124,33 @@
 
   // ─── Report to background worker ──────────────────────────────────────────
 
+  let reportInterval;
+
   function report() {
     if (!movement) return;
 
     const { type, docName } = getDocumentContext();
 
-    chrome.runtime.sendMessage({
-      action: 'contentActivity',
-      data: {
-        url:          window.location.href,
-        domain:       window.location.hostname,
-        title:        document.title || '',
-        favicon:      getFavicon(),
-        activityType: type,
-        docName:      docName || null,
-        timestamp:    Date.now()
-      }
-    }).catch(() => {});
+    try {
+      chrome.runtime.sendMessage({
+        action: 'contentActivity',
+        data: {
+          url:          window.location.href,
+          domain:       window.location.hostname,
+          title:        document.title || '',
+          favicon:      getFavicon(),
+          activityType: type,
+          docName:      docName || null,
+          timestamp:    Date.now()
+        }
+      }).catch(() => {});
+    } catch {
+      // Extension was reloaded while this page was open — stop trying
+      clearInterval(reportInterval);
+    }
   }
 
-  setInterval(report, 15_000);
+  reportInterval = setInterval(report, 15_000);
 
   if (document.readyState === 'complete') {
     report();

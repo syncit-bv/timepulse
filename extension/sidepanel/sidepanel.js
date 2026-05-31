@@ -6,7 +6,7 @@ const POMO_WORK_SECS    = 25 * 60;
 const POMO_SHORT_BREAK  =  5 * 60;
 const POMO_LONG_BREAK   = 15 * 60;
 const POMO_CYCLE_LONG   = 4;
-const POMO_CIRCUMFERENCE = 2 * Math.PI * 54; // r=54
+const POMO_CIRCUMFERENCE = 2 * Math.PI * 34; // r=34
 
 let pomoInterval = null;
 
