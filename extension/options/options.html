@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimePulse — Instellingen</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      padding: 40px;
+      max-width: 560px;
+    }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    p.subtitle { color: #64748b; font-size: 14px; margin-bottom: 32px; }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card h2 { font-size: 14px; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 16px; }
+    label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 14px; outline: none;
+      transition: border-color .15s;
+    }
+    input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+    .hint { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+    .row { margin-bottom: 16px; }
+    .actions { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+    button {
+      padding: 10px 20px; border-radius: 8px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-primary { background: #6366f1; color: white; }
+    .btn-primary:hover { background: #4f46e5; }
+    .btn-secondary { background: #f1f5f9; color: #475569; }
+    .btn-secondary:hover { background: #e2e8f0; }
+    #status {
+      font-size: 13px; padding: 4px 10px; border-radius: 6px;
+      display: none;
+    }
+    #status.success { background: #dcfce7; color: #166534; display: inline-block; }
+    #status.error { background: #fee2e2; color: #991b1b; display: inline-block; }
+    .connection-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #d1d5db; display: inline-block; margin-right: 6px;
+    }
+    .connection-dot.ok { background: #22c55e; }
+    .connection-dot.error { background: #ef4444; }
+    #connection-label { font-size: 13px; color: #64748b; }
+    .platform-list { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .platform-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; background: #f8fafc; border: 1px solid #e2e8f0;
+      border-radius: 8px; font-size: 13px;
+    }
+    .platform-item .swatch {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .platform-item .name { font-weight: 600; flex: 1; }
+    .platform-item .urls { color: #94a3b8; font-size: 12px; font-family: monospace; flex: 2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .platform-item .del { color: #ef4444; cursor: pointer; font-size: 16px; line-height: 1; padding: 2px 4px; }
+    .platform-item .del:hover { color: #b91c1c; }
+    .add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+    .add-form input { margin: 0; }
+    .add-form .full { grid-column: 1 / -1; }
+    .cat-check { font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
+    .cat-check input { accent-color: #6366f1; }
+    .platforms-empty { font-size: 13px; color: #94a3b8; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>TimePulse</h1>
+  <p class="subtitle">Verbind met jouw NAS-server en stel tijdsregistratie in.</p>
+
+  <div class="card">
+    <h2>Server verbinding</h2>
+    <div class="row">
+      <label for="serverUrl">NAS server URL</label>
+      <input type="url" id="serverUrl" placeholder="http://192.168.1.100:3456" />
+      <p class="hint">Het adres van jouw Synology NAS op het lokale netwerk (of extern via DDNS).</p>
+    </div>
+    <div class="actions">
+      <button class="btn-secondary" id="testBtn">Verbinding testen</button>
+      <span class="connection-dot" id="connDot"></span>
+      <span id="connection-label">Niet getest</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Tracking instellingen</h2>
+    <div class="row">
+      <label for="idleMinutes">Inactief na (minuten)</label>
+      <input type="number" id="idleMinutes" min="1" max="60" value="5" />
+      <p class="hint">Na hoeveel minuten zonder invoer wordt tracking gepauzeerd.</p>
+    </div>
+    <div class="row">
+      <label for="excludedDomains">Uitgesloten domeinen (één per regel)</label>
+      <textarea id="excludedDomains" rows="4" style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;resize:vertical;font-family:monospace"></textarea>
+      <p class="hint">Bijv. mail.google.com, youtube.com — worden niet bijgehouden.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Eigen platforms</h2>
+    <p class="hint" style="margin-bottom:12px">Voeg eigen URL-patronen toe die niet standaard herkend worden. De NAS-server bevat al 50+ ingebouwde platforms.</p>
+    <ul class="platform-list" id="customList">
+      <li class="platforms-empty" id="emptyMsg">Nog geen eigen platforms toegevoegd.</li>
+    </ul>
+    <div class="add-form">
+      <input type="text" id="newSlug"  placeholder="slug (bijv. teamleader)" />
+      <input type="text" id="newName"  placeholder="Naam (bijv. Teamleader)" />
+      <input type="text" id="newUrls"  placeholder="URL-patronen, kommagescheiden (bijv. teamleader.eu)" class="full" />
+      <div class="full" style="display:flex;flex-direction:column;gap:4px">
+        <label style="font-size:12px;color:#64748b;margin:0">Categorieën (meerdere mogelijk)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="catCheckboxes">
+          <label class="cat-check"><input type="checkbox" value="timetracking"> Tijdregistratie</label>
+          <label class="cat-check"><input type="checkbox" value="crm"> CRM</label>
+          <label class="cat-check"><input type="checkbox" value="project"> Project</label>
+          <label class="cat-check"><input type="checkbox" value="accounting"> Boekhouding</label>
+          <label class="cat-check"><input type="checkbox" value="communication"> Communicatie</label>
+          <label class="cat-check"><input type="checkbox" value="document"> Documenten</label>
+          <label class="cat-check"><input type="checkbox" value="design"> Design</label>
+          <label class="cat-check"><input type="checkbox" value="development"> Development</label>
+          <label class="cat-check"><input type="checkbox" value="ai"> AI</label>
+        </div>
+      </div>
+      <button class="btn-secondary full" id="addPlatformBtn" style="margin:0">Platform toevoegen</button>
+    </div>
+    <p class="hint" style="margin-top:8px">Tip: de server beheert de volledige lijst via <code>/api/platforms/custom</code>. Eigen platforms hier worden lokaal opgeslagen en bij de volgende sync naar de NAS gestuurd.</p>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" id="saveBtn">Opslaan</button>
+    <span id="status"></span>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

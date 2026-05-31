@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TimePulse — Platform Overzicht</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f1f5f9; color: #1e293b;
+    padding: 48px 32px; line-height: 1.5;
+  }
+  header { margin-bottom: 48px; }
+  header h1 {
+    font-size: 28px; font-weight: 800; letter-spacing: -.5px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .pill {
+    background: #6366f1; color: #fff;
+    font-size: 12px; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px;
+  }
+  header p { color: #64748b; margin-top: 8px; font-size: 14px; max-width: 560px; }
+  .meta { display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap; }
+  .meta span { font-size: 13px; color: #475569; }
+  .meta strong { color: #1e293b; }
+
+  section { margin-bottom: 40px; }
+  section h2 {
+    font-size: 12px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .badge {
+    background: #e2e8f0; color: #475569;
+    font-size: 11px; padding: 1px 7px; border-radius: 999px;
+    font-weight: 600; letter-spacing: 0; text-transform: none;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+    gap: 8px;
+  }
+  .card {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+    padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    transition: box-shadow .15s, border-color .15s;
+  }
+  .card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    border-color: #c7d2fe;
+  }
+  .logo { flex-shrink: 0; display: flex; align-items: center; }
+  .logo-img { object-fit: contain; border-radius: 6px; display: block; }
+  .swatch {
+    border-radius: 6px;
+    align-items: center; justify-content: center;
+    color: white; font-weight: 700;
+  }
+  .name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  footer {
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 12px; color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TimePulse Platforms <span class="pill">67 platforms</span></h1>
+  <p>Automatische platform-herkenning op basis van URL. Iconen worden bij runtime vervangen door lokaal gecachte versies van jouw NAS (via logo.dev).</p>
+  <div class="meta">
+    <span><strong>97</strong> vermeldingen in 10 categorieën</span>
+    <span><strong>67</strong> unieke platforms</span>
+    <span>Icoon-prioriteit: <strong>NAS cache → CDN → logo.dev → letter</strong></span>
+  </div>
+</header>
+
+
+    <section>
+      <h2>⏱ Tijdregistratie<span class="badge">23</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/simplicate.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/simplicate.app?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF6B35">S</div></div>
+          <div class="name">Simplicate</div>
+          <div class="dot" style="background:#FF6B35"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/teamleader.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/focus.teamleader.eu?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00B0CA">T</div></div>
+          <div class="name">Teamleader</div>
+          <div class="dot" style="background:#00B0CA"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/gripp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gripp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF6600">G</div></div>
+          <div class="name">Gripp</div>
+          <div class="dot" style="background:#FF6600"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/admin_pulse.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.adminpulse.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#005B96">A</div></div>
+          <div class="name">AdminPulse</div>
+          <div class="dot" style="background:#005B96"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/yoobi.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/yoobi.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF4F00">Y</div></div>
+          <div class="name">Yoobi</div>
+          <div class="dot" style="background:#FF4F00"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/tribe.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.tribecrm.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#E8344A">T</div></div>
+          <div class="name">TribeCRM</div>
+          <div class="dot" style="background:#E8344A"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/fid_manager.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/fid-manager.be?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#1A3A6B">F</div></div>
+          <div class="name">FID-manager</div>
+          <div class="dot" style="background:#1A3A6B"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/harvest.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/harvestapp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F04B23">H</div></div>
+          <div class="name">Harvest</div>
+          <div class="dot" style="background:#F04B23"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/productive.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.productive.io?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#7B4FBF">P</div></div>
+          <div class="name">Productive</div>
+          <div class="dot" style="background:#7B4FBF"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/teamwork.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/teamwork.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F06A35">T</div></div>
+          <div class="name">Teamwork</div>
+          <div class="dot" style="background:#F06A35"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/click_up.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.clickup.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#7B68EE">C</div></div>
+          <div class="name">ClickUp</div>
+          <div class="dot" style="background:#7B68EE"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/radar360.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/web.radarcloud.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#004B87">R</div></div>
+          <div class="name">Radar</div>
+          <div class="dot" style="background:#004B87"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/fortes.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/fortesmilestones.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#003865">F</div></div>
+          <div class="name">FortesMilestones</div>
+          <div class="dot" style="background:#003865"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/timechimp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.timechimp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00C4A7">T</div></div>
+          <div class="name">TimeChimp</div>
+          <div class="dot" style="background:#00C4A7"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/zoho.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/projects.zoho.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#E42527">Z</div></div>
+          <div class="name">Zoho Projects</div>
+          <div class="dot" style="background:#E42527"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/clio.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.clio.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00B388">C</div></div>
+          <div class="name">Clio</div>
+          <div class="dot" style="background:#00B388"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/wrike.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.wrike.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00C875">W</div></div>
+          <div class="name">Wrike</div>
+          <div class="dot" style="background:#00C875"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/exact.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/start.exactonline.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#E31837">E</div></div>
+          <div class="name">Exact Online</div>
+          <div class="dot" style="background:#E31837"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/afas.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/afasinsite.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#EE3124">A</div></div>
+          <div class="name">AFAS</div>
+          <div class="dot" style="background:#EE3124"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/xero.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/go.xero.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#13B5EA">X</div></div>
+          <div class="name">Xero</div>
+          <div class="dot" style="background:#13B5EA"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/visma_advisor.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/advisor.vismaonline.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#004C97">V</div></div>
+          <div class="name">Visma Advisor</div>
+          <div class="dot" style="background:#004C97"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://toggl.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/toggl.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#E57CD8">T</div></div>
+          <div class="name">Toggl</div>
+          <div class="dot" style="background:#E57CD8"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://clockify.me/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/clockify.me?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#03A9F4">C</div></div>
+          <div class="name">Clockify</div>
+          <div class="dot" style="background:#03A9F4"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>👥 CRM<span class="badge">12</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/simplicate.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/simplicate.app?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF6B35">S</div></div>
+          <div class="name">Simplicate</div>
+          <div class="dot" style="background:#FF6B35"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/teamleader.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/focus.teamleader.eu?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00B0CA">T</div></div>
+          <div class="name">Teamleader</div>
+          <div class="dot" style="background:#00B0CA"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/gripp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gripp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF6600">G</div></div>
+          <div class="name">Gripp</div>
+          <div class="dot" style="background:#FF6600"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/admin_pulse.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.adminpulse.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#005B96">A</div></div>
+          <div class="name">AdminPulse</div>
+          <div class="dot" style="background:#005B96"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/yoobi.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/yoobi.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF4F00">Y</div></div>
+          <div class="name">Yoobi</div>
+          <div class="dot" style="background:#FF4F00"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/tribe.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.tribecrm.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#E8344A">T</div></div>
+          <div class="name">TribeCRM</div>
+          <div class="dot" style="background:#E8344A"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/fid_manager.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/fid-manager.be?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#1A3A6B">F</div></div>
+          <div class="name">FID-manager</div>
+          <div class="dot" style="background:#1A3A6B"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/clio.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.clio.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00B388">C</div></div>
+          <div class="name">Clio</div>
+          <div class="dot" style="background:#00B388"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://monday.com/static/img/favicons/favicon-32x32.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/monday.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF3D57">M</div></div>
+          <div class="name">Monday.com</div>
+          <div class="dot" style="background:#FF3D57"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.salesforce.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/salesforce.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00A1E0">S</div></div>
+          <div class="name">Salesforce</div>
+          <div class="dot" style="background:#00A1E0"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.hubspot.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/hubspot.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF7A59">H</div></div>
+          <div class="name">HubSpot</div>
+          <div class="dot" style="background:#FF7A59"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.pipedrive.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/pipedrive.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#1A1F36">P</div></div>
+          <div class="name">Pipedrive</div>
+          <div class="dot" style="background:#1A1F36"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>📊 Boekhouding<span class="badge">7</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/exact.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/start.exactonline.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#E31837">E</div></div>
+          <div class="name">Exact Online</div>
+          <div class="dot" style="background:#E31837"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/afas.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/afasinsite.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#EE3124">A</div></div>
+          <div class="name">AFAS</div>
+          <div class="dot" style="background:#EE3124"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/xero.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/go.xero.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#13B5EA">X</div></div>
+          <div class="name">Xero</div>
+          <div class="dot" style="background:#13B5EA"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/visma_advisor.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/advisor.vismaonline.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#004C97">V</div></div>
+          <div class="name">Visma Advisor</div>
+          <div class="dot" style="background:#004C97"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.billtobox.be/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/billtobox.be?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0D6EFD">B</div></div>
+          <div class="name">BillToBox</div>
+          <div class="dot" style="background:#0D6EFD"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://app.yuki.nl/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/yuki.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#E8650A">Y</div></div>
+          <div class="name">Yuki</div>
+          <div class="dot" style="background:#E8650A"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.winbooks.be/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/winbooks.be?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#004B8D">W</div></div>
+          <div class="name">Winbooks</div>
+          <div class="dot" style="background:#004B8D"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>📋 Project management<span class="badge">23</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/simplicate.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/simplicate.app?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF6B35">S</div></div>
+          <div class="name">Simplicate</div>
+          <div class="dot" style="background:#FF6B35"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/teamleader.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/focus.teamleader.eu?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00B0CA">T</div></div>
+          <div class="name">Teamleader</div>
+          <div class="dot" style="background:#00B0CA"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/gripp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gripp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF6600">G</div></div>
+          <div class="name">Gripp</div>
+          <div class="dot" style="background:#FF6600"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/admin_pulse.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.adminpulse.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#005B96">A</div></div>
+          <div class="name">AdminPulse</div>
+          <div class="dot" style="background:#005B96"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/yoobi.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/yoobi.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF4F00">Y</div></div>
+          <div class="name">Yoobi</div>
+          <div class="dot" style="background:#FF4F00"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/harvest.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/harvestapp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F04B23">H</div></div>
+          <div class="name">Harvest</div>
+          <div class="dot" style="background:#F04B23"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/productive.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.productive.io?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#7B4FBF">P</div></div>
+          <div class="name">Productive</div>
+          <div class="dot" style="background:#7B4FBF"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/teamwork.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/teamwork.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F06A35">T</div></div>
+          <div class="name">Teamwork</div>
+          <div class="dot" style="background:#F06A35"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/click_up.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.clickup.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#7B68EE">C</div></div>
+          <div class="name">ClickUp</div>
+          <div class="dot" style="background:#7B68EE"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/radar360.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/web.radarcloud.nl?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#004B87">R</div></div>
+          <div class="name">Radar</div>
+          <div class="dot" style="background:#004B87"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/fortes.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/fortesmilestones.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#003865">F</div></div>
+          <div class="name">FortesMilestones</div>
+          <div class="dot" style="background:#003865"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/timechimp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.timechimp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00C4A7">T</div></div>
+          <div class="name">TimeChimp</div>
+          <div class="dot" style="background:#00C4A7"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/zoho.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/projects.zoho.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#E42527">Z</div></div>
+          <div class="name">Zoho Projects</div>
+          <div class="dot" style="background:#E42527"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.clockassist.com/icons/wrike.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.wrike.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00C875">W</div></div>
+          <div class="name">Wrike</div>
+          <div class="dot" style="background:#00C875"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/atlassian.net?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0052CC">J</div></div>
+          <div class="name">Jira</div>
+          <div class="dot" style="background:#0052CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://linear.app/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/linear.app?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#5E6AD2">L</div></div>
+          <div class="name">Linear</div>
+          <div class="dot" style="background:#5E6AD2"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://app.asana.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/asana.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F06A6A">A</div></div>
+          <div class="name">Asana</div>
+          <div class="dot" style="background:#F06A6A"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://monday.com/static/img/favicons/favicon-32x32.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/monday.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF3D57">M</div></div>
+          <div class="name">Monday.com</div>
+          <div class="dot" style="background:#FF3D57"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://trello.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/trello.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0079BF">T</div></div>
+          <div class="name">Trello</div>
+          <div class="dot" style="background:#0079BF"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://basecamp.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/basecamp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#1D2D35">B</div></div>
+          <div class="name">Basecamp</div>
+          <div class="dot" style="background:#1D2D35"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.notion.so/images/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/notion.so?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#000000">N</div></div>
+          <div class="name">Notion</div>
+          <div class="dot" style="background:#000000"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/confluence.atlassian.net?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0052CC">C</div></div>
+          <div class="name">Confluence</div>
+          <div class="dot" style="background:#0052CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://miro.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/miro.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FFD02F">M</div></div>
+          <div class="name">Miro</div>
+          <div class="dot" style="background:#FFD02F"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>✉️ E-mail<span class="badge">2</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/mail.google.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#EA4335">G</div></div>
+          <div class="name">Gmail</div>
+          <div class="dot" style="background:#EA4335"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://res-1.cdn.office.net/elf/prod/shared/resources/prod/favicons/outlook/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/outlook.live.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0078D4">O</div></div>
+          <div class="name">Outlook</div>
+          <div class="dot" style="background:#0078D4"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>💬 Communicatie<span class="badge">6</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/slack.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#4A154B">S</div></div>
+          <div class="name">Slack</div>
+          <div class="dot" style="background:#4A154B"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/teams/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/teams.microsoft.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#6264A7">M</div></div>
+          <div class="name">Microsoft Teams</div>
+          <div class="dot" style="background:#6264A7"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://zoom.us/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/zoom.us?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#2D8CFF">Z</div></div>
+          <div class="name">Zoom</div>
+          <div class="dot" style="background:#2D8CFF"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://ssl.gstatic.com/meet/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/meet.google.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00BCD4">G</div></div>
+          <div class="name">Google Meet</div>
+          <div class="dot" style="background:#00BCD4"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://discord.com/assets/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/discord.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#5865F2">D</div></div>
+          <div class="name">Discord</div>
+          <div class="dot" style="background:#5865F2"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://static.whatsapp.net/rsrc.php/v3/yP/r/rYZqPCBaG70.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/web.whatsapp.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#25D366">W</div></div>
+          <div class="name">WhatsApp Web</div>
+          <div class="dot" style="background:#25D366"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>💻 Development<span class="badge">6</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://github.githubassets.com/favicons/favicon.svg" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/github.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#24292F">G</div></div>
+          <div class="name">GitHub</div>
+          <div class="dot" style="background:#24292F"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://gitlab.com/assets/favicon-72a2cad5025aa931d6ea56c3201d1f18e68a8cd39788c7c80d5b2b82aa5143ef.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gitlab.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FC6D26">G</div></div>
+          <div class="name">GitLab</div>
+          <div class="dot" style="background:#FC6D26"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://bitbucket.org/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/bitbucket.org?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0052CC">B</div></div>
+          <div class="name">Bitbucket</div>
+          <div class="dot" style="background:#0052CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://assets.vercel.com/image/upload/front/favicon/vercel/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/vercel.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#000000">V</div></div>
+          <div class="name">Vercel</div>
+          <div class="dot" style="background:#000000"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.netlify.com/favicon/icon.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/netlify.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00C7B7">N</div></div>
+          <div class="name">Netlify</div>
+          <div class="dot" style="background:#00C7B7"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/stackoverflow.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F48024">S</div></div>
+          <div class="name">Stack Overflow</div>
+          <div class="dot" style="background:#F48024"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>📄 Documenten<span class="badge">10</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.notion.so/images/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/notion.so?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#000000">N</div></div>
+          <div class="name">Notion</div>
+          <div class="dot" style="background:#000000"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/confluence.atlassian.net?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0052CC">C</div></div>
+          <div class="name">Confluence</div>
+          <div class="dot" style="background:#0052CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/docs.google.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#4285F4">G</div></div>
+          <div class="name">Google Docs</div>
+          <div class="dot" style="background:#4285F4"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/docs.google.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0F9D58">G</div></div>
+          <div class="name">Google Sheets</div>
+          <div class="dot" style="background:#0F9D58"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://ssl.gstatic.com/docs/presentations/images/favicon5.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/docs.google.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F4B400">G</div></div>
+          <div class="name">Google Slides</div>
+          <div class="dot" style="background:#F4B400"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/drive.google.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#4285F4">G</div></div>
+          <div class="name">Google Drive</div>
+          <div class="dot" style="background:#4285F4"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/sharepoint/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/sharepoint.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0078D4">S</div></div>
+          <div class="name">SharePoint</div>
+          <div class="dot" style="background:#0078D4"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/onedrive/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/onedrive.live.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0078D4">O</div></div>
+          <div class="name">OneDrive</div>
+          <div class="dot" style="background:#0078D4"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://cfl.dropboxstatic.com/static/images/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/dropbox.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0061FF">D</div></div>
+          <div class="name">Dropbox</div>
+          <div class="dot" style="background:#0061FF"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://img.logo.dev/.pdf?token=pk_HE8oYc_WTXy2Ofc2WghmUw" onerror="this.style.display='none';this.nextSibling.style.display='flex'" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FF0000">P</div></div>
+          <div class="name">PDF</div>
+          <div class="dot" style="background:#FF0000"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>🎨 Design<span class="badge">4</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://static.figma.com/app/icon/1/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/figma.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F24E1E">F</div></div>
+          <div class="name">Figma</div>
+          <div class="dot" style="background:#F24E1E"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://miro.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/miro.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#FFD02F">M</div></div>
+          <div class="name">Miro</div>
+          <div class="dot" style="background:#FFD02F"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://static.canva.com/web/images/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/canva.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00C4CC">C</div></div>
+          <div class="name">Canva</div>
+          <div class="dot" style="background:#00C4CC"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.sketch.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/sketch.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#F7B500">S</div></div>
+          <div class="name">Sketch</div>
+          <div class="dot" style="background:#F7B500"></div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>🤖 AI tools<span class="badge">4</span></h2>
+      <div class="grid">
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://chatgpt.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/chatgpt.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#00A67E">C</div></div>
+          <div class="name">ChatGPT</div>
+          <div class="dot" style="background:#00A67E"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://claude.ai/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/claude.ai?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#CC785C">C</div></div>
+          <div class="name">Claude</div>
+          <div class="dot" style="background:#CC785C"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06.svg" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gemini.google.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#4285F4">G</div></div>
+          <div class="name">Gemini</div>
+          <div class="dot" style="background:#4285F4"></div>
+        </div>
+        <div class="card">
+          <div class="logo"><img class="logo-img" src="https://copilot.microsoft.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/copilot.microsoft.com?token=pk_HE8oYc_WTXy2Ofc2WghmUw';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:32px;height:32px"><div class="swatch" style="display:none;width:32px;height:32px;font-size:16px;background:#0078D4">M</div></div>
+          <div class="name">Microsoft Copilot</div>
+          <div class="dot" style="background:#0078D4"></div>
+        </div>
+      </div>
+    </section>
+
+<footer>
+  Platforms bijhouden via <code>server/platforms.py</code> · Logo's dagelijks automatisch bijgewerkt via logo.dev API ·
+  Handmatige refresh: <code>POST /api/logos/refresh</code>
+</footer>
+
+</body>
+</html>

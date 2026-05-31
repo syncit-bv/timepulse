@@ -1,0 +1,150 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --indigo:    #6366f1;
+  --indigo-dk: #4f46e5;
+  --indigo-lt: #eef2ff;
+  --green:     #22c55e;
+  --amber:     #f59e0b;
+  --red:       #ef4444;
+  --text:      #1e293b;
+  --muted:     #64748b;
+  --subtle:    #94a3b8;
+  --border:    #e2e8f0;
+  --bg:        #f8fafc;
+  --surface:   #ffffff;
+}
+
+body {
+  width: 300px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 10px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.wordmark { font-size: 14px; font-weight: 800; letter-spacing: -.01em; }
+.header-right { display: flex; align-items: center; gap: 5px; }
+.conn-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--subtle); flex-shrink: 0;
+  transition: background .3s;
+}
+.conn-dot.ok     { background: var(--green); }
+.conn-dot.error  { background: var(--red); }
+.conn-dot.pulse  { background: var(--amber); animation: blink 1s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.conn-label { font-size: 11px; color: var(--muted); }
+
+/* ── Now bar ─────────────────────────────────────────────────────── */
+.now-bar {
+  padding: 9px 14px;
+  background: var(--indigo-lt);
+  border-bottom: 1px solid #c7d2fe;
+}
+.now-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--indigo); margin-bottom: 2px; }
+.now-domain { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.now-title { font-size: 11px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hero {
+  background: var(--surface);
+  padding: 16px 14px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-number {
+  font-size: 32px; font-weight: 800;
+  color: var(--indigo);
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+.hero-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+.hero-bar-wrap { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.hero-bar-track {
+  flex: 1; height: 5px; background: var(--border);
+  border-radius: 10px; overflow: hidden;
+}
+.hero-bar-fill {
+  height: 100%; background: var(--indigo);
+  border-radius: 10px; transition: width .6s ease;
+}
+.hero-bar-goal { font-size: 11px; color: var(--subtle); white-space: nowrap; }
+
+.entry-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.pill {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 20px; padding: 3px 9px;
+  font-size: 11px; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 180px;
+}
+.pill-hours { font-weight: 700; color: var(--text); }
+
+/* ── Gaps ────────────────────────────────────────────────────────── */
+.gaps-header {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 14px 6px;
+}
+.gaps-title { font-size: 12px; font-weight: 700; color: var(--text); }
+.gaps-badge {
+  background: #fef3c7; color: #92400e;
+  font-size: 10px; font-weight: 700;
+  padding: 1px 7px; border-radius: 20px;
+}
+
+.gap-item {
+  margin: 0 14px 7px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+  border-radius: 8px;
+  padding: 9px 11px;
+  display: flex; align-items: center; gap: 10px;
+}
+.gap-info { flex: 1; min-width: 0; }
+.gap-time { font-size: 12px; font-weight: 700; }
+.gap-dur  { font-size: 11px; color: var(--muted); }
+.gap-domains { font-size: 11px; color: var(--subtle); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gap-cta {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  background: var(--indigo); color: #fff;
+  border: none; border-radius: 7px;
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s;
+}
+.gap-cta:hover { background: var(--indigo-dk); }
+
+/* ── Setup prompt ────────────────────────────────────────────────── */
+.setup-prompt { padding: 24px 14px; text-align: center; }
+.setup-icon { font-size: 28px; margin-bottom: 8px; }
+.setup-msg { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.setup-btn {
+  padding: 9px 18px; background: var(--indigo); color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+footer {
+  display: flex; border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.footer-link {
+  flex: 1; padding: 10px;
+  background: none; border: none;
+  font-size: 12px; font-weight: 600; color: var(--indigo);
+  cursor: pointer; text-align: center;
+  transition: background .1s;
+}
+.footer-link:hover { background: var(--indigo-lt); }
+.footer-link + .footer-link { border-left: 1px solid var(--border); }

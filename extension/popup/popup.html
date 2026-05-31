@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>TimePulse</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <span class="wordmark">⏱ TimePulse</span>
+    <div class="header-right">
+      <span class="conn-dot" id="connDot"></span>
+      <span class="conn-label" id="connLabel">…</span>
+    </div>
+  </header>
+
+  <!-- Current activity -->
+  <div class="now-bar" id="nowBar" style="display:none">
+    <div class="now-label">Nu actief</div>
+    <div class="now-domain" id="nowDomain"></div>
+    <div class="now-title" id="nowTitle"></div>
+  </div>
+
+  <!-- Harvest today -->
+  <section class="hero">
+    <div class="hero-number" id="heroHours">–</div>
+    <div class="hero-sub">vandaag geregistreerd in Harvest</div>
+    <div class="hero-bar-wrap">
+      <div class="hero-bar-track">
+        <div class="hero-bar-fill" id="heroBarFill" style="width:0%"></div>
+      </div>
+      <span class="hero-bar-goal" id="heroBarGoal"></span>
+    </div>
+    <div class="entry-pills" id="entryPills"></div>
+  </section>
+
+  <!-- Gaps -->
+  <div id="gapsSection" style="display:none">
+    <div class="gaps-header">
+      <span class="gaps-title">Gaten</span>
+      <span class="gaps-badge" id="gapsBadge"></span>
+    </div>
+    <div id="gapsList"></div>
+  </div>
+
+  <!-- Not configured -->
+  <div id="setupPrompt" style="display:none" class="setup-prompt">
+    <div class="setup-icon">⚙️</div>
+    <div class="setup-msg">Stel de server-URL in om te starten.</div>
+    <button class="setup-btn" id="setupBtn">Instellingen openen</button>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <button class="footer-link" id="dashBtn">Dashboard</button>
+    <button class="footer-link" id="optBtn">Instellingen</button>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
