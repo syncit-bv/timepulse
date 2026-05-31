@@ -39,12 +39,14 @@ async def close():
 async def insert_heartbeat(user_id: str, hb: dict):
     await _pool.execute("""
         INSERT INTO heartbeats
-            (user_id, timestamp, url, domain, title, favicon, activity_type, doc_name)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            (user_id, timestamp, url, domain, title, favicon,
+             activity_type, doc_name, ticket_id, focus_score)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     """,
         user_id, hb["timestamp"], hb["url"], hb["domain"],
         hb.get("title", ""), hb.get("favicon"),
         hb.get("activityType", "website"), hb.get("docName"),
+        hb.get("ticketId"), hb.get("focusScore"),
     )
 
 
@@ -52,7 +54,8 @@ async def insert_heartbeats_bulk(user_id: str, heartbeats: list):
     rows = [
         (user_id, h["timestamp"], h["url"], h["domain"],
          h.get("title", ""), h.get("favicon"),
-         h.get("activityType", "website"), h.get("docName"))
+         h.get("activityType", "website"), h.get("docName"),
+         h.get("ticketId"), h.get("focusScore"))
         for h in heartbeats
         if h.get("url") and h.get("domain") and h.get("timestamp")
     ]
@@ -60,8 +63,9 @@ async def insert_heartbeats_bulk(user_id: str, heartbeats: list):
         return
     await _pool.executemany("""
         INSERT INTO heartbeats
-            (user_id, timestamp, url, domain, title, favicon, activity_type, doc_name)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            (user_id, timestamp, url, domain, title, favicon,
+             activity_type, doc_name, ticket_id, focus_score)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         ON CONFLICT DO NOTHING
     """, rows)
 

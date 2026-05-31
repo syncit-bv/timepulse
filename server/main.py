@@ -71,6 +71,8 @@ class Heartbeat(BaseModel):
     favicon:      Optional[str] = None
     activityType: str = "website"
     docName:      Optional[str] = None
+    ticketId:     Optional[str] = None
+    focusScore:   Optional[int] = None
 
 class HeartbeatBulk(BaseModel):
     heartbeats: list[Heartbeat]

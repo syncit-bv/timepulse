@@ -77,14 +77,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   // Update active tab with richer content-script data
   setActiveTab({
-    url: data.url,
-    domain: data.domain,
-    title: data.title,
-    favicon: data.favicon || null,
+    url:          data.url,
+    domain:       data.domain,
+    title:        data.title,
+    favicon:      data.favicon      || null,
     activityType: data.activityType || 'website',
-    docName: data.docName || null,
-    tabId: sender.tab?.id,
-    since: Date.now(),
+    docName:      data.docName      || null,
+    ticketId:     data.ticketId     || null,
+    emailData:    data.emailData    || null,
+    focusScore:   data.focusScore   ?? null,
+    tabId:        sender.tab?.id,
+    since:        Date.now(),
     lastContentReport: Date.now()
   });
 });
@@ -151,13 +154,15 @@ async function tick() {
   }
 
   const heartbeat = {
-    url: tab.url,
-    domain: tab.domain,
-    title: tab.title,
-    favicon: tab.favicon || null,
+    url:          tab.url,
+    domain:       tab.domain,
+    title:        tab.title,
+    favicon:      tab.favicon      || null,
     activityType: tab.activityType || 'website',
-    docName: tab.docName || null,
-    timestamp: Date.now()
+    docName:      tab.docName      || null,
+    ticketId:     tab.ticketId     || null,
+    focusScore:   tab.focusScore   ?? null,
+    timestamp:    Date.now()
   };
 
   const { serverUrl } = await getSettings();

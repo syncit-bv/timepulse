@@ -11,8 +11,14 @@ CREATE TABLE IF NOT EXISTS heartbeats (
     favicon       TEXT,
     activity_type TEXT      DEFAULT 'website',
     doc_name      TEXT,
+    ticket_id     TEXT,
+    focus_score   SMALLINT,
     created_at    TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migratie voor bestaande installaties (veilig uitvoeren als kolommen al bestaan):
+-- ALTER TABLE heartbeats ADD COLUMN IF NOT EXISTS ticket_id   TEXT;
+-- ALTER TABLE heartbeats ADD COLUMN IF NOT EXISTS focus_score SMALLINT;
 
 CREATE INDEX IF NOT EXISTS idx_hb_user_ts
     ON heartbeats(user_id, timestamp DESC);
