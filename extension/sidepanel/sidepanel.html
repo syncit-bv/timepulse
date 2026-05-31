@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>TimePulse</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+
+  <header>
+    <span class="wordmark">⏱ TimePulse</span>
+    <div class="header-right">
+      <span class="conn-dot" id="connDot"></span>
+      <span class="conn-label" id="connLabel">…</span>
+      <button class="icon-btn" id="optBtn" title="Instellingen">⚙</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Pomodoro timer -->
+    <section class="card pomo-card">
+      <div class="pomo-ring-wrap">
+        <svg class="pomo-svg" viewBox="0 0 120 120">
+          <circle class="ring-bg" cx="60" cy="60" r="54"/>
+          <circle id="pomoRing" class="ring-fg" cx="60" cy="60" r="54"
+                  stroke-dasharray="339.3" stroke-dashoffset="0"/>
+        </svg>
+        <div class="pomo-center">
+          <div class="pomo-time" id="pomoTime">25:00</div>
+          <div class="pomo-phase" id="pomoPhase">Focus</div>
+        </div>
+      </div>
+      <div class="pomo-cycles" id="pomoCycles"></div>
+      <div class="pomo-controls">
+        <button class="pomo-btn secondary" id="pomoBtnReset" title="Reset">↺</button>
+        <button class="pomo-btn primary" id="pomoBtnStart">Starten</button>
+        <button class="pomo-btn secondary" id="pomoBtnSkip" title="Volgende fase">⏭</button>
+      </div>
+    </section>
+
+    <!-- Active tab -->
+    <div class="now-bar" id="nowBar" style="display:none">
+      <div class="now-label">Nu actief</div>
+      <div class="now-domain" id="nowDomain"></div>
+      <div class="now-title" id="nowTitle"></div>
+    </div>
+
+    <!-- Harvest today -->
+    <section class="card hero-card">
+      <div class="hero-number" id="heroHours">–</div>
+      <div class="hero-sub">vandaag geregistreerd in Harvest</div>
+      <div class="hero-bar-wrap">
+        <div class="hero-bar-track">
+          <div class="hero-bar-fill" id="heroBarFill" style="width:0%"></div>
+        </div>
+        <span class="hero-bar-goal" id="heroBarGoal"></span>
+      </div>
+      <div class="entry-pills" id="entryPills"></div>
+    </section>
+
+    <!-- Gaps -->
+    <section id="gapsSection" style="display:none">
+      <div class="gaps-header">
+        <span class="gaps-title">Niet-geregistreerde periodes</span>
+        <span class="gaps-badge" id="gapsBadge"></span>
+      </div>
+      <div id="gapsList"></div>
+    </section>
+
+    <!-- Not configured -->
+    <div id="setupPrompt" style="display:none" class="setup-prompt">
+      <div class="setup-icon">⚙️</div>
+      <div class="setup-msg">Stel de server-URL in om te starten.</div>
+      <button class="setup-btn" id="setupBtn">Instellingen openen</button>
+    </div>
+
+  </main>
+
+  <footer>
+    <button class="footer-link" id="dashBtn">Dashboard</button>
+    <button class="footer-link" id="optFooterBtn">Instellingen</button>
+    <button class="footer-link" id="refreshBtn">↺ Verversen</button>
+  </footer>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
