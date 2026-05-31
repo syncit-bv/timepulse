@@ -2,1101 +2,923 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TimePulse — Platform Overzicht</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f1f5f9; color: #1e293b; padding: 40px 32px; }
-  header { margin-bottom: 36px; }
-  header h1 { font-size: 26px; font-weight: 800; }
-  header p { color: #64748b; margin-top: 6px; font-size: 14px; }
-  .total { display: inline-block; background: #6366f1; color: white; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 10px; vertical-align: middle; }
-  .group { margin-bottom: 32px; }
-  .group h2 { font-size: 13px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .count { background: #e2e8f0; color: #475569; font-size: 11px; padding: 1px 7px; border-radius: 999px; font-weight: 600; letter-spacing: 0; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
-  .card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
-  .logo { width: 32px; height: 32px; flex-shrink: 0; }
-  .logo img { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; display: block; }
-  .swatch { width: 32px; height: 32px; border-radius: 6px; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
-  .info { flex: 1; min-width: 0; }
-  .name { font-size: 13px; font-weight: 600; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-  .cat-badge { background: #f0fdf4; color: #16a34a; font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 4px; border: 1px solid #bbf7d0; white-space: nowrap; }
-  .urls { font-size: 11px; color: #94a3b8; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f1f5f9; color: #1e293b;
+    padding: 48px 32px; line-height: 1.5;
+  }
+  header { margin-bottom: 48px; }
+  header h1 {
+    font-size: 28px; font-weight: 800; letter-spacing: -.5px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .pill {
+    background: #6366f1; color: #fff;
+    font-size: 12px; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px;
+  }
+  header p { color: #64748b; margin-top: 8px; font-size: 14px; max-width: 560px; }
+  .meta { display: flex; gap: 20px; margin-top: 16px; }
+  .meta span { font-size: 13px; color: #475569; }
+  .meta strong { color: #1e293b; }
+
+  section { margin-bottom: 40px; }
+  section h2 {
+    font-size: 12px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .badge {
+    background: #e2e8f0; color: #475569;
+    font-size: 11px; padding: 1px 7px; border-radius: 999px; font-weight: 600;
+    letter-spacing: 0; text-transform: none;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 8px;
+  }
+  .card {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+    padding: 12px 16px; display: flex; align-items: center; gap: 14px;
+    transition: box-shadow .15s, border-color .15s;
+  }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); border-color: #c7d2fe; }
+  .logo { flex-shrink: 0; display: flex; }
+  .body { flex: 1; min-width: 0; }
+  .name {
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  }
+  .tag {
+    background: #f0fdf4; color: #15803d;
+    border: 1px solid #bbf7d0;
+    font-size: 10px; font-weight: 600;
+    padding: 1px 6px; border-radius: 4px; white-space: nowrap;
+  }
+  .urls {
+    font-size: 11px; color: #94a3b8; font-family: monospace;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 3px;
+  }
   .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  footer {
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 12px; color: #94a3b8;
+  }
 </style>
 </head>
 <body>
+
 <header>
-  <h1>TimePulse Platforms <span class="total">67 totaal</span></h1>
-  <p>Platforms met een groen label zijn ook actief in een andere categorie. Iconen: officieel platform-CDN → logo.dev → gekleurde letter.</p>
+  <h1>TimePulse Platforms <span class="pill">67 platforms</span></h1>
+  <p>Automatische platform-herkenning op basis van URL. Iconen worden bij runtime vervangen door lokaal gecachte versies van jouw NAS (via logo.dev).</p>
+  <div class="meta">
+    <span><strong>97</strong> vermeldingen in 10 categorieën</span>
+    <span><strong>25</strong> platforms in meerdere categorieën</span>
+    <span>Icoon-prioriteit: <strong>NAS cache → CDN → logo.dev → letter</strong></span>
+  </div>
 </header>
-<div class="group"><h2>⏱ Tijdregistratie <span class="count">23</span></h2><div class="grid">
+
+
+    <section>
+      <h2>⏱ Tijdregistratie<span class="badge">23</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/simplicate.png" data-fallback="https://img.logo.dev/simplicate.app?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF6B35">S</div>
-          </div>
-          <div class="info">
-            <div class="name">Simplicate<span class="cat-badge">CRM</span><span class="cat-badge">Project management</span></div>
-            <div class="urls">simplicate.app, simplicate.com, simplicate.nl</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/simplicate.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/simplicate.app?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF6B35;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">S</div></div>
+          <div class="body">
+            <div class="name">Simplicate<span class="tag">CRM</span><span class="tag">Project management</span></div>
+            <div class="urls">simplicate.app · simplicate.com · simplicate.nl</div>
           </div>
           <div class="dot" style="background:#FF6B35"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/teamleader.png" data-fallback="https://img.logo.dev/focus.teamleader.eu?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00B0CA">T</div>
-          </div>
-          <div class="info">
-            <div class="name">Teamleader<span class="cat-badge">CRM</span><span class="cat-badge">Project management</span></div>
-            <div class="urls">focus.teamleader.eu, teamleader.eu</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/teamleader.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/focus.teamleader.eu?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00B0CA;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">Teamleader<span class="tag">CRM</span><span class="tag">Project management</span></div>
+            <div class="urls">focus.teamleader.eu · teamleader.eu</div>
           </div>
           <div class="dot" style="background:#00B0CA"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/gripp.png" data-fallback="https://img.logo.dev/gripp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF6600">G</div>
-          </div>
-          <div class="info">
-            <div class="name">Gripp<span class="cat-badge">CRM</span><span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/gripp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gripp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF6600;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
+            <div class="name">Gripp<span class="tag">CRM</span><span class="tag">Project management</span></div>
             <div class="urls">gripp.com</div>
           </div>
           <div class="dot" style="background:#FF6600"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/admin_pulse.png" data-fallback="https://img.logo.dev/app.adminpulse.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#005B96">A</div>
-          </div>
-          <div class="info">
-            <div class="name">AdminPulse<span class="cat-badge">CRM</span><span class="cat-badge">Project management</span></div>
-            <div class="urls">app.adminpulse.nl, app.adminpulse.be</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/admin_pulse.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.adminpulse.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#005B96;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">A</div></div>
+          <div class="body">
+            <div class="name">AdminPulse<span class="tag">CRM</span><span class="tag">Project management</span></div>
+            <div class="urls">app.adminpulse.nl · app.adminpulse.be</div>
           </div>
           <div class="dot" style="background:#005B96"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/yoobi.png" data-fallback="https://img.logo.dev/yoobi.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF4F00">Y</div>
-          </div>
-          <div class="info">
-            <div class="name">Yoobi<span class="cat-badge">CRM</span><span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/yoobi.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/yoobi.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF4F00;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">Y</div></div>
+          <div class="body">
+            <div class="name">Yoobi<span class="tag">CRM</span><span class="tag">Project management</span></div>
             <div class="urls">yoobi.nl/vue</div>
           </div>
           <div class="dot" style="background:#FF4F00"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/tribe.png" data-fallback="https://img.logo.dev/app.tribecrm.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#E8344A">T</div>
-          </div>
-          <div class="info">
-            <div class="name">TribeCRM<span class="cat-badge">CRM</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/tribe.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.tribecrm.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#E8344A;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">TribeCRM<span class="tag">CRM</span></div>
             <div class="urls">app.tribecrm.nl</div>
           </div>
           <div class="dot" style="background:#E8344A"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/fid_manager.png" data-fallback="https://img.logo.dev/fid-manager.be?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#1A3A6B">F</div>
-          </div>
-          <div class="info">
-            <div class="name">FID-manager<span class="cat-badge">CRM</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/fid_manager.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/fid-manager.be?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#1A3A6B;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">F</div></div>
+          <div class="body">
+            <div class="name">FID-manager<span class="tag">CRM</span></div>
             <div class="urls">fid-manager.be</div>
           </div>
           <div class="dot" style="background:#1A3A6B"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/harvest.png" data-fallback="https://img.logo.dev/harvestapp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F04B23">H</div>
-          </div>
-          <div class="info">
-            <div class="name">Harvest<span class="cat-badge">Project management</span></div>
-            <div class="urls">harvestapp.com, harvest.is</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/harvest.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/harvestapp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F04B23;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">H</div></div>
+          <div class="body">
+            <div class="name">Harvest<span class="tag">Project management</span></div>
+            <div class="urls">harvestapp.com · harvest.is</div>
           </div>
           <div class="dot" style="background:#F04B23"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/productive.png" data-fallback="https://img.logo.dev/app.productive.io?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#7B4FBF">P</div>
-          </div>
-          <div class="info">
-            <div class="name">Productive<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/productive.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.productive.io?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#7B4FBF;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">P</div></div>
+          <div class="body">
+            <div class="name">Productive<span class="tag">Project management</span></div>
             <div class="urls">app.productive.io</div>
           </div>
           <div class="dot" style="background:#7B4FBF"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/teamwork.png" data-fallback="https://img.logo.dev/teamwork.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F06A35">T</div>
-          </div>
-          <div class="info">
-            <div class="name">Teamwork<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/teamwork.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/teamwork.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F06A35;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">Teamwork<span class="tag">Project management</span></div>
             <div class="urls">teamwork.com/app</div>
           </div>
           <div class="dot" style="background:#F06A35"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/click_up.png" data-fallback="https://img.logo.dev/app.clickup.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#7B68EE">C</div>
-          </div>
-          <div class="info">
-            <div class="name">ClickUp<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/click_up.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.clickup.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#7B68EE;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
+            <div class="name">ClickUp<span class="tag">Project management</span></div>
             <div class="urls">app.clickup.com</div>
           </div>
           <div class="dot" style="background:#7B68EE"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/radar360.png" data-fallback="https://img.logo.dev/web.radarcloud.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#004B87">R</div>
-          </div>
-          <div class="info">
-            <div class="name">Radar<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/radar360.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/web.radarcloud.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#004B87;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">R</div></div>
+          <div class="body">
+            <div class="name">Radar<span class="tag">Project management</span></div>
             <div class="urls">web.radarcloud.nl</div>
           </div>
           <div class="dot" style="background:#004B87"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/fortes.png" data-fallback="https://img.logo.dev/fortesmilestones.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#003865">F</div>
-          </div>
-          <div class="info">
-            <div class="name">FortesMilestones<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/fortes.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/fortesmilestones.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#003865;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">F</div></div>
+          <div class="body">
+            <div class="name">FortesMilestones<span class="tag">Project management</span></div>
             <div class="urls">fortesmilestones.com</div>
           </div>
           <div class="dot" style="background:#003865"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/timechimp.png" data-fallback="https://img.logo.dev/app.timechimp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00C4A7">T</div>
-          </div>
-          <div class="info">
-            <div class="name">TimeChimp<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/timechimp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.timechimp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00C4A7;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">TimeChimp<span class="tag">Project management</span></div>
             <div class="urls">app.timechimp.com</div>
           </div>
           <div class="dot" style="background:#00C4A7"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/zoho.png" data-fallback="https://img.logo.dev/projects.zoho.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#E42527">Z</div>
-          </div>
-          <div class="info">
-            <div class="name">Zoho Projects<span class="cat-badge">Project management</span></div>
-            <div class="urls">projects.zoho.com, projects.zoho.eu</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/zoho.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/projects.zoho.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#E42527;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">Z</div></div>
+          <div class="body">
+            <div class="name">Zoho Projects<span class="tag">Project management</span></div>
+            <div class="urls">projects.zoho.com · projects.zoho.eu</div>
           </div>
           <div class="dot" style="background:#E42527"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/clio.png" data-fallback="https://img.logo.dev/app.clio.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00B388">C</div>
-          </div>
-          <div class="info">
-            <div class="name">Clio<span class="cat-badge">CRM</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/clio.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.clio.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00B388;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
+            <div class="name">Clio<span class="tag">CRM</span></div>
             <div class="urls">app.clio.com</div>
           </div>
           <div class="dot" style="background:#00B388"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/wrike.png" data-fallback="https://img.logo.dev/app.wrike.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00C875">W</div>
-          </div>
-          <div class="info">
-            <div class="name">Wrike<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/wrike.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.wrike.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00C875;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">W</div></div>
+          <div class="body">
+            <div class="name">Wrike<span class="tag">Project management</span></div>
             <div class="urls">app.wrike.com</div>
           </div>
           <div class="dot" style="background:#00C875"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/exact.png" data-fallback="https://img.logo.dev/start.exactonline.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#E31837">E</div>
-          </div>
-          <div class="info">
-            <div class="name">Exact Online<span class="cat-badge">Boekhouding</span></div>
-            <div class="urls">start.exactonline.nl, start.exactonline.be</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/exact.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/start.exactonline.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#E31837;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">E</div></div>
+          <div class="body">
+            <div class="name">Exact Online<span class="tag">Boekhouding</span></div>
+            <div class="urls">start.exactonline.nl · start.exactonline.be</div>
           </div>
           <div class="dot" style="background:#E31837"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/afas.png" data-fallback="https://img.logo.dev/afasinsite.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#EE3124">A</div>
-          </div>
-          <div class="info">
-            <div class="name">AFAS<span class="cat-badge">Boekhouding</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/afas.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/afasinsite.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#EE3124;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">A</div></div>
+          <div class="body">
+            <div class="name">AFAS<span class="tag">Boekhouding</span></div>
             <div class="urls">afasinsite.nl</div>
           </div>
           <div class="dot" style="background:#EE3124"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/xero.png" data-fallback="https://img.logo.dev/go.xero.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#13B5EA">X</div>
-          </div>
-          <div class="info">
-            <div class="name">Xero<span class="cat-badge">Boekhouding</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/xero.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/go.xero.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#13B5EA;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">X</div></div>
+          <div class="body">
+            <div class="name">Xero<span class="tag">Boekhouding</span></div>
             <div class="urls">go.xero.com</div>
           </div>
           <div class="dot" style="background:#13B5EA"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/visma_advisor.png" data-fallback="https://img.logo.dev/advisor.vismaonline.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#004C97">V</div>
-          </div>
-          <div class="info">
-            <div class="name">Visma Advisor<span class="cat-badge">Boekhouding</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/visma_advisor.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/advisor.vismaonline.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#004C97;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">V</div></div>
+          <div class="body">
+            <div class="name">Visma Advisor<span class="tag">Boekhouding</span></div>
             <div class="urls">advisor.vismaonline.com</div>
           </div>
           <div class="dot" style="background:#004C97"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://toggl.com/favicon.ico" data-fallback="https://img.logo.dev/toggl.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#E57CD8">T</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://toggl.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/toggl.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#E57CD8;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
             <div class="name">Toggl</div>
             <div class="urls">toggl.com</div>
           </div>
           <div class="dot" style="background:#E57CD8"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://clockify.me/favicon.ico" data-fallback="https://img.logo.dev/clockify.me?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#03A9F4">C</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://clockify.me/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/clockify.me?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#03A9F4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
             <div class="name">Clockify</div>
             <div class="urls">clockify.me</div>
           </div>
           <div class="dot" style="background:#03A9F4"></div>
-        </div></div></div><div class="group"><h2>👥 CRM <span class="count">12</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>👥 CRM<span class="badge">12</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/simplicate.png" data-fallback="https://img.logo.dev/simplicate.app?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF6B35">S</div>
-          </div>
-          <div class="info">
-            <div class="name">Simplicate<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">Project management</span></div>
-            <div class="urls">simplicate.app, simplicate.com, simplicate.nl</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/simplicate.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/simplicate.app?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF6B35;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">S</div></div>
+          <div class="body">
+            <div class="name">Simplicate<span class="tag">Tijdregistratie</span><span class="tag">Project management</span></div>
+            <div class="urls">simplicate.app · simplicate.com · simplicate.nl</div>
           </div>
           <div class="dot" style="background:#FF6B35"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/teamleader.png" data-fallback="https://img.logo.dev/focus.teamleader.eu?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00B0CA">T</div>
-          </div>
-          <div class="info">
-            <div class="name">Teamleader<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">Project management</span></div>
-            <div class="urls">focus.teamleader.eu, teamleader.eu</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/teamleader.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/focus.teamleader.eu?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00B0CA;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">Teamleader<span class="tag">Tijdregistratie</span><span class="tag">Project management</span></div>
+            <div class="urls">focus.teamleader.eu · teamleader.eu</div>
           </div>
           <div class="dot" style="background:#00B0CA"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/gripp.png" data-fallback="https://img.logo.dev/gripp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF6600">G</div>
-          </div>
-          <div class="info">
-            <div class="name">Gripp<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/gripp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gripp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF6600;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
+            <div class="name">Gripp<span class="tag">Tijdregistratie</span><span class="tag">Project management</span></div>
             <div class="urls">gripp.com</div>
           </div>
           <div class="dot" style="background:#FF6600"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/admin_pulse.png" data-fallback="https://img.logo.dev/app.adminpulse.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#005B96">A</div>
-          </div>
-          <div class="info">
-            <div class="name">AdminPulse<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">Project management</span></div>
-            <div class="urls">app.adminpulse.nl, app.adminpulse.be</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/admin_pulse.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.adminpulse.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#005B96;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">A</div></div>
+          <div class="body">
+            <div class="name">AdminPulse<span class="tag">Tijdregistratie</span><span class="tag">Project management</span></div>
+            <div class="urls">app.adminpulse.nl · app.adminpulse.be</div>
           </div>
           <div class="dot" style="background:#005B96"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/yoobi.png" data-fallback="https://img.logo.dev/yoobi.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF4F00">Y</div>
-          </div>
-          <div class="info">
-            <div class="name">Yoobi<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/yoobi.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/yoobi.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF4F00;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">Y</div></div>
+          <div class="body">
+            <div class="name">Yoobi<span class="tag">Tijdregistratie</span><span class="tag">Project management</span></div>
             <div class="urls">yoobi.nl/vue</div>
           </div>
           <div class="dot" style="background:#FF4F00"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/tribe.png" data-fallback="https://img.logo.dev/app.tribecrm.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#E8344A">T</div>
-          </div>
-          <div class="info">
-            <div class="name">TribeCRM<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/tribe.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.tribecrm.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#E8344A;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">TribeCRM<span class="tag">Tijdregistratie</span></div>
             <div class="urls">app.tribecrm.nl</div>
           </div>
           <div class="dot" style="background:#E8344A"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/fid_manager.png" data-fallback="https://img.logo.dev/fid-manager.be?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#1A3A6B">F</div>
-          </div>
-          <div class="info">
-            <div class="name">FID-manager<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/fid_manager.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/fid-manager.be?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#1A3A6B;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">F</div></div>
+          <div class="body">
+            <div class="name">FID-manager<span class="tag">Tijdregistratie</span></div>
             <div class="urls">fid-manager.be</div>
           </div>
           <div class="dot" style="background:#1A3A6B"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/clio.png" data-fallback="https://img.logo.dev/app.clio.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00B388">C</div>
-          </div>
-          <div class="info">
-            <div class="name">Clio<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/clio.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.clio.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00B388;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
+            <div class="name">Clio<span class="tag">Tijdregistratie</span></div>
             <div class="urls">app.clio.com</div>
           </div>
           <div class="dot" style="background:#00B388"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://monday.com/static/img/favicons/favicon-32x32.png" data-fallback="https://img.logo.dev/monday.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF3D57">M</div>
-          </div>
-          <div class="info">
-            <div class="name">Monday.com<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://monday.com/static/img/favicons/favicon-32x32.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/monday.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF3D57;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">M</div></div>
+          <div class="body">
+            <div class="name">Monday.com<span class="tag">Project management</span></div>
             <div class="urls">monday.com</div>
           </div>
           <div class="dot" style="background:#FF3D57"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.salesforce.com/favicon.ico" data-fallback="https://img.logo.dev/salesforce.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00A1E0">S</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://www.salesforce.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/salesforce.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00A1E0;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">S</div></div>
+          <div class="body">
             <div class="name">Salesforce</div>
             <div class="urls">salesforce.com</div>
           </div>
           <div class="dot" style="background:#00A1E0"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.hubspot.com/favicon.ico" data-fallback="https://img.logo.dev/hubspot.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF7A59">H</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://www.hubspot.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/hubspot.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF7A59;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">H</div></div>
+          <div class="body">
             <div class="name">HubSpot</div>
-            <div class="urls">hubspot.com, app.hubspot.com</div>
+            <div class="urls">hubspot.com · app.hubspot.com</div>
           </div>
           <div class="dot" style="background:#FF7A59"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.pipedrive.com/favicon.ico" data-fallback="https://img.logo.dev/pipedrive.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#1A1F36">P</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://www.pipedrive.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/pipedrive.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#1A1F36;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">P</div></div>
+          <div class="body">
             <div class="name">Pipedrive</div>
             <div class="urls">pipedrive.com</div>
           </div>
           <div class="dot" style="background:#1A1F36"></div>
-        </div></div></div><div class="group"><h2>📊 Boekhouding <span class="count">7</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>📊 Boekhouding<span class="badge">7</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/exact.png" data-fallback="https://img.logo.dev/start.exactonline.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#E31837">E</div>
-          </div>
-          <div class="info">
-            <div class="name">Exact Online<span class="cat-badge">Tijdregistratie</span></div>
-            <div class="urls">start.exactonline.nl, start.exactonline.be</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/exact.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/start.exactonline.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#E31837;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">E</div></div>
+          <div class="body">
+            <div class="name">Exact Online<span class="tag">Tijdregistratie</span></div>
+            <div class="urls">start.exactonline.nl · start.exactonline.be</div>
           </div>
           <div class="dot" style="background:#E31837"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/afas.png" data-fallback="https://img.logo.dev/afasinsite.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#EE3124">A</div>
-          </div>
-          <div class="info">
-            <div class="name">AFAS<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/afas.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/afasinsite.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#EE3124;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">A</div></div>
+          <div class="body">
+            <div class="name">AFAS<span class="tag">Tijdregistratie</span></div>
             <div class="urls">afasinsite.nl</div>
           </div>
           <div class="dot" style="background:#EE3124"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/xero.png" data-fallback="https://img.logo.dev/go.xero.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#13B5EA">X</div>
-          </div>
-          <div class="info">
-            <div class="name">Xero<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/xero.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/go.xero.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#13B5EA;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">X</div></div>
+          <div class="body">
+            <div class="name">Xero<span class="tag">Tijdregistratie</span></div>
             <div class="urls">go.xero.com</div>
           </div>
           <div class="dot" style="background:#13B5EA"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/visma_advisor.png" data-fallback="https://img.logo.dev/advisor.vismaonline.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#004C97">V</div>
-          </div>
-          <div class="info">
-            <div class="name">Visma Advisor<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/visma_advisor.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/advisor.vismaonline.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#004C97;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">V</div></div>
+          <div class="body">
+            <div class="name">Visma Advisor<span class="tag">Tijdregistratie</span></div>
             <div class="urls">advisor.vismaonline.com</div>
           </div>
           <div class="dot" style="background:#004C97"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.billtobox.be/favicon.ico" data-fallback="https://img.logo.dev/billtobox.be?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0D6EFD">B</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://www.billtobox.be/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/billtobox.be?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0D6EFD;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">B</div></div>
+          <div class="body">
             <div class="name">BillToBox</div>
             <div class="urls">billtobox.be</div>
           </div>
           <div class="dot" style="background:#0D6EFD"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://app.yuki.nl/favicon.ico" data-fallback="https://img.logo.dev/yuki.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#E8650A">Y</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://app.yuki.nl/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/yuki.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#E8650A;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">Y</div></div>
+          <div class="body">
             <div class="name">Yuki</div>
-            <div class="urls">yuki.nl, app.yuki.nl</div>
+            <div class="urls">yuki.nl · app.yuki.nl</div>
           </div>
           <div class="dot" style="background:#E8650A"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.winbooks.be/favicon.ico" data-fallback="https://img.logo.dev/winbooks.be?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#004B8D">W</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://www.winbooks.be/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/winbooks.be?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#004B8D;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">W</div></div>
+          <div class="body">
             <div class="name">Winbooks</div>
             <div class="urls">winbooks.be</div>
           </div>
           <div class="dot" style="background:#004B8D"></div>
-        </div></div></div><div class="group"><h2>📋 Project management <span class="count">23</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>📋 Project management<span class="badge">23</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/simplicate.png" data-fallback="https://img.logo.dev/simplicate.app?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF6B35">S</div>
-          </div>
-          <div class="info">
-            <div class="name">Simplicate<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">CRM</span></div>
-            <div class="urls">simplicate.app, simplicate.com, simplicate.nl</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/simplicate.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/simplicate.app?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF6B35;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">S</div></div>
+          <div class="body">
+            <div class="name">Simplicate<span class="tag">Tijdregistratie</span><span class="tag">CRM</span></div>
+            <div class="urls">simplicate.app · simplicate.com · simplicate.nl</div>
           </div>
           <div class="dot" style="background:#FF6B35"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/teamleader.png" data-fallback="https://img.logo.dev/focus.teamleader.eu?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00B0CA">T</div>
-          </div>
-          <div class="info">
-            <div class="name">Teamleader<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">CRM</span></div>
-            <div class="urls">focus.teamleader.eu, teamleader.eu</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/teamleader.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/focus.teamleader.eu?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00B0CA;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">Teamleader<span class="tag">Tijdregistratie</span><span class="tag">CRM</span></div>
+            <div class="urls">focus.teamleader.eu · teamleader.eu</div>
           </div>
           <div class="dot" style="background:#00B0CA"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/gripp.png" data-fallback="https://img.logo.dev/gripp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF6600">G</div>
-          </div>
-          <div class="info">
-            <div class="name">Gripp<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">CRM</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/gripp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gripp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF6600;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
+            <div class="name">Gripp<span class="tag">Tijdregistratie</span><span class="tag">CRM</span></div>
             <div class="urls">gripp.com</div>
           </div>
           <div class="dot" style="background:#FF6600"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/admin_pulse.png" data-fallback="https://img.logo.dev/app.adminpulse.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#005B96">A</div>
-          </div>
-          <div class="info">
-            <div class="name">AdminPulse<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">CRM</span></div>
-            <div class="urls">app.adminpulse.nl, app.adminpulse.be</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/admin_pulse.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.adminpulse.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#005B96;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">A</div></div>
+          <div class="body">
+            <div class="name">AdminPulse<span class="tag">Tijdregistratie</span><span class="tag">CRM</span></div>
+            <div class="urls">app.adminpulse.nl · app.adminpulse.be</div>
           </div>
           <div class="dot" style="background:#005B96"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/yoobi.png" data-fallback="https://img.logo.dev/yoobi.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF4F00">Y</div>
-          </div>
-          <div class="info">
-            <div class="name">Yoobi<span class="cat-badge">Tijdregistratie</span><span class="cat-badge">CRM</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/yoobi.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/yoobi.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF4F00;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">Y</div></div>
+          <div class="body">
+            <div class="name">Yoobi<span class="tag">Tijdregistratie</span><span class="tag">CRM</span></div>
             <div class="urls">yoobi.nl/vue</div>
           </div>
           <div class="dot" style="background:#FF4F00"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/harvest.png" data-fallback="https://img.logo.dev/harvestapp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F04B23">H</div>
-          </div>
-          <div class="info">
-            <div class="name">Harvest<span class="cat-badge">Tijdregistratie</span></div>
-            <div class="urls">harvestapp.com, harvest.is</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/harvest.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/harvestapp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F04B23;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">H</div></div>
+          <div class="body">
+            <div class="name">Harvest<span class="tag">Tijdregistratie</span></div>
+            <div class="urls">harvestapp.com · harvest.is</div>
           </div>
           <div class="dot" style="background:#F04B23"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/productive.png" data-fallback="https://img.logo.dev/app.productive.io?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#7B4FBF">P</div>
-          </div>
-          <div class="info">
-            <div class="name">Productive<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/productive.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.productive.io?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#7B4FBF;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">P</div></div>
+          <div class="body">
+            <div class="name">Productive<span class="tag">Tijdregistratie</span></div>
             <div class="urls">app.productive.io</div>
           </div>
           <div class="dot" style="background:#7B4FBF"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/teamwork.png" data-fallback="https://img.logo.dev/teamwork.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F06A35">T</div>
-          </div>
-          <div class="info">
-            <div class="name">Teamwork<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/teamwork.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/teamwork.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F06A35;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">Teamwork<span class="tag">Tijdregistratie</span></div>
             <div class="urls">teamwork.com/app</div>
           </div>
           <div class="dot" style="background:#F06A35"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/click_up.png" data-fallback="https://img.logo.dev/app.clickup.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#7B68EE">C</div>
-          </div>
-          <div class="info">
-            <div class="name">ClickUp<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/click_up.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.clickup.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#7B68EE;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
+            <div class="name">ClickUp<span class="tag">Tijdregistratie</span></div>
             <div class="urls">app.clickup.com</div>
           </div>
           <div class="dot" style="background:#7B68EE"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/radar360.png" data-fallback="https://img.logo.dev/web.radarcloud.nl?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#004B87">R</div>
-          </div>
-          <div class="info">
-            <div class="name">Radar<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/radar360.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/web.radarcloud.nl?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#004B87;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">R</div></div>
+          <div class="body">
+            <div class="name">Radar<span class="tag">Tijdregistratie</span></div>
             <div class="urls">web.radarcloud.nl</div>
           </div>
           <div class="dot" style="background:#004B87"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/fortes.png" data-fallback="https://img.logo.dev/fortesmilestones.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#003865">F</div>
-          </div>
-          <div class="info">
-            <div class="name">FortesMilestones<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/fortes.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/fortesmilestones.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#003865;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">F</div></div>
+          <div class="body">
+            <div class="name">FortesMilestones<span class="tag">Tijdregistratie</span></div>
             <div class="urls">fortesmilestones.com</div>
           </div>
           <div class="dot" style="background:#003865"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/timechimp.png" data-fallback="https://img.logo.dev/app.timechimp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00C4A7">T</div>
-          </div>
-          <div class="info">
-            <div class="name">TimeChimp<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/timechimp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.timechimp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00C4A7;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
+            <div class="name">TimeChimp<span class="tag">Tijdregistratie</span></div>
             <div class="urls">app.timechimp.com</div>
           </div>
           <div class="dot" style="background:#00C4A7"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/zoho.png" data-fallback="https://img.logo.dev/projects.zoho.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#E42527">Z</div>
-          </div>
-          <div class="info">
-            <div class="name">Zoho Projects<span class="cat-badge">Tijdregistratie</span></div>
-            <div class="urls">projects.zoho.com, projects.zoho.eu</div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/zoho.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/projects.zoho.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#E42527;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">Z</div></div>
+          <div class="body">
+            <div class="name">Zoho Projects<span class="tag">Tijdregistratie</span></div>
+            <div class="urls">projects.zoho.com · projects.zoho.eu</div>
           </div>
           <div class="dot" style="background:#E42527"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.clockassist.com/icons/wrike.png" data-fallback="https://img.logo.dev/app.wrike.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00C875">W</div>
-          </div>
-          <div class="info">
-            <div class="name">Wrike<span class="cat-badge">Tijdregistratie</span></div>
+          <div class="logo"><img src="https://cdn.clockassist.com/icons/wrike.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/app.wrike.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00C875;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">W</div></div>
+          <div class="body">
+            <div class="name">Wrike<span class="tag">Tijdregistratie</span></div>
             <div class="urls">app.wrike.com</div>
           </div>
           <div class="dot" style="background:#00C875"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" data-fallback="https://img.logo.dev/atlassian.net?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0052CC">J</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/atlassian.net?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0052CC;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">J</div></div>
+          <div class="body">
             <div class="name">Jira</div>
-            <div class="urls">atlassian.net, /jira/</div>
+            <div class="urls">atlassian.net · /jira/</div>
           </div>
           <div class="dot" style="background:#0052CC"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://linear.app/favicon.ico" data-fallback="https://img.logo.dev/linear.app?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#5E6AD2">L</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://linear.app/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/linear.app?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#5E6AD2;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">L</div></div>
+          <div class="body">
             <div class="name">Linear</div>
             <div class="urls">linear.app</div>
           </div>
           <div class="dot" style="background:#5E6AD2"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://app.asana.com/favicon.ico" data-fallback="https://img.logo.dev/asana.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F06A6A">A</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://app.asana.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/asana.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F06A6A;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">A</div></div>
+          <div class="body">
             <div class="name">Asana</div>
             <div class="urls">asana.com</div>
           </div>
           <div class="dot" style="background:#F06A6A"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://monday.com/static/img/favicons/favicon-32x32.png" data-fallback="https://img.logo.dev/monday.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FF3D57">M</div>
-          </div>
-          <div class="info">
-            <div class="name">Monday.com<span class="cat-badge">CRM</span></div>
+          <div class="logo"><img src="https://monday.com/static/img/favicons/favicon-32x32.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/monday.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF3D57;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">M</div></div>
+          <div class="body">
+            <div class="name">Monday.com<span class="tag">CRM</span></div>
             <div class="urls">monday.com</div>
           </div>
           <div class="dot" style="background:#FF3D57"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://trello.com/favicon.ico" data-fallback="https://img.logo.dev/trello.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0079BF">T</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://trello.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/trello.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0079BF;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">T</div></div>
+          <div class="body">
             <div class="name">Trello</div>
             <div class="urls">trello.com</div>
           </div>
           <div class="dot" style="background:#0079BF"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://basecamp.com/favicon.ico" data-fallback="https://img.logo.dev/basecamp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#1D2D35">B</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://basecamp.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/basecamp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#1D2D35;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">B</div></div>
+          <div class="body">
             <div class="name">Basecamp</div>
-            <div class="urls">basecamp.com, 3.basecamp.com</div>
+            <div class="urls">basecamp.com · 3.basecamp.com</div>
           </div>
           <div class="dot" style="background:#1D2D35"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.notion.so/images/favicon.ico" data-fallback="https://img.logo.dev/notion.so?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#000000">N</div>
-          </div>
-          <div class="info">
-            <div class="name">Notion<span class="cat-badge">Documenten</span></div>
-            <div class="urls">notion.so, notion.site</div>
+          <div class="logo"><img src="https://www.notion.so/images/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/notion.so?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#000000;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">N</div></div>
+          <div class="body">
+            <div class="name">Notion<span class="tag">Documenten</span></div>
+            <div class="urls">notion.so · notion.site</div>
           </div>
           <div class="dot" style="background:#000000"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" data-fallback="https://img.logo.dev/confluence.atlassian.net?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0052CC">C</div>
-          </div>
-          <div class="info">
-            <div class="name">Confluence<span class="cat-badge">Documenten</span></div>
-            <div class="urls">confluence.atlassian.net, /wiki/spaces/</div>
+          <div class="logo"><img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/confluence.atlassian.net?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0052CC;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
+            <div class="name">Confluence<span class="tag">Documenten</span></div>
+            <div class="urls">confluence.atlassian.net · /wiki/spaces/</div>
           </div>
           <div class="dot" style="background:#0052CC"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://miro.com/favicon.ico" data-fallback="https://img.logo.dev/miro.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FFD02F">M</div>
-          </div>
-          <div class="info">
-            <div class="name">Miro<span class="cat-badge">Design</span></div>
+          <div class="logo"><img src="https://miro.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/miro.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FFD02F;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">M</div></div>
+          <div class="body">
+            <div class="name">Miro<span class="tag">Design</span></div>
             <div class="urls">miro.com</div>
           </div>
           <div class="dot" style="background:#FFD02F"></div>
-        </div></div></div><div class="group"><h2>✉️ E-mail <span class="count">2</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>✉️ E-mail<span class="badge">2</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico" data-fallback="https://img.logo.dev/mail.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#EA4335">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/mail.google.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#EA4335;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">Gmail</div>
             <div class="urls">mail.google.com</div>
           </div>
           <div class="dot" style="background:#EA4335"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://res-1.cdn.office.net/elf/prod/shared/resources/prod/favicons/outlook/favicon.ico" data-fallback="https://img.logo.dev/outlook.live.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0078D4">O</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://res-1.cdn.office.net/elf/prod/shared/resources/prod/favicons/outlook/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/outlook.live.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0078D4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">O</div></div>
+          <div class="body">
             <div class="name">Outlook</div>
-            <div class="urls">outlook.live.com, outlook.office.com, outlook.office365.com</div>
+            <div class="urls">outlook.live.com · outlook.office.com · outlook.office365.com</div>
           </div>
           <div class="dot" style="background:#0078D4"></div>
-        </div></div></div><div class="group"><h2>💬 Communicatie <span class="count">6</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>💬 Communicatie<span class="badge">6</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png" data-fallback="https://img.logo.dev/slack.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#4A154B">S</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/slack.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#4A154B;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">S</div></div>
+          <div class="body">
             <div class="name">Slack</div>
             <div class="urls">slack.com</div>
           </div>
           <div class="dot" style="background:#4A154B"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/teams/favicon.ico" data-fallback="https://img.logo.dev/teams.microsoft.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#6264A7">M</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/teams/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/teams.microsoft.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#6264A7;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">M</div></div>
+          <div class="body">
             <div class="name">Microsoft Teams</div>
-            <div class="urls">teams.microsoft.com, teams.live.com</div>
+            <div class="urls">teams.microsoft.com · teams.live.com</div>
           </div>
           <div class="dot" style="background:#6264A7"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://zoom.us/favicon.ico" data-fallback="https://img.logo.dev/zoom.us?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#2D8CFF">Z</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://zoom.us/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/zoom.us?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#2D8CFF;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">Z</div></div>
+          <div class="body">
             <div class="name">Zoom</div>
             <div class="urls">zoom.us</div>
           </div>
           <div class="dot" style="background:#2D8CFF"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://ssl.gstatic.com/meet/favicon.ico" data-fallback="https://img.logo.dev/meet.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00BCD4">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://ssl.gstatic.com/meet/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/meet.google.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00BCD4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">Google Meet</div>
             <div class="urls">meet.google.com</div>
           </div>
           <div class="dot" style="background:#00BCD4"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://discord.com/assets/favicon.ico" data-fallback="https://img.logo.dev/discord.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#5865F2">D</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://discord.com/assets/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/discord.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#5865F2;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">D</div></div>
+          <div class="body">
             <div class="name">Discord</div>
             <div class="urls">discord.com</div>
           </div>
           <div class="dot" style="background:#5865F2"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://static.whatsapp.net/rsrc.php/v3/yP/r/rYZqPCBaG70.png" data-fallback="https://img.logo.dev/web.whatsapp.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#25D366">W</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://static.whatsapp.net/rsrc.php/v3/yP/r/rYZqPCBaG70.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/web.whatsapp.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#25D366;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">W</div></div>
+          <div class="body">
             <div class="name">WhatsApp Web</div>
             <div class="urls">web.whatsapp.com</div>
           </div>
           <div class="dot" style="background:#25D366"></div>
-        </div></div></div><div class="group"><h2>💻 Development <span class="count">6</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>💻 Development<span class="badge">6</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://github.githubassets.com/favicons/favicon.svg" data-fallback="https://img.logo.dev/github.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#24292F">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://github.githubassets.com/favicons/favicon.svg" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/github.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#24292F;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">GitHub</div>
             <div class="urls">github.com</div>
           </div>
           <div class="dot" style="background:#24292F"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://gitlab.com/assets/favicon-72a2cad5025aa931d6ea56c3201d1f18e68a8cd39788c7c80d5b2b82aa5143ef.png" data-fallback="https://img.logo.dev/gitlab.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FC6D26">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://gitlab.com/assets/favicon-72a2cad5025aa931d6ea56c3201d1f18e68a8cd39788c7c80d5b2b82aa5143ef.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gitlab.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FC6D26;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">GitLab</div>
             <div class="urls">gitlab.com</div>
           </div>
           <div class="dot" style="background:#FC6D26"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://bitbucket.org/favicon.ico" data-fallback="https://img.logo.dev/bitbucket.org?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0052CC">B</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://bitbucket.org/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/bitbucket.org?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0052CC;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">B</div></div>
+          <div class="body">
             <div class="name">Bitbucket</div>
             <div class="urls">bitbucket.org</div>
           </div>
           <div class="dot" style="background:#0052CC"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://assets.vercel.com/image/upload/front/favicon/vercel/favicon.ico" data-fallback="https://img.logo.dev/vercel.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#000000">V</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://assets.vercel.com/image/upload/front/favicon/vercel/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/vercel.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#000000;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">V</div></div>
+          <div class="body">
             <div class="name">Vercel</div>
             <div class="urls">vercel.com</div>
           </div>
           <div class="dot" style="background:#000000"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.netlify.com/favicon/icon.png" data-fallback="https://img.logo.dev/netlify.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00C7B7">N</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://www.netlify.com/favicon/icon.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/netlify.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00C7B7;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">N</div></div>
+          <div class="body">
             <div class="name">Netlify</div>
             <div class="urls">netlify.com</div>
           </div>
           <div class="dot" style="background:#00C7B7"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico" data-fallback="https://img.logo.dev/stackoverflow.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F48024">S</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/stackoverflow.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F48024;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">S</div></div>
+          <div class="body">
             <div class="name">Stack Overflow</div>
             <div class="urls">stackoverflow.com</div>
           </div>
           <div class="dot" style="background:#F48024"></div>
-        </div></div></div><div class="group"><h2>📄 Documenten <span class="count">10</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>📄 Documenten<span class="badge">10</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://www.notion.so/images/favicon.ico" data-fallback="https://img.logo.dev/notion.so?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#000000">N</div>
-          </div>
-          <div class="info">
-            <div class="name">Notion<span class="cat-badge">Project management</span></div>
-            <div class="urls">notion.so, notion.site</div>
+          <div class="logo"><img src="https://www.notion.so/images/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/notion.so?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#000000;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">N</div></div>
+          <div class="body">
+            <div class="name">Notion<span class="tag">Project management</span></div>
+            <div class="urls">notion.so · notion.site</div>
           </div>
           <div class="dot" style="background:#000000"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" data-fallback="https://img.logo.dev/confluence.atlassian.net?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0052CC">C</div>
-          </div>
-          <div class="info">
-            <div class="name">Confluence<span class="cat-badge">Project management</span></div>
-            <div class="urls">confluence.atlassian.net, /wiki/spaces/</div>
+          <div class="logo"><img src="https://wac-cdn.atlassian.com/assets/img/favicons/atlassian/favicon.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/confluence.atlassian.net?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0052CC;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
+            <div class="name">Confluence<span class="tag">Project management</span></div>
+            <div class="urls">confluence.atlassian.net · /wiki/spaces/</div>
           </div>
           <div class="dot" style="background:#0052CC"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" data-fallback="https://img.logo.dev/docs.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#4285F4">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/docs.google.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#4285F4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">Google Docs</div>
             <div class="urls">docs.google.com/document</div>
           </div>
           <div class="dot" style="background:#4285F4"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico" data-fallback="https://img.logo.dev/docs.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0F9D58">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/docs.google.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0F9D58;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">Google Sheets</div>
             <div class="urls">docs.google.com/spreadsheets</div>
           </div>
           <div class="dot" style="background:#0F9D58"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://ssl.gstatic.com/docs/presentations/images/favicon5.ico" data-fallback="https://img.logo.dev/docs.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F4B400">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://ssl.gstatic.com/docs/presentations/images/favicon5.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/docs.google.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F4B400;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">Google Slides</div>
             <div class="urls">docs.google.com/presentation</div>
           </div>
           <div class="dot" style="background:#F4B400"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" data-fallback="https://img.logo.dev/drive.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#4285F4">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/drive.google.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#4285F4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">Google Drive</div>
             <div class="urls">drive.google.com</div>
           </div>
           <div class="dot" style="background:#4285F4"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/sharepoint/favicon.ico" data-fallback="https://img.logo.dev/sharepoint.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0078D4">S</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/sharepoint/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/sharepoint.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0078D4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">S</div></div>
+          <div class="body">
             <div class="name">SharePoint</div>
-            <div class="urls">sharepoint.com/Doc.aspx, sharepoint.com/:w:</div>
+            <div class="urls">sharepoint.com/Doc.aspx · sharepoint.com/:w:</div>
           </div>
           <div class="dot" style="background:#0078D4"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/onedrive/favicon.ico" data-fallback="https://img.logo.dev/onedrive.live.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0078D4">O</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://res.cdn.office.net/elf/prod/shared/resources/prod/favicons/onedrive/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/onedrive.live.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0078D4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">O</div></div>
+          <div class="body">
             <div class="name">OneDrive</div>
-            <div class="urls">onedrive.live.com, onedrive.com</div>
+            <div class="urls">onedrive.live.com · onedrive.com</div>
           </div>
           <div class="dot" style="background:#0078D4"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://cfl.dropboxstatic.com/static/images/favicon.ico" data-fallback="https://img.logo.dev/dropbox.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0061FF">D</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://cfl.dropboxstatic.com/static/images/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/dropbox.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0061FF;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">D</div></div>
+          <div class="body">
             <div class="name">Dropbox</div>
             <div class="urls">dropbox.com</div>
           </div>
           <div class="dot" style="background:#0061FF"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://img.logo.dev/.pdf?token=pk_free" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-            <div class="swatch" style="display:none;background:#FF0000">P</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://img.logo.dev/.pdf?token=pk_free" onerror="this.style.display='none';this.nextSibling.style.display='flex'" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FF0000;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">P</div></div>
+          <div class="body">
             <div class="name">PDF</div>
             <div class="urls">.pdf</div>
           </div>
           <div class="dot" style="background:#FF0000"></div>
-        </div></div></div><div class="group"><h2>🎨 Design <span class="count">4</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>🎨 Design<span class="badge">4</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://static.figma.com/app/icon/1/favicon.ico" data-fallback="https://img.logo.dev/figma.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F24E1E">F</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://static.figma.com/app/icon/1/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/figma.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F24E1E;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">F</div></div>
+          <div class="body">
             <div class="name">Figma</div>
             <div class="urls">figma.com</div>
           </div>
           <div class="dot" style="background:#F24E1E"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://miro.com/favicon.ico" data-fallback="https://img.logo.dev/miro.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#FFD02F">M</div>
-          </div>
-          <div class="info">
-            <div class="name">Miro<span class="cat-badge">Project management</span></div>
+          <div class="logo"><img src="https://miro.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/miro.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#FFD02F;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">M</div></div>
+          <div class="body">
+            <div class="name">Miro<span class="tag">Project management</span></div>
             <div class="urls">miro.com</div>
           </div>
           <div class="dot" style="background:#FFD02F"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://static.canva.com/web/images/favicon.ico" data-fallback="https://img.logo.dev/canva.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00C4CC">C</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://static.canva.com/web/images/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/canva.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00C4CC;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
             <div class="name">Canva</div>
             <div class="urls">canva.com</div>
           </div>
           <div class="dot" style="background:#00C4CC"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.sketch.com/favicon.ico" data-fallback="https://img.logo.dev/sketch.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#F7B500">S</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://www.sketch.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/sketch.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#F7B500;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">S</div></div>
+          <div class="body">
             <div class="name">Sketch</div>
             <div class="urls">sketch.com</div>
           </div>
           <div class="dot" style="background:#F7B500"></div>
-        </div></div></div><div class="group"><h2>🤖 AI tools <span class="count">4</span></h2><div class="grid">
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>🤖 AI tools<span class="badge">4</span></h2>
+      <div class="grid">
         <div class="card">
-          <div class="logo">
-            <img src="https://chatgpt.com/favicon.ico" data-fallback="https://img.logo.dev/chatgpt.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#00A67E">C</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://chatgpt.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/chatgpt.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#00A67E;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
             <div class="name">ChatGPT</div>
-            <div class="urls">chatgpt.com, chat.openai.com</div>
+            <div class="urls">chatgpt.com · chat.openai.com</div>
           </div>
           <div class="dot" style="background:#00A67E"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://claude.ai/favicon.ico" data-fallback="https://img.logo.dev/claude.ai?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#CC785C">C</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://claude.ai/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/claude.ai?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#CC785C;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">C</div></div>
+          <div class="body">
             <div class="name">Claude</div>
             <div class="urls">claude.ai</div>
           </div>
           <div class="dot" style="background:#CC785C"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06.svg" data-fallback="https://img.logo.dev/gemini.google.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#4285F4">G</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://www.gstatic.com/lamda/images/gemini_favicon_f069958c85030456e93de685481c559f160ea06.svg" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/gemini.google.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#4285F4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">G</div></div>
+          <div class="body">
             <div class="name">Gemini</div>
             <div class="urls">gemini.google.com</div>
           </div>
           <div class="dot" style="background:#4285F4"></div>
         </div>
         <div class="card">
-          <div class="logo">
-            <img src="https://copilot.microsoft.com/favicon.ico" data-fallback="https://img.logo.dev/copilot.microsoft.com?token=pk_free" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.fallback;}else{this.style.display='none';this.nextSibling.style.display='flex';}">
-            <div class="swatch" style="display:none;background:#0078D4">M</div>
-          </div>
-          <div class="info">
+          <div class="logo"><img src="https://copilot.microsoft.com/favicon.ico" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='https://img.logo.dev/copilot.microsoft.com?token=pk_free';}else{this.style.display='none';this.nextSibling.style.display='flex';}" style="width:36px;height:36px;object-fit:contain;border-radius:6px;display:block"><div style="display:none;width:36px;height:36px;border-radius:6px;background:#0078D4;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px">M</div></div>
+          <div class="body">
             <div class="name">Microsoft Copilot</div>
             <div class="urls">copilot.microsoft.com</div>
           </div>
           <div class="dot" style="background:#0078D4"></div>
-        </div></div></div>
+        </div>
+      </div>
+    </section>
+
+<footer>
+  Platforms bijhouden via <code>server/platforms.py</code> · Logo's dagelijks automatisch bijgewerkt via logo.dev API ·
+  Handmatige refresh: <code>POST /api/logos/refresh</code>
+</footer>
+
 </body>
 </html>
