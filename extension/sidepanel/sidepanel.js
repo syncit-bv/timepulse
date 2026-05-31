@@ -516,7 +516,7 @@ $('cfgTestBtn').addEventListener('click', async () => {
   label.textContent = 'Testen…';
   dot.className = 'conn-dot pulse';
   try {
-    const resp = await fetch(`${url}/api/health`, { signal: AbortSignal.timeout(5000) });
+    const resp = await fetch(`${url}/api/config`, { signal: AbortSignal.timeout(15000) });
     if (resp.ok) {
       dot.className = 'conn-dot ok';
       label.textContent = 'Verbonden';
@@ -525,7 +525,7 @@ $('cfgTestBtn').addEventListener('click', async () => {
     }
   } catch (err) {
     dot.className = 'conn-dot error';
-    label.textContent = `Niet bereikbaar`;
+    label.textContent = 'Niet bereikbaar';
   }
 });
 
