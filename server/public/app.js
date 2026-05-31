@@ -7,9 +7,100 @@ let currentDate = localDateString();
 let gapsData = [];
 let projects = [];
 
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+let _sb = null;       // Supabase client
+let _token = null;    // current access token
+
+async function initAuth() {
+  let config;
+  try {
+    config = await fetch('/api/config').then(r => r.json());
+  } catch {
+    return; // server unreachable — will fail gracefully elsewhere
+  }
+
+  if (!config.supabaseUrl || !config.supabaseAnonKey) return;
+
+  _sb = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+  // Check for an existing session first
+  const { data: { session } } = await _sb.auth.getSession();
+  if (session) {
+    _token = session.access_token;
+    showUserInfo(session.user.email);
+    return;
+  }
+
+  // No session — show login and wait for the user to sign in
+  showLoginOverlay();
+  await new Promise(resolve => {
+    const { data: { subscription } } = _sb.auth.onAuthStateChange((event, sess) => {
+      if (sess) {
+        _token = sess.access_token;
+        showUserInfo(sess.user.email);
+        $('loginOverlay').style.display = 'none';
+        subscription.unsubscribe();
+        resolve();
+      }
+    });
+  });
+}
+
+function showLoginOverlay() {
+  $('loginOverlay').style.display = 'flex';
+  $('loginEmail').focus();
+}
+
+function showUserInfo(email) {
+  $('userEmail').textContent = email;
+  $('userInfo').style.display = 'block';
+}
+
+$('loginBtn').addEventListener('click', async () => {
+  const email    = $('loginEmail').value.trim();
+  const password = $('loginPassword').value;
+  const errEl    = $('loginError');
+  errEl.style.display = 'none';
+
+  if (!email || !password) {
+    errEl.textContent = 'Vul je e-mailadres en wachtwoord in.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const btn = $('loginBtn');
+  btn.disabled = true;
+  btn.textContent = 'Bezig…';
+
+  try {
+    const { error } = await _sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.style.display = 'block';
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Aanmelden';
+  }
+});
+
+$('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') $('loginBtn').click();
+});
+
+$('logoutBtn').addEventListener('click', async () => {
+  if (_sb) await _sb.auth.signOut();
+  _token = null;
+  $('userInfo').style.display = 'none';
+  showLoginOverlay();
+});
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 async function init() {
+  await initAuth();
+
   // Check for gap pre-select from Chrome extension
   const params = new URLSearchParams(location.search);
   const gapParam = params.get('gap');
@@ -54,19 +145,19 @@ function renderDateLabel() {
 // ─── Health check ─────────────────────────────────────────────────────────────
 
 async function loadHealth() {
+  const el = $('harvestStatus');
   try {
     const h = await fetchJson('/api/health');
-    const el = $('harvestStatus');
     if (h.harvest) {
-      el.textContent = 'Harvest verbonden';
+      el.innerHTML = '<span class="dot"></span> Harvest verbonden';
       el.className = 'harvest-status ok';
     } else {
-      el.textContent = 'Harvest niet ingesteld';
+      el.innerHTML = '<span class="dot"></span> Harvest niet ingesteld';
       el.className = 'harvest-status error';
     }
   } catch {
-    $('harvestStatus').textContent = 'Server niet bereikbaar';
-    $('harvestStatus').className = 'harvest-status error';
+    el.innerHTML = '<span class="dot"></span> Server niet bereikbaar';
+    el.className = 'harvest-status error';
   }
 }
 
@@ -357,11 +448,29 @@ $('modalSubmit').addEventListener('click', async () => {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-async function fetchJson(url, options) {
-  const resp = await fetch(url, options);
+async function fetchJson(url, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  if (_token) headers['Authorization'] = `Bearer ${_token}`;
+
+  let resp = await fetch(url, { ...options, headers });
+
+  // Try a token refresh once on 401
+  if (resp.status === 401 && _sb) {
+    const { data } = await _sb.auth.refreshSession();
+    if (data.session) {
+      _token = data.session.access_token;
+      headers['Authorization'] = `Bearer ${_token}`;
+      resp = await fetch(url, { ...options, headers });
+    } else {
+      _token = null;
+      showLoginOverlay();
+      throw new Error('Aanmelden vereist');
+    }
+  }
+
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({ error: resp.statusText }));
-    throw new Error(err.error || resp.statusText);
+    throw new Error(err.detail || err.error || resp.statusText);
   }
   return resp.json();
 }

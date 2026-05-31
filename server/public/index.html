@@ -20,7 +20,11 @@
       </nav>
       <div class="sidebar-footer">
         <div class="harvest-status" id="harvestStatus">
-          <span class="dot"></span> Harvest laden…
+          <span class="dot"></span> Laden…
+        </div>
+        <div id="userInfo" style="display:none;margin-top:8px;">
+          <div id="userEmail" class="user-email"></div>
+          <button id="logoutBtn" class="logout-btn">Afmelden</button>
         </div>
       </div>
     </aside>
@@ -112,6 +116,25 @@
     </div>
   </div>
 
+  <!-- Login overlay -->
+  <div class="login-overlay" id="loginOverlay" style="display:none">
+    <div class="login-card">
+      <div class="login-logo">⏱ TimePulse</div>
+      <h2 class="login-title">Aanmelden</h2>
+      <div class="form-row">
+        <label>E-mailadres</label>
+        <input type="email" id="loginEmail" placeholder="je@email.com" autocomplete="email" />
+      </div>
+      <div class="form-row">
+        <label>Wachtwoord</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <div id="loginError" class="login-error" style="display:none"></div>
+      <button class="btn-primary" id="loginBtn" style="width:100%;margin-top:4px">Aanmelden</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
