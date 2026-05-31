@@ -61,10 +61,12 @@ function renderCustomPlatforms(list) {
     const li = document.createElement('li');
     li.className = 'platform-item';
     li.dataset.slug = p.slug;
+    const cats = (p.categories || [p.category] || ['custom']).join(', ');
     li.innerHTML = `
       <span class="swatch" style="background:${p.color || '#6B7280'}"></span>
       <span class="name">${p.name}</span>
       <span class="urls">${p.urls.join(', ')}</span>
+      <span class="urls" style="color:#6366f1">${cats}</span>
       <span class="del" title="Verwijderen">×</span>
     `;
     li.querySelector('.del').addEventListener('click', () => removePlatform(p.slug));
@@ -92,7 +94,9 @@ $('addPlatformBtn').addEventListener('click', async () => {
 
   const { tp_custom_platforms = [] } = await chrome.storage.local.get('tp_custom_platforms');
   const existing = tp_custom_platforms.findIndex(p => p.slug === slug);
-  const entry = { slug, name, urls, color: '#6B7280', category: 'custom' };
+  const categories = [...document.querySelectorAll('#catCheckboxes input:checked')].map(el => el.value);
+  if (!categories.length) categories.push('custom');
+  const entry = { slug, name, urls, color: '#6B7280', categories };
   if (existing >= 0) tp_custom_platforms[existing] = entry;
   else tp_custom_platforms.push(entry);
 

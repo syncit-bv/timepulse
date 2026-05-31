@@ -74,11 +74,11 @@ class NewEntry(BaseModel):
     notes:      str = ""
 
 class CustomPlatform(BaseModel):
-    slug:     str
-    name:     str
-    urls:     list[str]
-    color:    str = "#6B7280"
-    category: str = "custom"
+    slug:       str
+    name:       str
+    urls:       list[str]
+    color:      str       = "#6B7280"
+    categories: list[str] = ["custom"]
 
 # ── Health ────────────────────────────────────────────────────────────────────
 

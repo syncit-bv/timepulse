@@ -72,6 +72,8 @@
     .add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
     .add-form input { margin: 0; }
     .add-form .full { grid-column: 1 / -1; }
+    .cat-check { font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 3px 8px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
+    .cat-check input { accent-color: #6366f1; }
     .platforms-empty { font-size: 13px; color: #94a3b8; margin-top: 12px; }
   </style>
 </head>
@@ -117,6 +119,20 @@
       <input type="text" id="newSlug"  placeholder="slug (bijv. teamleader)" />
       <input type="text" id="newName"  placeholder="Naam (bijv. Teamleader)" />
       <input type="text" id="newUrls"  placeholder="URL-patronen, kommagescheiden (bijv. teamleader.eu)" class="full" />
+      <div class="full" style="display:flex;flex-direction:column;gap:4px">
+        <label style="font-size:12px;color:#64748b;margin:0">Categorieën (meerdere mogelijk)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" id="catCheckboxes">
+          <label class="cat-check"><input type="checkbox" value="timetracking"> Tijdregistratie</label>
+          <label class="cat-check"><input type="checkbox" value="crm"> CRM</label>
+          <label class="cat-check"><input type="checkbox" value="project"> Project</label>
+          <label class="cat-check"><input type="checkbox" value="accounting"> Boekhouding</label>
+          <label class="cat-check"><input type="checkbox" value="communication"> Communicatie</label>
+          <label class="cat-check"><input type="checkbox" value="document"> Documenten</label>
+          <label class="cat-check"><input type="checkbox" value="design"> Design</label>
+          <label class="cat-check"><input type="checkbox" value="development"> Development</label>
+          <label class="cat-check"><input type="checkbox" value="ai"> AI</label>
+        </div>
+      </div>
       <button class="btn-secondary full" id="addPlatformBtn" style="margin:0">Platform toevoegen</button>
     </div>
     <p class="hint" style="margin-top:8px">Tip: de server beheert de volledige lijst via <code>/api/platforms/custom</code>. Eigen platforms hier worden lokaal opgeslagen en bij de volgende sync naar de NAS gestuurd.</p>
