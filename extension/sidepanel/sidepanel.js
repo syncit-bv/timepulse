@@ -405,12 +405,7 @@ async function loadData() {
 
   // Active tab
   const session = await chrome.storage.session.get('activeTab');
-  const tab = session.activeTab;
-  if (tab?.url) {
-    $('nowBar').style.display = 'block';
-    $('nowDomain').textContent = tab.domain || tab.url;
-    $('nowTitle').textContent  = tab.title || '';
-  }
+  updateNowBar(session.activeTab);
 
   dot.className = 'conn-dot pulse';
   label.textContent = 'Verbinden…';
@@ -562,7 +557,26 @@ $('optFooterBtn').addEventListener('click', () => showView('settings'));
 $('refreshBtn').addEventListener('click', () => loadData());
 $('setupBtn')?.addEventListener('click', () => showView('settings'));
 
+// ─── Real-time active tab updates ────────────────────────────────────────────
+function updateNowBar(tab) {
+  if (tab?.url) {
+    $('nowBar').style.display = 'block';
+    $('nowDomain').textContent = tab.domain || tab.url;
+    $('nowTitle').textContent  = tab.title || '';
+  } else {
+    $('nowBar').style.display = 'none';
+  }
+}
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'session' && changes.activeTab) {
+    updateNowBar(changes.activeTab.newValue);
+  }
+});
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
+let _refreshTimer = null;
+
 async function init() {
   const { workdayHours } = await getSettings();
   WORKDAY_HOURS = workdayHours;
@@ -580,6 +594,13 @@ async function init() {
 
   showView('main');
   await loadData();
+
+  // Auto-refresh Harvest data every 60 seconds
+  if (_refreshTimer) clearInterval(_refreshTimer);
+  _refreshTimer = setInterval(async () => {
+    const { accessToken: t } = await getSession();
+    if (t) loadData();
+  }, 60_000);
 }
 
 init();
