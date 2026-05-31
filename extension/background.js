@@ -6,8 +6,14 @@
 
 const HEARTBEAT_ALARM  = 'timepulse-heartbeat';
 const PLATFORMS_ALARM  = 'timepulse-platforms';
+const POMODORO_ALARM   = 'timepulse-pomodoro';
 const HEARTBEAT_PERIOD_MINUTES = 0.5;  // every 30 seconds
 const PLATFORMS_PERIOD_MINUTES = 1440; // refresh platforms once a day
+
+const POMO_WORK_SECS   = 25 * 60;
+const POMO_SHORT_BREAK =  5 * 60;
+const POMO_LONG_BREAK  = 15 * 60;
+const POMO_CYCLE_LONG  = 4;
 const IDLE_THRESHOLD_SECONDS   = 300;  // 5 minutes fallback (Chrome idle API)
 const BUFFER_MAX = 2880;               // ~24 hours of 30s heartbeats
 
@@ -32,8 +38,18 @@ function setupAlarms() {
       chrome.alarms.create(PLATFORMS_ALARM, { periodInMinutes: PLATFORMS_PERIOD_MINUTES });
     }
   });
+  chrome.alarms.get(POMODORO_ALARM, (existing) => {
+    if (!existing) {
+      chrome.alarms.create(POMODORO_ALARM, { periodInMinutes: 1 });
+    }
+  });
   chrome.idle.setDetectionInterval(IDLE_THRESHOLD_SECONDS);
-  // Fetch platforms immediately on first run
+
+  // Open side panel when action icon is clicked
+  if (chrome.sidePanel?.setPanelBehavior) {
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+  }
+
   refreshPlatforms();
 }
 
@@ -61,14 +77,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   // Update active tab with richer content-script data
   setActiveTab({
-    url: data.url,
-    domain: data.domain,
-    title: data.title,
-    favicon: data.favicon || null,
+    url:          data.url,
+    domain:       data.domain,
+    title:        data.title,
+    favicon:      data.favicon      || null,
     activityType: data.activityType || 'website',
-    docName: data.docName || null,
-    tabId: sender.tab?.id,
-    since: Date.now(),
+    docName:      data.docName      || null,
+    ticketId:     data.ticketId     || null,
+    emailData:    data.emailData    || null,
+    focusScore:   data.focusScore   ?? null,
+    tabId:        sender.tab?.id,
+    since:        Date.now(),
     lastContentReport: Date.now()
   });
 });
@@ -116,7 +135,8 @@ chrome.idle.onStateChanged.addListener(async (state) => {
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === HEARTBEAT_ALARM) await tick();
-  if (alarm.name === PLATFORMS_ALARM)  await refreshPlatforms();
+  if (alarm.name === PLATFORMS_ALARM) await refreshPlatforms();
+  if (alarm.name === POMODORO_ALARM)  await checkPomodoroAlarm();
 });
 
 async function tick() {
@@ -134,13 +154,15 @@ async function tick() {
   }
 
   const heartbeat = {
-    url: tab.url,
-    domain: tab.domain,
-    title: tab.title,
-    favicon: tab.favicon || null,
+    url:          tab.url,
+    domain:       tab.domain,
+    title:        tab.title,
+    favicon:      tab.favicon      || null,
     activityType: tab.activityType || 'website',
-    docName: tab.docName || null,
-    timestamp: Date.now()
+    docName:      tab.docName      || null,
+    ticketId:     tab.ticketId     || null,
+    focusScore:   tab.focusScore   ?? null,
+    timestamp:    Date.now()
   };
 
   const { serverUrl } = await getSettings();
@@ -190,9 +212,11 @@ async function flushBuffer(serverUrl) {
 
 async function postToServer(serverUrl, path, data) {
   try {
+    const token   = await getAuthToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
     const resp = await fetch(`${serverUrl}${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers,
       body: JSON.stringify(data),
       signal: AbortSignal.timeout(5000)
     });
@@ -211,6 +235,37 @@ async function updateBadge(status) {
   } else {
     chrome.action.setBadgeText({ text: '' });
   }
+}
+
+// ─── Pomodoro notifications ───────────────────────────────────────────────────
+
+async function checkPomodoroAlarm() {
+  const { pomodoroState } = await chrome.storage.session.get('pomodoroState');
+  if (!pomodoroState?.running) return;
+
+  const elapsed = pomodoroState.elapsed + (Date.now() - pomodoroState.startedAt) / 1000;
+  if (elapsed < pomodoroState.duration) return;
+
+  const wasWork  = pomodoroState.phase === 'work';
+  const newCycle = wasWork ? pomodoroState.cycle + 1 : pomodoroState.cycle;
+  const isLong   = wasWork && newCycle % POMO_CYCLE_LONG === 0;
+
+  const newState = wasWork
+    ? { running: false, phase: isLong ? 'long' : 'short', cycle: newCycle,
+        startedAt: 0, duration: isLong ? POMO_LONG_BREAK : POMO_SHORT_BREAK, elapsed: 0 }
+    : { running: false, phase: 'work', cycle: pomodoroState.cycle,
+        startedAt: 0, duration: POMO_WORK_SECS, elapsed: 0 };
+
+  await chrome.storage.session.set({ pomodoroState: newState });
+
+  chrome.notifications.create('timepulse-pomo-done', {
+    type: 'basic',
+    iconUrl: 'icons/icon128.png',
+    title: wasWork ? '🍅 Pomodoro voltooid!' : '⏰ Pauze voorbij!',
+    message: wasWork
+      ? `Focus #${newCycle} afgerond. ${isLong ? 'Lange pauze!' : 'Korte pauze!'}`
+      : 'Klaar voor een nieuwe focussessie?'
+  });
 }
 
 // ─── Platform definitions ─────────────────────────────────────────────────────
@@ -233,12 +288,23 @@ async function refreshPlatforms() {
   }
 }
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
+// ─── Settings & auth ──────────────────────────────────────────────────────────
 
 async function getSettings() {
   const result = await chrome.storage.sync.get(['serverUrl']);
   return { serverUrl: (result.serverUrl || '').replace(/\/$/, '') };
 }
+
+async function getAuthToken() {
+  const r = await chrome.storage.local.get('tp_access_token');
+  return r.tp_access_token || null;
+}
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === 'setAuthToken') {
+    chrome.storage.local.set({ tp_access_token: message.token || null });
+  }
+});
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

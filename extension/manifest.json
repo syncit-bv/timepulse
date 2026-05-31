@@ -8,7 +8,10 @@
     "idle",
     "alarms",
     "storage",
-    "activeTab"
+    "activeTab",
+    "sidePanel",
+    "notifications",
+    "identity"
   ],
   "host_permissions": [
     "http://*/*",
@@ -32,8 +35,10 @@
       "all_frames": false
     }
   ],
+  "side_panel": {
+    "default_path": "sidepanel/sidepanel.html"
+  },
   "action": {
-    "default_popup": "popup/popup.html",
     "default_title": "TimePulse",
     "default_icon": {
       "16": "icons/icon16.png",

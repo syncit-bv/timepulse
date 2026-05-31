@@ -796,11 +796,14 @@
     return el;
   }
 
-  async function fetchNas(path, options) {
-    const resp = await fetch(`${serverUrl}${path}`, { ...options, signal: AbortSignal.timeout(8000) });
+  async function fetchNas(path, options = {}) {
+    const { tp_access_token } = await chrome.storage.local.get('tp_access_token');
+    const headers = { ...(options.headers || {}) };
+    if (tp_access_token) headers['Authorization'] = `Bearer ${tp_access_token}`;
+    const resp = await fetch(`${serverUrl}${path}`, { ...options, headers, signal: AbortSignal.timeout(8000) });
     if (!resp.ok) {
       const body = await resp.json().catch(() => ({}));
-      throw new Error(body.error || `HTTP ${resp.status}`);
+      throw new Error(body.detail || body.error || `HTTP ${resp.status}`);
     }
     return resp.json();
   }

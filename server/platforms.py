@@ -1,15 +1,12 @@
 """
 Platform definitions: maps URL patterns to activity type labels.
 
-The NAS serves these via GET /api/platforms. The Chrome extension
-fetches them on startup and uses them for dynamic URL classification
-instead of a hardcoded list in content.js.
-
-Users can add custom platforms via the /api/platforms/custom endpoint.
+Custom platforms are now stored per-user in PostgreSQL (db.py).
+This module only exposes the built-in platform list.
 """
 
 import json
-from db import get_conn
+from typing import Optional
 
 _CA = "https://cdn.clockassist.com/icons"  # ClockAssist icon CDN
 
@@ -124,72 +121,14 @@ def _logo_dev_url(platform: dict) -> str:
     return f"https://img.logo.dev/{domain}?token=pk_free"
 
 
-def get_platforms() -> list:
-    """Returns merged list: builtins + user-defined custom platforms.
-
-    Normalises legacy single-category entries and injects logo_dev fallback URLs.
-    """
-    custom = _load_custom()
-    slugs_custom = {p["slug"] for p in custom}
-    merged = [p for p in BUILTIN_PLATFORMS if p["slug"] not in slugs_custom]
-    merged.extend(custom)
-    for p in merged:
-        # Normalise: old single-category field → categories list
+def get_builtin_platforms() -> list:
+    """Returns built-in platform list with normalised categories and logo_dev URLs."""
+    platforms = []
+    for p in BUILTIN_PLATFORMS:
+        p = dict(p)
         if "categories" not in p:
             p["categories"] = [p.get("category", "custom")]
-        # Inject logo.dev fallback
         if "logo_dev" not in p:
             p["logo_dev"] = _logo_dev_url(p)
-    return merged
-
-
-def get_custom_platforms() -> list:
-    return _load_custom()
-
-
-def save_custom_platform(platform: dict):
-    # Normalise incoming data
-    if "category" in platform and "categories" not in platform:
-        platform["categories"] = [platform.pop("category")]
-    custom = _load_custom()
-    existing = next((i for i, p in enumerate(custom) if p["slug"] == platform["slug"]), None)
-    if existing is not None:
-        custom[existing] = platform
-    else:
-        custom.append(platform)
-    _save_custom(custom)
-
-
-def delete_custom_platform(slug: str):
-    custom = [p for p in _load_custom() if p["slug"] != slug]
-    _save_custom(custom)
-
-
-# ── Persistence ───────────────────────────────────────────────────────────────
-
-def _ensure_settings_table():
-    with get_conn() as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS settings (
-                key   TEXT PRIMARY KEY,
-                value TEXT NOT NULL
-            )
-        """)
-
-
-def _load_custom() -> list:
-    _ensure_settings_table()
-    with get_conn() as conn:
-        row = conn.execute("SELECT value FROM settings WHERE key = 'custom_platforms'").fetchone()
-        if row:
-            return json.loads(row["value"])
-        return []
-
-
-def _save_custom(platforms: list):
-    _ensure_settings_table()
-    with get_conn() as conn:
-        conn.execute(
-            "INSERT OR REPLACE INTO settings (key, value) VALUES ('custom_platforms', ?)",
-            (json.dumps(platforms),)
-        )
+        platforms.append(p)
+    return platforms
