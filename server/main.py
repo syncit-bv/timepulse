@@ -6,14 +6,17 @@ from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+import asyncio
+
 import db
 import harvest as hv
+import logo_cache as lc
 import platforms as pf
 from gap_analysis import build_sessions, find_gaps
 
@@ -28,6 +31,10 @@ async def lifespan(app: FastAPI):
     print(f"TimePulse server draait op http://0.0.0.0:{port}")
     if not hv.is_configured():
         warnings.warn("Harvest niet geconfigureerd — stel HARVEST_ACCESS_TOKEN en HARVEST_ACCOUNT_ID in .env in")
+    if lc.is_configured():
+        asyncio.create_task(lc.daily_refresh_loop(pf.get_platforms))
+    else:
+        warnings.warn("Logo.dev niet geconfigureerd — stel LOGO_DEV_TOKEN in .env in voor automatische logo's")
     yield
 
 app = FastAPI(lifespan=lifespan)
@@ -87,6 +94,7 @@ def health():
     return {
         "ok":      True,
         "harvest": hv.is_configured(),
+        "logos":   lc.is_configured(),
         "version": "1.0.0",
         "time":    datetime.utcnow().isoformat() + "Z",
     }
@@ -147,8 +155,14 @@ async def tasks(project_id: int):
 # ── Platforms ────────────────────────────────────────────────────────────────
 
 @app.get("/api/platforms")
-def get_platforms():
-    return {"platforms": pf.get_platforms()}
+def get_platforms(request: Request):
+    platforms = pf.get_platforms()
+    # Inject local logo URL when a cached file exists
+    base = str(request.base_url).rstrip("/")
+    for p in platforms:
+        if lc.logo_exists(p["slug"]):
+            p["icon"] = f"{base}/api/logos/{p['slug']}"
+    return {"platforms": platforms}
 
 @app.get("/api/platforms/custom")
 def get_custom_platforms():
@@ -165,6 +179,23 @@ def save_custom_platform(body: CustomPlatform):
 def delete_custom_platform(slug: str):
     pf.delete_custom_platform(slug)
     return {"ok": True}
+
+@app.get("/api/logos/{slug}")
+def serve_logo(slug: str):
+    path = lc.logo_path(slug)
+    if not path.exists():
+        raise HTTPException(404, "Logo niet gevonden")
+    return FileResponse(str(path), media_type="image/png")
+
+@app.post("/api/logos/refresh")
+async def refresh_logos(force: bool = False):
+    if not lc.is_configured():
+        raise HTTPException(503, "LOGO_DEV_TOKEN niet ingesteld")
+    summary = await lc.refresh_all(pf.get_platforms(), force=force)
+    ok   = sum(1 for v in summary.values() if v == "ok")
+    fail = sum(1 for v in summary.values() if v == "fail")
+    skip = sum(1 for v in summary.values() if v == "skip")
+    return {"ok": True, "new": ok, "cached": skip, "failed": fail, "detail": summary}
 
 # ── Gap analyse ───────────────────────────────────────────────────────────────
 
