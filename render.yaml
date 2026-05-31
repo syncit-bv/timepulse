@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: timepulse-api
+    env: python
+    region: frankfurt
+    plan: free
+    rootDir: server
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: HARVEST_CLIENT_ID
+        sync: false
+      - key: HARVEST_CLIENT_SECRET
+        sync: false
+      - key: HARVEST_REDIRECT_URI
+        sync: false
+      - key: LOGO_DEV_TOKEN
+        sync: false
+      - key: PUBLIC_URL
+        sync: false

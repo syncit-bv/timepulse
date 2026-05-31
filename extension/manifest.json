@@ -10,7 +10,8 @@
     "storage",
     "activeTab",
     "sidePanel",
-    "notifications"
+    "notifications",
+    "identity"
   ],
   "host_permissions": [
     "http://*/*",

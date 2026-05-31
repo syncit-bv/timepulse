@@ -1,5 +1,214 @@
 const $ = id => document.getElementById(id);
-let WORKDAY_HOURS = 8; // overridden from storage on init
+let WORKDAY_HOURS = 8;
+
+// ─── Auth ──────────────────────────────────────────────────────────────────────
+
+let _supabaseUrl = '';
+let _supabaseAnonKey = '';
+
+async function loadSupabaseConfig() {
+  const cached = await chrome.storage.local.get(['tp_supabase_url', 'tp_supabase_anon_key']);
+  if (cached.tp_supabase_url) {
+    _supabaseUrl    = cached.tp_supabase_url;
+    _supabaseAnonKey = cached.tp_supabase_anon_key || '';
+    return;
+  }
+  const { serverUrl } = await getSettings();
+  if (!serverUrl) return;
+  try {
+    const resp = await fetch(`${serverUrl}/api/config`, { signal: AbortSignal.timeout(5000) });
+    if (resp.ok) {
+      const cfg = await resp.json();
+      _supabaseUrl     = cfg.supabaseUrl    || '';
+      _supabaseAnonKey = cfg.supabaseAnonKey || '';
+      await chrome.storage.local.set({
+        tp_supabase_url:      _supabaseUrl,
+        tp_supabase_anon_key: _supabaseAnonKey,
+      });
+    }
+  } catch {}
+}
+
+async function getSession() {
+  const r = await chrome.storage.local.get(['tp_access_token', 'tp_refresh_token', 'tp_user']);
+  return { accessToken: r.tp_access_token || null, refreshToken: r.tp_refresh_token || null, user: r.tp_user || null };
+}
+
+async function saveSession(accessToken, refreshToken, user) {
+  await chrome.storage.local.set({ tp_access_token: accessToken, tp_refresh_token: refreshToken, tp_user: user });
+  // Push token to background so heartbeats include it
+  chrome.runtime.sendMessage({ action: 'setAuthToken', token: accessToken }).catch(() => {});
+}
+
+async function clearSession() {
+  await chrome.storage.local.remove(['tp_access_token', 'tp_refresh_token', 'tp_user']);
+  chrome.runtime.sendMessage({ action: 'setAuthToken', token: null }).catch(() => {});
+}
+
+async function supabaseFetch(path, options = {}) {
+  const resp = await fetch(`${_supabaseUrl}/auth/v1${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': _supabaseAnonKey,
+      ...(options.headers || {}),
+    },
+    signal: AbortSignal.timeout(8000),
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.error_description || data.msg || `HTTP ${resp.status}`);
+  return data;
+}
+
+async function signInEmail(email, password) {
+  const data = await supabaseFetch('/token?grant_type=password', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+  await saveSession(data.access_token, data.refresh_token, data.user);
+  return data.user;
+}
+
+async function signUpEmail(email, password) {
+  const data = await supabaseFetch('/signup', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+  // Supabase stuurt een bevestigingsmail — nog geen sessie
+  return data;
+}
+
+async function signInWithProvider(provider) {
+  const redirectUrl = chrome.identity.getRedirectURL();
+  const url = `${_supabaseUrl}/auth/v1/authorize?` + new URLSearchParams({
+    provider,
+    redirect_to: redirectUrl,
+  });
+  return new Promise((resolve, reject) => {
+    chrome.identity.launchWebAuthFlow({ url, interactive: true }, async (responseUrl) => {
+      if (chrome.runtime.lastError || !responseUrl) {
+        return reject(new Error('Login geannuleerd'));
+      }
+      try {
+        const hash   = new URL(responseUrl).hash.slice(1);
+        const params = new URLSearchParams(hash);
+        const token  = params.get('access_token');
+        const refresh = params.get('refresh_token');
+        if (!token) return reject(new Error('Geen token ontvangen'));
+
+        // Haal user info op
+        const user = await supabaseFetch('/user', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        await saveSession(token, refresh, user);
+        resolve(user);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  });
+}
+
+async function signOut() {
+  const { accessToken } = await getSession();
+  if (accessToken) {
+    supabaseFetch('/logout', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${accessToken}` },
+    }).catch(() => {});
+  }
+  await clearSession();
+}
+
+// ─── Auth UI ──────────────────────────────────────────────────────────────────
+
+function setAuthTab(tab) {
+  ['signin', 'signup'].forEach(t => {
+    $(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`)?.classList.toggle('active', t === tab);
+    $(`auth${t.charAt(0).toUpperCase() + t.slice(1)}`)?.style && ($(`auth${t.charAt(0).toUpperCase() + t.slice(1)}`).style.display = t === tab ? 'block' : 'none');
+  });
+}
+
+function showAuthError(msg) {
+  const el = $('authError');
+  el.textContent = msg;
+  el.style.display = 'block';
+  $('authSuccess').style.display = 'none';
+}
+
+function showAuthSuccess(msg) {
+  const el = $('authSuccess');
+  el.textContent = msg;
+  el.style.display = 'block';
+  $('authError').style.display = 'none';
+}
+
+function hideAuthMessages() {
+  $('authError').style.display = 'none';
+  $('authSuccess').style.display = 'none';
+}
+
+$('tabSignin').addEventListener('click', () => { setAuthTab('signin'); hideAuthMessages(); });
+$('tabSignup').addEventListener('click', () => { setAuthTab('signup'); hideAuthMessages(); });
+
+$('siBtn').addEventListener('click', async () => {
+  const email    = $('siEmail').value.trim();
+  const password = $('siPassword').value;
+  if (!email || !password) return showAuthError('Vul e-mail en wachtwoord in.');
+  $('siBtn').textContent = 'Bezig…';
+  $('siBtn').disabled = true;
+  try {
+    await loadSupabaseConfig();
+    await signInEmail(email, password);
+    showView('main');
+    await loadData();
+  } catch (e) {
+    showAuthError(e.message);
+  } finally {
+    $('siBtn').textContent = 'Aanmelden';
+    $('siBtn').disabled = false;
+  }
+});
+
+$('suBtn').addEventListener('click', async () => {
+  const email    = $('suEmail').value.trim();
+  const password = $('suPassword').value;
+  if (!email || password.length < 8) return showAuthError('Gebruik een geldig e-mail en wachtwoord van min. 8 tekens.');
+  $('suBtn').textContent = 'Bezig…';
+  $('suBtn').disabled = true;
+  try {
+    await loadSupabaseConfig();
+    await signUpEmail(email, password);
+    showAuthSuccess('Account aangemaakt! Bevestig je e-mailadres en meld je daarna aan.');
+    setAuthTab('signin');
+  } catch (e) {
+    showAuthError(e.message);
+  } finally {
+    $('suBtn').textContent = 'Account aanmaken';
+    $('suBtn').disabled = false;
+  }
+});
+
+async function handleSocialLogin(provider) {
+  hideAuthMessages();
+  try {
+    await loadSupabaseConfig();
+    await signInWithProvider(provider);
+    showView('main');
+    await loadData();
+  } catch (e) {
+    showAuthError(e.message);
+  }
+}
+
+$('googleBtn').addEventListener('click',    () => handleSocialLogin('google'));
+$('microsoftBtn').addEventListener('click', () => handleSocialLogin('azure'));
+
+// Uitloggen — toegankelijk via instellingen
+async function handleSignOut() {
+  await signOut();
+  showView('auth');
+}
 
 // ─── Pomodoro ─────────────────────────────────────────────────────────────────
 const POMO_WORK_SECS    = 25 * 60;
@@ -150,11 +359,14 @@ async function getSettings() {
 }
 
 // ─── Fetch helper ─────────────────────────────────────────────────────────────
-async function fetchJson(url, options) {
-  const resp = await fetch(url, { ...options, signal: AbortSignal.timeout(6000) });
+async function fetchJson(url, options = {}) {
+  const { accessToken } = await getSession();
+  const headers = { ...(options.headers || {}) };
+  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+  const resp = await fetch(url, { ...options, headers, signal: AbortSignal.timeout(6000) });
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
-    throw new Error(err.error || `HTTP ${resp.status}`);
+    throw new Error(err.detail || err.error || `HTTP ${resp.status}`);
   }
   return resp.json();
 }
@@ -274,13 +486,13 @@ function renderGaps(gaps, serverUrl) {
 
 // ─── View navigation ──────────────────────────────────────────────────────────
 function showView(name) {
+  $('viewAuth').style.display     = name === 'auth'     ? 'flex' : 'none';
   $('viewMain').style.display     = name === 'main'     ? 'flex' : 'none';
   $('viewSettings').style.display = name === 'settings' ? 'flex' : 'none';
-  $('backBtn').style.display      = name === 'main'     ? 'none' : 'inline-block';
+  $('backBtn').style.display      = name === 'main'     ? 'none' : (name === 'auth' ? 'none' : 'inline-block');
   $('optBtn').style.display       = name === 'main'     ? 'inline-block' : 'none';
   $('connDot').style.display      = name === 'main'     ? 'inline-block' : 'none';
   $('connLabel').style.display    = name === 'main'     ? 'inline-block' : 'none';
-  // Refresh button only relevant on main view
   $('refreshBtn').style.display   = name === 'main'     ? 'block' : 'none';
   if (name === 'settings') loadSettingsForm();
 }
@@ -293,6 +505,8 @@ async function loadSettingsForm() {
   $('cfgExcluded').value   = (r.excludedDomains || []).join('\n');
   $('cfgTestLabel').textContent = 'Nog niet getest';
   $('cfgDot').className = 'conn-dot';
+  const { user } = await getSession();
+  $('cfgUserEmail').textContent = user?.email || '–';
 }
 
 $('cfgTestBtn').addEventListener('click', async () => {
@@ -332,6 +546,10 @@ $('cfgSaveBtn').addEventListener('click', async () => {
 
 $('backBtn').addEventListener('click', () => showView('main'));
 
+$('cfgSignOutBtn').addEventListener('click', async () => {
+  if (confirm('Wil je uitloggen?')) await handleSignOut();
+});
+
 // ─── Navigation ───────────────────────────────────────────────────────────────
 $('dashBtn').addEventListener('click', async () => {
   const { serverUrl } = await getSettings();
@@ -349,10 +567,18 @@ async function init() {
   const { workdayHours } = await getSettings();
   WORKDAY_HOURS = workdayHours;
 
-  showView('main');
   await renderPomo();
-  const state = await getPomoState();
-  if (state.running) startPomoInterval();
+  const pomoState = await getPomoState();
+  if (pomoState.running) startPomoInterval();
+
+  // Check of de gebruiker al ingelogd is
+  const { accessToken } = await getSession();
+  if (!accessToken) {
+    showView('auth');
+    return;
+  }
+
+  showView('main');
   await loadData();
 }
 

@@ -207,9 +207,11 @@ async function flushBuffer(serverUrl) {
 
 async function postToServer(serverUrl, path, data) {
   try {
+    const token   = await getAuthToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
     const resp = await fetch(`${serverUrl}${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers,
       body: JSON.stringify(data),
       signal: AbortSignal.timeout(5000)
     });
@@ -281,12 +283,23 @@ async function refreshPlatforms() {
   }
 }
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
+// ─── Settings & auth ──────────────────────────────────────────────────────────
 
 async function getSettings() {
   const result = await chrome.storage.sync.get(['serverUrl']);
   return { serverUrl: (result.serverUrl || '').replace(/\/$/, '') };
 }
+
+async function getAuthToken() {
+  const r = await chrome.storage.local.get('tp_access_token');
+  return r.tp_access_token || null;
+}
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === 'setAuthToken') {
+    chrome.storage.local.set({ tp_access_token: message.token || null });
+  }
+});
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
