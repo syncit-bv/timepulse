@@ -26,8 +26,14 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await db.init()
-    print(f"TimePulse API gestart")
+    try:
+        await db.init()
+    except Exception as e:
+        import traceback
+        print(f"[FATAL] Database startup failed: {type(e).__name__}: {e}", flush=True)
+        traceback.print_exc()
+        raise
+    print("TimePulse API gestart", flush=True)
     if lc.is_configured():
         asyncio.create_task(lc.daily_refresh_loop(pf.get_builtin_platforms))
     yield

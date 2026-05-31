@@ -3,9 +3,14 @@ from __future__ import annotations
 import asyncpg
 import json
 import os
+import ssl
 
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 _pool: asyncpg.Pool | None = None
+
+_ssl_ctx = ssl.create_default_context()
+_ssl_ctx.check_hostname = False
+_ssl_ctx.verify_mode = ssl.CERT_NONE
 
 
 async def _init_conn(conn):
@@ -15,8 +20,10 @@ async def _init_conn(conn):
 
 async def init():
     global _pool
+    if not DATABASE_URL:
+        raise RuntimeError("DATABASE_URL environment variable is not set")
     _pool = await asyncpg.create_pool(
-        DATABASE_URL, min_size=2, max_size=10, init=_init_conn
+        DATABASE_URL, min_size=2, max_size=10, init=_init_conn, ssl=_ssl_ctx
     )
 
 
