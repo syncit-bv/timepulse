@@ -1,123 +1,49 @@
 const $ = id => document.getElementById(id);
 let WORKDAY_HOURS = 8;
 
-// ─── Auth ──────────────────────────────────────────────────────────────────────
+const SERVER_URL = 'https://timepulse-api.onrender.com';
 
-let _supabaseUrl = '';
-let _supabaseAnonKey = '';
+// ─── Auth — officiële Supabase JS client ──────────────────────────────────────
 
-async function loadSupabaseConfig() {
+let _sb = null;
+
+async function initSupabase() {
+  if (_sb) return 'ok';
+
   const cached = await chrome.storage.local.get(['tp_supabase_url', 'tp_supabase_anon_key']);
-  if (cached.tp_supabase_url) {
-    _supabaseUrl    = cached.tp_supabase_url;
-    _supabaseAnonKey = cached.tp_supabase_anon_key || '';
-    return;
-  }
-  const { serverUrl } = await getSettings();
-  if (!serverUrl) return;
-  try {
-    const resp = await fetch(`${serverUrl}/api/config`, { signal: AbortSignal.timeout(5000) });
-    if (resp.ok) {
+  let sbUrl = cached.tp_supabase_url || '';
+  let sbKey = cached.tp_supabase_anon_key || '';
+
+  if (!sbUrl) {
+    try {
+      const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(8000) });
+      if (!resp.ok) return 'server-error';
       const cfg = await resp.json();
-      _supabaseUrl     = cfg.supabaseUrl    || '';
-      _supabaseAnonKey = cfg.supabaseAnonKey || '';
-      await chrome.storage.local.set({
-        tp_supabase_url:      _supabaseUrl,
-        tp_supabase_anon_key: _supabaseAnonKey,
-      });
+      sbUrl = cfg.supabaseUrl    || '';
+      sbKey = cfg.supabaseAnonKey || '';
+      if (sbUrl) await chrome.storage.local.set({ tp_supabase_url: sbUrl, tp_supabase_anon_key: sbKey });
+    } catch {
+      return 'server-unreachable';
     }
-  } catch {}
-}
-
-async function getSession() {
-  const r = await chrome.storage.local.get(['tp_access_token', 'tp_refresh_token', 'tp_user']);
-  return { accessToken: r.tp_access_token || null, refreshToken: r.tp_refresh_token || null, user: r.tp_user || null };
-}
-
-async function saveSession(accessToken, refreshToken, user) {
-  await chrome.storage.local.set({ tp_access_token: accessToken, tp_refresh_token: refreshToken, tp_user: user });
-  // Push token to background so heartbeats include it
-  chrome.runtime.sendMessage({ action: 'setAuthToken', token: accessToken }).catch(() => {});
-}
-
-async function clearSession() {
-  await chrome.storage.local.remove(['tp_access_token', 'tp_refresh_token', 'tp_user']);
-  chrome.runtime.sendMessage({ action: 'setAuthToken', token: null }).catch(() => {});
-}
-
-async function supabaseFetch(path, options = {}) {
-  const resp = await fetch(`${_supabaseUrl}/auth/v1${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': _supabaseAnonKey,
-      ...(options.headers || {}),
-    },
-    signal: AbortSignal.timeout(8000),
-  });
-  const data = await resp.json();
-  if (!resp.ok) throw new Error(data.error_description || data.msg || `HTTP ${resp.status}`);
-  return data;
-}
-
-async function signInEmail(email, password) {
-  const data = await supabaseFetch('/token?grant_type=password', {
-    method: 'POST',
-    body: JSON.stringify({ email, password }),
-  });
-  await saveSession(data.access_token, data.refresh_token, data.user);
-  return data.user;
-}
-
-async function signUpEmail(email, password) {
-  const data = await supabaseFetch('/signup', {
-    method: 'POST',
-    body: JSON.stringify({ email, password }),
-  });
-  // Supabase stuurt een bevestigingsmail — nog geen sessie
-  return data;
-}
-
-async function signInWithProvider(provider) {
-  const redirectUrl = chrome.identity.getRedirectURL();
-  const url = `${_supabaseUrl}/auth/v1/authorize?` + new URLSearchParams({
-    provider,
-    redirect_to: redirectUrl,
-  });
-  return new Promise((resolve, reject) => {
-    chrome.identity.launchWebAuthFlow({ url, interactive: true }, async (responseUrl) => {
-      if (chrome.runtime.lastError || !responseUrl) {
-        return reject(new Error('Login geannuleerd'));
-      }
-      try {
-        const hash   = new URL(responseUrl).hash.slice(1);
-        const params = new URLSearchParams(hash);
-        const token  = params.get('access_token');
-        const refresh = params.get('refresh_token');
-        if (!token) return reject(new Error('Geen token ontvangen'));
-
-        // Haal user info op
-        const user = await supabaseFetch('/user', {
-          headers: { 'Authorization': `Bearer ${token}` },
-        });
-        await saveSession(token, refresh, user);
-        resolve(user);
-      } catch (e) {
-        reject(e);
-      }
-    });
-  });
-}
-
-async function signOut() {
-  const { accessToken } = await getSession();
-  if (accessToken) {
-    supabaseFetch('/logout', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${accessToken}` },
-    }).catch(() => {});
   }
-  await clearSession();
+
+  if (!sbUrl || !sbKey) return 'no-config';
+
+  _sb = supabase.createClient(sbUrl, sbKey);
+
+  // Sync token naar chrome.storage + background worker bij elke auth-wijziging
+  _sb.auth.onAuthStateChange(async (event, session) => {
+    if (session) {
+      await chrome.storage.local.set({ tp_access_token: session.access_token });
+      chrome.runtime.sendMessage({ action: 'setAuthToken', token: session.access_token }).catch(() => {});
+    }
+    if (event === 'SIGNED_OUT') {
+      await chrome.storage.local.remove(['tp_access_token']);
+      chrome.runtime.sendMessage({ action: 'setAuthToken', token: null }).catch(() => {});
+    }
+  });
+
+  return 'ok';
 }
 
 // ─── Auth UI ──────────────────────────────────────────────────────────────────
@@ -125,7 +51,8 @@ async function signOut() {
 function setAuthTab(tab) {
   ['signin', 'signup'].forEach(t => {
     $(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`)?.classList.toggle('active', t === tab);
-    $(`auth${t.charAt(0).toUpperCase() + t.slice(1)}`)?.style && ($(`auth${t.charAt(0).toUpperCase() + t.slice(1)}`).style.display = t === tab ? 'block' : 'none');
+    const form = $(`auth${t.charAt(0).toUpperCase() + t.slice(1)}`);
+    if (form) form.style.display = t === tab ? 'block' : 'none';
   });
 }
 
@@ -158,8 +85,10 @@ $('siBtn').addEventListener('click', async () => {
   $('siBtn').textContent = 'Bezig…';
   $('siBtn').disabled = true;
   try {
-    await loadSupabaseConfig();
-    await signInEmail(email, password);
+    const status = await initSupabase();
+    if (status !== 'ok') return showAuthError(supabaseStatusMsg(status));
+    const { error } = await _sb.auth.signInWithPassword({ email, password });
+    if (error) return showAuthError(error.message);
     showView('main');
     await loadData();
   } catch (e) {
@@ -177,8 +106,10 @@ $('suBtn').addEventListener('click', async () => {
   $('suBtn').textContent = 'Bezig…';
   $('suBtn').disabled = true;
   try {
-    await loadSupabaseConfig();
-    await signUpEmail(email, password);
+    const status = await initSupabase();
+    if (status !== 'ok') return showAuthError(supabaseStatusMsg(status));
+    const { error } = await _sb.auth.signUp({ email, password });
+    if (error) return showAuthError(error.message);
     showAuthSuccess('Account aangemaakt! Bevestig je e-mailadres en meld je daarna aan.');
     setAuthTab('signin');
   } catch (e) {
@@ -189,11 +120,47 @@ $('suBtn').addEventListener('click', async () => {
   }
 });
 
+function supabaseStatusMsg(status) {
+  if (status === 'server-unreachable') return 'TimePulse server niet bereikbaar. Controleer je internetverbinding.';
+  if (status === 'server-error') return 'TimePulse server geeft een fout. Probeer later opnieuw.';
+  return 'Kan geen verbinding maken met de TimePulse server.';
+}
+
 async function handleSocialLogin(provider) {
   hideAuthMessages();
   try {
-    await loadSupabaseConfig();
-    await signInWithProvider(provider);
+    const status = await initSupabase();
+    if (status !== 'ok') return showAuthError(supabaseStatusMsg(status));
+    // Vraag de OAuth-URL op zonder redirect (we sturen zelf via chrome.identity)
+    const { data, error } = await _sb.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: chrome.identity.getRedirectURL(), skipBrowserRedirect: true },
+    });
+    if (error) throw error;
+
+    const responseUrl = await new Promise((resolve, reject) => {
+      chrome.identity.launchWebAuthFlow({ url: data.url, interactive: true }, url => {
+        if (chrome.runtime.lastError || !url) reject(new Error('Login geannuleerd'));
+        else resolve(url);
+      });
+    });
+
+    // Supabase stuurt tokens in de hash (implicit flow) of een code (PKCE)
+    const parsed   = new URL(responseUrl);
+    const hashAt   = new URLSearchParams(parsed.hash.slice(1)).get('access_token');
+    const hashRt   = new URLSearchParams(parsed.hash.slice(1)).get('refresh_token');
+    const pkceCode = parsed.searchParams.get('code');
+
+    if (hashAt && hashRt) {
+      const { error: se } = await _sb.auth.setSession({ access_token: hashAt, refresh_token: hashRt });
+      if (se) throw se;
+    } else if (pkceCode) {
+      const { error: ce } = await _sb.auth.exchangeCodeForSession(pkceCode);
+      if (ce) throw ce;
+    } else {
+      throw new Error('Geen token ontvangen van provider');
+    }
+
     showView('main');
     await loadData();
   } catch (e) {
@@ -204,9 +171,8 @@ async function handleSocialLogin(provider) {
 $('googleBtn').addEventListener('click',    () => handleSocialLogin('google'));
 $('microsoftBtn').addEventListener('click', () => handleSocialLogin('azure'));
 
-// Uitloggen — toegankelijk via instellingen
 async function handleSignOut() {
-  await signOut();
+  if (_sb) await _sb.auth.signOut();
   showView('auth');
 }
 
@@ -351,18 +317,19 @@ chrome.storage.onChanged.addListener((changes, area) => {
 
 // ─── Settings ─────────────────────────────────────────────────────────────────
 async function getSettings() {
-  const r = await chrome.storage.sync.get(['serverUrl', 'workdayHours']);
-  return {
-    serverUrl:    (r.serverUrl || '').replace(/\/$/, ''),
-    workdayHours: r.workdayHours || 8
-  };
+  const r = await chrome.storage.sync.get(['workdayHours']);
+  return { workdayHours: r.workdayHours || 8 };
 }
 
 // ─── Fetch helper ─────────────────────────────────────────────────────────────
 async function fetchJson(url, options = {}) {
-  const { accessToken } = await getSession();
+  let token = null;
+  if (_sb) {
+    const { data: { session } } = await _sb.auth.getSession();
+    token = session?.access_token || null;
+  }
   const headers = { ...(options.headers || {}) };
-  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+  if (token) headers['Authorization'] = `Bearer ${token}`;
   const resp = await fetch(url, { ...options, headers, signal: AbortSignal.timeout(6000) });
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
@@ -389,19 +356,30 @@ function escHtml(str) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
-// ─── Harvest + connection ─────────────────────────────────────────────────────
-async function loadData() {
-  const { serverUrl } = await getSettings();
+// ─── Server status ────────────────────────────────────────────────────────────
+async function checkServerStatus() {
   const dot   = $('connDot');
   const label = $('connLabel');
-
-  if (!serverUrl) {
-    $('setupPrompt').style.display = 'block';
-    $('heroHours').textContent = '–';
+  dot.className = 'conn-dot pulse';
+  label.textContent = 'Verbinden…';
+  try {
+    const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) {
+      dot.className = 'conn-dot ok';
+      label.textContent = 'Server online';
+    } else {
+      throw new Error(`HTTP ${resp.status}`);
+    }
+  } catch {
     dot.className = 'conn-dot error';
-    label.textContent = 'Niet ingesteld';
-    return;
+    label.textContent = 'Server offline';
   }
+}
+
+// ─── Harvest + connection ─────────────────────────────────────────────────────
+async function loadData() {
+  const dot   = $('connDot');
+  const label = $('connLabel');
 
   // Active tab
   const session = await chrome.storage.session.get('activeTab');
@@ -412,16 +390,16 @@ async function loadData() {
 
   try {
     const [health, today, gapData] = await Promise.all([
-      fetchJson(`${serverUrl}/api/health`),
-      fetchJson(`${serverUrl}/api/today`).catch(() => ({ entries: [] })),
-      fetchJson(`${serverUrl}/api/gaps`).catch(() => ({ gaps: [] }))
+      fetchJson(`${SERVER_URL}/api/health`),
+      fetchJson(`${SERVER_URL}/api/today`).catch(() => ({ entries: [] })),
+      fetchJson(`${SERVER_URL}/api/gaps`).catch(() => ({ gaps: [] }))
     ]);
 
     dot.className = 'conn-dot ok';
     label.textContent = health.harvest ? 'Harvest verbonden' : 'Harvest niet ingesteld';
 
     renderHero(today.entries || []);
-    renderGaps(gapData.gaps || [], serverUrl);
+    renderGaps(gapData.gaps || []);
   } catch {
     dot.className = 'conn-dot error';
     label.textContent = 'Niet bereikbaar';
@@ -452,7 +430,7 @@ function renderHero(entries) {
   });
 }
 
-function renderGaps(gaps, serverUrl) {
+function renderGaps(gaps) {
   const section = $('gapsSection');
   if (!gaps.length) { section.style.display = 'none'; return; }
   section.style.display = 'block';
@@ -471,9 +449,8 @@ function renderGaps(gaps, serverUrl) {
       </div>
       <button class="gap-cta">Boeken →</button>
     `;
-    item.querySelector('.gap-cta').addEventListener('click', async () => {
-      const { serverUrl: url } = await getSettings();
-      chrome.tabs.create({ url: `${url}/?gap=${gap.start}-${gap.end}` });
+    item.querySelector('.gap-cta').addEventListener('click', () => {
+      chrome.tabs.create({ url: `${SERVER_URL}/?gap=${gap.start}-${gap.end}` });
     });
     list.appendChild(item);
   });
@@ -484,58 +461,37 @@ function showView(name) {
   $('viewAuth').style.display     = name === 'auth'     ? 'flex' : 'none';
   $('viewMain').style.display     = name === 'main'     ? 'flex' : 'none';
   $('viewSettings').style.display = name === 'settings' ? 'flex' : 'none';
-  $('backBtn').style.display      = name === 'main'     ? 'none' : (name === 'auth' ? 'none' : 'inline-block');
+  $('backBtn').style.display      = name === 'settings' ? 'inline-block' : 'none';
   $('optBtn').style.display       = name === 'main'     ? 'inline-block' : 'none';
-  $('connDot').style.display      = name === 'main'     ? 'inline-block' : 'none';
-  $('connLabel').style.display    = name === 'main'     ? 'inline-block' : 'none';
   $('refreshBtn').style.display   = name === 'main'     ? 'inline-block' : 'none';
-  // Footer nav hidden on auth view (not logged in)
-  const loggedIn = name !== 'auth';
-  $('dashBtn').style.display      = loggedIn ? 'inline-block' : 'none';
-  $('optFooterBtn').style.display = loggedIn ? 'inline-block' : 'none';
+  // Server LED always visible; Dashboard only when logged in
+  $('dashBtn').style.display      = name === 'main' ? 'inline-block' : 'none';
   if (name === 'settings') loadSettingsForm();
 }
 
 async function loadSettingsForm() {
-  const r = await chrome.storage.sync.get(['serverUrl', 'idleMinutes', 'excludedDomains', 'workdayHours']);
-  $('cfgServerUrl').value  = r.serverUrl || '';
-  $('cfgIdle').value       = r.idleMinutes || 5;
-  $('cfgWorkday').value    = r.workdayHours || 8;
-  $('cfgExcluded').value   = (r.excludedDomains || []).join('\n');
-  $('cfgTestLabel').textContent = 'Nog niet getest';
-  $('cfgDot').className = 'conn-dot';
-  const { user } = await getSession();
-  $('cfgUserEmail').textContent = user?.email || '–';
+  const r = await chrome.storage.sync.get(['idleMinutes', 'excludedDomains', 'workdayHours']);
+  $('cfgIdle').value     = r.idleMinutes || 5;
+  $('cfgWorkday').value  = r.workdayHours || 8;
+  $('cfgExcluded').value = (r.excludedDomains || []).join('\n');
+
+  if (_sb) {
+    const { data: { session } } = await _sb.auth.getSession();
+    $('cfgUserEmail').textContent = session?.user?.email || '–';
+    $('cfgSignOutBtn').style.display = session ? 'inline-block' : 'none';
+  } else {
+    $('cfgUserEmail').textContent = 'Niet aangemeld';
+    $('cfgSignOutBtn').style.display = 'none';
+  }
 }
 
-$('cfgTestBtn').addEventListener('click', async () => {
-  const url = $('cfgServerUrl').value.trim().replace(/\/$/, '');
-  const dot   = $('cfgDot');
-  const label = $('cfgTestLabel');
-  label.textContent = 'Testen…';
-  dot.className = 'conn-dot pulse';
-  try {
-    const resp = await fetch(`${url}/api/config`, { signal: AbortSignal.timeout(15000) });
-    if (resp.ok) {
-      dot.className = 'conn-dot ok';
-      label.textContent = 'Verbonden';
-    } else {
-      throw new Error(`HTTP ${resp.status}`);
-    }
-  } catch (err) {
-    dot.className = 'conn-dot error';
-    label.textContent = 'Niet bereikbaar';
-  }
-});
-
 $('cfgSaveBtn').addEventListener('click', async () => {
-  const serverUrl      = $('cfgServerUrl').value.trim().replace(/\/$/, '');
   const idleMinutes    = parseInt($('cfgIdle').value, 10) || 5;
   const workdayHours   = parseFloat($('cfgWorkday').value) || 8;
   const excludedDomains = $('cfgExcluded').value
     .split('\n').map(s => s.trim()).filter(Boolean);
 
-  await chrome.storage.sync.set({ serverUrl, idleMinutes, workdayHours, excludedDomains });
+  await chrome.storage.sync.set({ idleMinutes, workdayHours, excludedDomains });
 
   const msg = $('cfgSavedMsg');
   msg.textContent = 'Opgeslagen!';
@@ -551,12 +507,12 @@ $('cfgSignOutBtn').addEventListener('click', async () => {
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 $('dashBtn').addEventListener('click', async () => {
-  const { serverUrl } = await getSettings();
-  if (!serverUrl) { showView('settings'); return; }
-  const { accessToken, refreshToken } = await getSession();
-  let url = serverUrl;
-  if (accessToken) {
-    url += `/#access_token=${encodeURIComponent(accessToken)}&refresh_token=${encodeURIComponent(refreshToken || '')}&token_type=bearer&type=magiclink`;
+  let url = SERVER_URL;
+  if (_sb) {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session?.access_token) {
+      url += `/#access_token=${encodeURIComponent(session.access_token)}&refresh_token=${encodeURIComponent(session.refresh_token || '')}&token_type=bearer&type=magiclink`;
+    }
   }
   chrome.tabs.create({ url });
 });
@@ -564,7 +520,6 @@ $('dashBtn').addEventListener('click', async () => {
 $('optBtn').addEventListener('click', () => showView('settings'));
 $('optFooterBtn').addEventListener('click', () => showView('settings'));
 $('refreshBtn').addEventListener('click', () => loadData());
-$('setupBtn')?.addEventListener('click', () => showView('settings'));
 
 // ─── Real-time active tab updates ────────────────────────────────────────────
 function updateNowBar(tab) {
@@ -594,9 +549,18 @@ async function init() {
   const pomoState = await getPomoState();
   if (pomoState.running) startPomoInterval();
 
-  // Check of de gebruiker al ingelogd is
-  const { accessToken } = await getSession();
-  if (!accessToken) {
+  // Ping server immediately to show LED status (non-blocking for auth init)
+  checkServerStatus();
+
+  // Initialiseer Supabase client en controleer bestaande sessie
+  const sbStatus = await initSupabase();
+  let hasSession = false;
+  if (_sb) {
+    const { data: { session } } = await _sb.auth.getSession();
+    hasSession = !!session;
+  }
+
+  if (!hasSession) {
     showView('auth');
     return;
   }
@@ -607,8 +571,10 @@ async function init() {
   // Auto-refresh Harvest data every 60 seconds
   if (_refreshTimer) clearInterval(_refreshTimer);
   _refreshTimer = setInterval(async () => {
-    const { accessToken: t } = await getSession();
-    if (t) loadData();
+    if (_sb) {
+      const { data: { session } } = await _sb.auth.getSession();
+      if (session) loadData();
+    }
   }, 60_000);
 }
 
