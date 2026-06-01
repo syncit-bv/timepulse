@@ -17,14 +17,33 @@ async function initAuth() {
   try {
     config = await fetch('/api/config').then(r => r.json());
   } catch {
-    return; // server unreachable — will fail gracefully elsewhere
+    return;
   }
 
   if (!config.supabaseUrl || !config.supabaseAnonKey) return;
 
   _sb = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
 
-  // Check for an existing session first
+  // Keep token fresh after background refreshes
+  _sb.auth.onAuthStateChange((event, sess) => {
+    if (event === 'TOKEN_REFRESHED' && sess) _token = sess.access_token;
+  });
+
+  // Tokens passed in URL hash by the Chrome extension dashboard button
+  const hash = new URLSearchParams(window.location.hash.slice(1));
+  const hashAt = hash.get('access_token');
+  const hashRt = hash.get('refresh_token');
+  if (hashAt) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    const { data } = await _sb.auth.setSession({ access_token: hashAt, refresh_token: hashRt || '' });
+    if (data.session) {
+      _token = data.session.access_token;
+      showUserInfo(data.session.user.email);
+      return;
+    }
+  }
+
+  // Check for an existing persistent session
   const { data: { session } } = await _sb.auth.getSession();
   if (session) {
     _token = session.access_token;
@@ -32,7 +51,7 @@ async function initAuth() {
     return;
   }
 
-  // No session — show login and wait for the user to sign in
+  // No session — show login and wait
   showLoginOverlay();
   await new Promise(resolve => {
     const { data: { subscription } } = _sb.auth.onAuthStateChange((event, sess) => {

@@ -488,7 +488,11 @@ function showView(name) {
   $('optBtn').style.display       = name === 'main'     ? 'inline-block' : 'none';
   $('connDot').style.display      = name === 'main'     ? 'inline-block' : 'none';
   $('connLabel').style.display    = name === 'main'     ? 'inline-block' : 'none';
-  $('refreshBtn').style.display   = name === 'main'     ? 'block' : 'none';
+  $('refreshBtn').style.display   = name === 'main'     ? 'inline-block' : 'none';
+  // Footer nav hidden on auth view (not logged in)
+  const loggedIn = name !== 'auth';
+  $('dashBtn').style.display      = loggedIn ? 'inline-block' : 'none';
+  $('optFooterBtn').style.display = loggedIn ? 'inline-block' : 'none';
   if (name === 'settings') loadSettingsForm();
 }
 
@@ -548,8 +552,13 @@ $('cfgSignOutBtn').addEventListener('click', async () => {
 // ─── Navigation ───────────────────────────────────────────────────────────────
 $('dashBtn').addEventListener('click', async () => {
   const { serverUrl } = await getSettings();
-  if (serverUrl) chrome.tabs.create({ url: serverUrl });
-  else showView('settings');
+  if (!serverUrl) { showView('settings'); return; }
+  const { accessToken, refreshToken } = await getSession();
+  let url = serverUrl;
+  if (accessToken) {
+    url += `/#access_token=${encodeURIComponent(accessToken)}&refresh_token=${encodeURIComponent(refreshToken || '')}&token_type=bearer&type=magiclink`;
+  }
+  chrome.tabs.create({ url });
 });
 
 $('optBtn').addEventListener('click', () => showView('settings'));
