@@ -9,28 +9,28 @@ let WORKDAY_HOURS = 8;
 let _sb = null;
 
 async function initSupabase() {
-  if (_sb) return true;
+  if (_sb) return 'ok';
 
-  // Haal Supabase URL + key op (gecached of via /api/config)
   const cached = await chrome.storage.local.get(['tp_supabase_url', 'tp_supabase_anon_key']);
   let sbUrl = cached.tp_supabase_url || '';
   let sbKey = cached.tp_supabase_anon_key || '';
 
   if (!sbUrl) {
     const { serverUrl } = await getSettings();
-    if (!serverUrl) return false;
+    if (!serverUrl) return 'no-server-url';
     try {
       const resp = await fetch(`${serverUrl}/api/config`, { signal: AbortSignal.timeout(8000) });
-      if (resp.ok) {
-        const cfg = await resp.json();
-        sbUrl = cfg.supabaseUrl    || '';
-        sbKey = cfg.supabaseAnonKey || '';
-        if (sbUrl) await chrome.storage.local.set({ tp_supabase_url: sbUrl, tp_supabase_anon_key: sbKey });
-      }
-    } catch {}
+      if (!resp.ok) return 'server-error';
+      const cfg = await resp.json();
+      sbUrl = cfg.supabaseUrl    || '';
+      sbKey = cfg.supabaseAnonKey || '';
+      if (sbUrl) await chrome.storage.local.set({ tp_supabase_url: sbUrl, tp_supabase_anon_key: sbKey });
+    } catch {
+      return 'server-unreachable';
+    }
   }
 
-  if (!sbUrl || !sbKey) return false;
+  if (!sbUrl || !sbKey) return 'no-config';
 
   _sb = supabase.createClient(sbUrl, sbKey);
 
@@ -46,7 +46,7 @@ async function initSupabase() {
     }
   });
 
-  return true;
+  return 'ok';
 }
 
 // ─── Auth UI ──────────────────────────────────────────────────────────────────
@@ -88,7 +88,8 @@ $('siBtn').addEventListener('click', async () => {
   $('siBtn').textContent = 'Bezig…';
   $('siBtn').disabled = true;
   try {
-    await initSupabase();
+    const status = await initSupabase();
+    if (status !== 'ok') return showAuthError(supabaseStatusMsg(status));
     const { error } = await _sb.auth.signInWithPassword({ email, password });
     if (error) return showAuthError(error.message);
     showView('main');
@@ -108,7 +109,8 @@ $('suBtn').addEventListener('click', async () => {
   $('suBtn').textContent = 'Bezig…';
   $('suBtn').disabled = true;
   try {
-    await initSupabase();
+    const status = await initSupabase();
+    if (status !== 'ok') return showAuthError(supabaseStatusMsg(status));
     const { error } = await _sb.auth.signUp({ email, password });
     if (error) return showAuthError(error.message);
     showAuthSuccess('Account aangemaakt! Bevestig je e-mailadres en meld je daarna aan.');
@@ -121,10 +123,17 @@ $('suBtn').addEventListener('click', async () => {
   }
 });
 
+function supabaseStatusMsg(status) {
+  if (status === 'no-server-url') return 'Stel eerst de server-URL in via ⚙ Instellingen.';
+  if (status === 'server-unreachable') return 'Server niet bereikbaar. Controleer de URL in Instellingen.';
+  return 'Kan geen verbinding maken met de server. Controleer de instellingen.';
+}
+
 async function handleSocialLogin(provider) {
   hideAuthMessages();
   try {
-    await initSupabase();
+    const status = await initSupabase();
+    if (status !== 'ok') return showAuthError(supabaseStatusMsg(status));
     // Vraag de OAuth-URL op zonder redirect (we sturen zelf via chrome.identity)
     const { data, error } = await _sb.auth.signInWithOAuth({
       provider,
@@ -453,10 +462,9 @@ function showView(name) {
   $('connDot').style.display      = name === 'main'     ? 'inline-block' : 'none';
   $('connLabel').style.display    = name === 'main'     ? 'inline-block' : 'none';
   $('refreshBtn').style.display   = name === 'main'     ? 'inline-block' : 'none';
-  // Footer nav hidden on auth view (not logged in)
+  // Dashboard alleen zichtbaar als aangemeld; Instellingen altijd (server-URL instellen vóór login)
   const loggedIn = name !== 'auth';
   $('dashBtn').style.display      = loggedIn ? 'inline-block' : 'none';
-  $('optFooterBtn').style.display = loggedIn ? 'inline-block' : 'none';
   if (name === 'settings') loadSettingsForm();
 }
 
@@ -468,11 +476,14 @@ async function loadSettingsForm() {
   $('cfgExcluded').value   = (r.excludedDomains || []).join('\n');
   $('cfgTestLabel').textContent = 'Nog niet getest';
   $('cfgDot').className = 'conn-dot';
+
   if (_sb) {
-    const { data: { user } } = await _sb.auth.getUser();
-    $('cfgUserEmail').textContent = user?.email || '–';
+    const { data: { session } } = await _sb.auth.getSession();
+    $('cfgUserEmail').textContent = session?.user?.email || '–';
+    $('cfgSignOutBtn').style.display = session ? 'inline-block' : 'none';
   } else {
-    $('cfgUserEmail').textContent = '–';
+    $('cfgUserEmail').textContent = 'Niet aangemeld';
+    $('cfgSignOutBtn').style.display = 'none';
   }
 }
 
@@ -565,7 +576,12 @@ async function init() {
   if (pomoState.running) startPomoInterval();
 
   // Initialiseer Supabase client en controleer bestaande sessie
-  await initSupabase();
+  const sbStatus = await initSupabase();
+  if (sbStatus === 'no-server-url') {
+    // Nieuwe installatie: stuur gebruiker direct naar instellingen om de server-URL in te stellen
+    showView('settings');
+    return;
+  }
   let hasSession = false;
   if (_sb) {
     const { data: { session } } = await _sb.auth.getSession();
