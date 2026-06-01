@@ -1,123 +1,52 @@
 const $ = id => document.getElementById(id);
 let WORKDAY_HOURS = 8;
 
-// ─── Auth ──────────────────────────────────────────────────────────────────────
+// ─── Auth — officiële Supabase JS client ──────────────────────────────────────
+// De client beheert sessie, token-refresh en opslag automatisch.
+// Na elke auth-event sync'en we het token naar chrome.storage.local zodat
+// de background service worker (heartbeats) het kan gebruiken.
 
-let _supabaseUrl = '';
-let _supabaseAnonKey = '';
+let _sb = null;
 
-async function loadSupabaseConfig() {
+async function initSupabase() {
+  if (_sb) return true;
+
+  // Haal Supabase URL + key op (gecached of via /api/config)
   const cached = await chrome.storage.local.get(['tp_supabase_url', 'tp_supabase_anon_key']);
-  if (cached.tp_supabase_url) {
-    _supabaseUrl    = cached.tp_supabase_url;
-    _supabaseAnonKey = cached.tp_supabase_anon_key || '';
-    return;
+  let sbUrl = cached.tp_supabase_url || '';
+  let sbKey = cached.tp_supabase_anon_key || '';
+
+  if (!sbUrl) {
+    const { serverUrl } = await getSettings();
+    if (!serverUrl) return false;
+    try {
+      const resp = await fetch(`${serverUrl}/api/config`, { signal: AbortSignal.timeout(8000) });
+      if (resp.ok) {
+        const cfg = await resp.json();
+        sbUrl = cfg.supabaseUrl    || '';
+        sbKey = cfg.supabaseAnonKey || '';
+        if (sbUrl) await chrome.storage.local.set({ tp_supabase_url: sbUrl, tp_supabase_anon_key: sbKey });
+      }
+    } catch {}
   }
-  const { serverUrl } = await getSettings();
-  if (!serverUrl) return;
-  try {
-    const resp = await fetch(`${serverUrl}/api/config`, { signal: AbortSignal.timeout(5000) });
-    if (resp.ok) {
-      const cfg = await resp.json();
-      _supabaseUrl     = cfg.supabaseUrl    || '';
-      _supabaseAnonKey = cfg.supabaseAnonKey || '';
-      await chrome.storage.local.set({
-        tp_supabase_url:      _supabaseUrl,
-        tp_supabase_anon_key: _supabaseAnonKey,
-      });
+
+  if (!sbUrl || !sbKey) return false;
+
+  _sb = supabase.createClient(sbUrl, sbKey);
+
+  // Sync token naar chrome.storage + background worker bij elke auth-wijziging
+  _sb.auth.onAuthStateChange(async (event, session) => {
+    if (session) {
+      await chrome.storage.local.set({ tp_access_token: session.access_token });
+      chrome.runtime.sendMessage({ action: 'setAuthToken', token: session.access_token }).catch(() => {});
     }
-  } catch {}
-}
-
-async function getSession() {
-  const r = await chrome.storage.local.get(['tp_access_token', 'tp_refresh_token', 'tp_user']);
-  return { accessToken: r.tp_access_token || null, refreshToken: r.tp_refresh_token || null, user: r.tp_user || null };
-}
-
-async function saveSession(accessToken, refreshToken, user) {
-  await chrome.storage.local.set({ tp_access_token: accessToken, tp_refresh_token: refreshToken, tp_user: user });
-  // Push token to background so heartbeats include it
-  chrome.runtime.sendMessage({ action: 'setAuthToken', token: accessToken }).catch(() => {});
-}
-
-async function clearSession() {
-  await chrome.storage.local.remove(['tp_access_token', 'tp_refresh_token', 'tp_user']);
-  chrome.runtime.sendMessage({ action: 'setAuthToken', token: null }).catch(() => {});
-}
-
-async function supabaseFetch(path, options = {}) {
-  const resp = await fetch(`${_supabaseUrl}/auth/v1${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': _supabaseAnonKey,
-      ...(options.headers || {}),
-    },
-    signal: AbortSignal.timeout(8000),
+    if (event === 'SIGNED_OUT') {
+      await chrome.storage.local.remove(['tp_access_token']);
+      chrome.runtime.sendMessage({ action: 'setAuthToken', token: null }).catch(() => {});
+    }
   });
-  const data = await resp.json();
-  if (!resp.ok) throw new Error(data.error_description || data.msg || `HTTP ${resp.status}`);
-  return data;
-}
 
-async function signInEmail(email, password) {
-  const data = await supabaseFetch('/token?grant_type=password', {
-    method: 'POST',
-    body: JSON.stringify({ email, password }),
-  });
-  await saveSession(data.access_token, data.refresh_token, data.user);
-  return data.user;
-}
-
-async function signUpEmail(email, password) {
-  const data = await supabaseFetch('/signup', {
-    method: 'POST',
-    body: JSON.stringify({ email, password }),
-  });
-  // Supabase stuurt een bevestigingsmail — nog geen sessie
-  return data;
-}
-
-async function signInWithProvider(provider) {
-  const redirectUrl = chrome.identity.getRedirectURL();
-  const url = `${_supabaseUrl}/auth/v1/authorize?` + new URLSearchParams({
-    provider,
-    redirect_to: redirectUrl,
-  });
-  return new Promise((resolve, reject) => {
-    chrome.identity.launchWebAuthFlow({ url, interactive: true }, async (responseUrl) => {
-      if (chrome.runtime.lastError || !responseUrl) {
-        return reject(new Error('Login geannuleerd'));
-      }
-      try {
-        const hash   = new URL(responseUrl).hash.slice(1);
-        const params = new URLSearchParams(hash);
-        const token  = params.get('access_token');
-        const refresh = params.get('refresh_token');
-        if (!token) return reject(new Error('Geen token ontvangen'));
-
-        // Haal user info op
-        const user = await supabaseFetch('/user', {
-          headers: { 'Authorization': `Bearer ${token}` },
-        });
-        await saveSession(token, refresh, user);
-        resolve(user);
-      } catch (e) {
-        reject(e);
-      }
-    });
-  });
-}
-
-async function signOut() {
-  const { accessToken } = await getSession();
-  if (accessToken) {
-    supabaseFetch('/logout', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${accessToken}` },
-    }).catch(() => {});
-  }
-  await clearSession();
+  return true;
 }
 
 // ─── Auth UI ──────────────────────────────────────────────────────────────────
@@ -125,7 +54,8 @@ async function signOut() {
 function setAuthTab(tab) {
   ['signin', 'signup'].forEach(t => {
     $(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`)?.classList.toggle('active', t === tab);
-    $(`auth${t.charAt(0).toUpperCase() + t.slice(1)}`)?.style && ($(`auth${t.charAt(0).toUpperCase() + t.slice(1)}`).style.display = t === tab ? 'block' : 'none');
+    const form = $(`auth${t.charAt(0).toUpperCase() + t.slice(1)}`);
+    if (form) form.style.display = t === tab ? 'block' : 'none';
   });
 }
 
@@ -158,8 +88,9 @@ $('siBtn').addEventListener('click', async () => {
   $('siBtn').textContent = 'Bezig…';
   $('siBtn').disabled = true;
   try {
-    await loadSupabaseConfig();
-    await signInEmail(email, password);
+    await initSupabase();
+    const { error } = await _sb.auth.signInWithPassword({ email, password });
+    if (error) return showAuthError(error.message);
     showView('main');
     await loadData();
   } catch (e) {
@@ -177,8 +108,9 @@ $('suBtn').addEventListener('click', async () => {
   $('suBtn').textContent = 'Bezig…';
   $('suBtn').disabled = true;
   try {
-    await loadSupabaseConfig();
-    await signUpEmail(email, password);
+    await initSupabase();
+    const { error } = await _sb.auth.signUp({ email, password });
+    if (error) return showAuthError(error.message);
     showAuthSuccess('Account aangemaakt! Bevestig je e-mailadres en meld je daarna aan.');
     setAuthTab('signin');
   } catch (e) {
@@ -192,8 +124,37 @@ $('suBtn').addEventListener('click', async () => {
 async function handleSocialLogin(provider) {
   hideAuthMessages();
   try {
-    await loadSupabaseConfig();
-    await signInWithProvider(provider);
+    await initSupabase();
+    // Vraag de OAuth-URL op zonder redirect (we sturen zelf via chrome.identity)
+    const { data, error } = await _sb.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: chrome.identity.getRedirectURL(), skipBrowserRedirect: true },
+    });
+    if (error) throw error;
+
+    const responseUrl = await new Promise((resolve, reject) => {
+      chrome.identity.launchWebAuthFlow({ url: data.url, interactive: true }, url => {
+        if (chrome.runtime.lastError || !url) reject(new Error('Login geannuleerd'));
+        else resolve(url);
+      });
+    });
+
+    // Supabase stuurt tokens in de hash (implicit flow) of een code (PKCE)
+    const parsed   = new URL(responseUrl);
+    const hashAt   = new URLSearchParams(parsed.hash.slice(1)).get('access_token');
+    const hashRt   = new URLSearchParams(parsed.hash.slice(1)).get('refresh_token');
+    const pkceCode = parsed.searchParams.get('code');
+
+    if (hashAt && hashRt) {
+      const { error: se } = await _sb.auth.setSession({ access_token: hashAt, refresh_token: hashRt });
+      if (se) throw se;
+    } else if (pkceCode) {
+      const { error: ce } = await _sb.auth.exchangeCodeForSession(pkceCode);
+      if (ce) throw ce;
+    } else {
+      throw new Error('Geen token ontvangen van provider');
+    }
+
     showView('main');
     await loadData();
   } catch (e) {
@@ -204,9 +165,8 @@ async function handleSocialLogin(provider) {
 $('googleBtn').addEventListener('click',    () => handleSocialLogin('google'));
 $('microsoftBtn').addEventListener('click', () => handleSocialLogin('azure'));
 
-// Uitloggen — toegankelijk via instellingen
 async function handleSignOut() {
-  await signOut();
+  if (_sb) await _sb.auth.signOut();
   showView('auth');
 }
 
@@ -360,9 +320,13 @@ async function getSettings() {
 
 // ─── Fetch helper ─────────────────────────────────────────────────────────────
 async function fetchJson(url, options = {}) {
-  const { accessToken } = await getSession();
+  let token = null;
+  if (_sb) {
+    const { data: { session } } = await _sb.auth.getSession();
+    token = session?.access_token || null;
+  }
   const headers = { ...(options.headers || {}) };
-  if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
+  if (token) headers['Authorization'] = `Bearer ${token}`;
   const resp = await fetch(url, { ...options, headers, signal: AbortSignal.timeout(6000) });
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
@@ -504,8 +468,12 @@ async function loadSettingsForm() {
   $('cfgExcluded').value   = (r.excludedDomains || []).join('\n');
   $('cfgTestLabel').textContent = 'Nog niet getest';
   $('cfgDot').className = 'conn-dot';
-  const { user } = await getSession();
-  $('cfgUserEmail').textContent = user?.email || '–';
+  if (_sb) {
+    const { data: { user } } = await _sb.auth.getUser();
+    $('cfgUserEmail').textContent = user?.email || '–';
+  } else {
+    $('cfgUserEmail').textContent = '–';
+  }
 }
 
 $('cfgTestBtn').addEventListener('click', async () => {
@@ -553,10 +521,12 @@ $('cfgSignOutBtn').addEventListener('click', async () => {
 $('dashBtn').addEventListener('click', async () => {
   const { serverUrl } = await getSettings();
   if (!serverUrl) { showView('settings'); return; }
-  const { accessToken, refreshToken } = await getSession();
   let url = serverUrl;
-  if (accessToken) {
-    url += `/#access_token=${encodeURIComponent(accessToken)}&refresh_token=${encodeURIComponent(refreshToken || '')}&token_type=bearer&type=magiclink`;
+  if (_sb) {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session?.access_token) {
+      url += `/#access_token=${encodeURIComponent(session.access_token)}&refresh_token=${encodeURIComponent(session.refresh_token || '')}&token_type=bearer&type=magiclink`;
+    }
   }
   chrome.tabs.create({ url });
 });
@@ -594,9 +564,15 @@ async function init() {
   const pomoState = await getPomoState();
   if (pomoState.running) startPomoInterval();
 
-  // Check of de gebruiker al ingelogd is
-  const { accessToken } = await getSession();
-  if (!accessToken) {
+  // Initialiseer Supabase client en controleer bestaande sessie
+  await initSupabase();
+  let hasSession = false;
+  if (_sb) {
+    const { data: { session } } = await _sb.auth.getSession();
+    hasSession = !!session;
+  }
+
+  if (!hasSession) {
     showView('auth');
     return;
   }
@@ -604,11 +580,13 @@ async function init() {
   showView('main');
   await loadData();
 
-  // Auto-refresh Harvest data every 60 seconds
+  // Auto-refresh Harvest data every 60 seconds (token refresh wordt automatisch gedaan door Supabase)
   if (_refreshTimer) clearInterval(_refreshTimer);
   _refreshTimer = setInterval(async () => {
-    const { accessToken: t } = await getSession();
-    if (t) loadData();
+    if (_sb) {
+      const { data: { session } } = await _sb.auth.getSession();
+      if (session) loadData();
+    }
   }, 60_000);
 }
 
