@@ -22,28 +22,35 @@ async function initAuth() {
 
   if (!config.supabaseUrl || !config.supabaseAnonKey) return;
 
-  _sb = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+  // detectSessionInUrl: false — we handle the URL hash manually below to
+  // avoid a race condition with Supabase's own async hash processing.
+  _sb = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
+    auth: { detectSessionInUrl: false }
+  });
 
-  // Keep token fresh after background refreshes
+  // Keep token current after background refreshes
   _sb.auth.onAuthStateChange((event, sess) => {
     if (event === 'TOKEN_REFRESHED' && sess) _token = sess.access_token;
   });
 
-  // Tokens passed in URL hash by the Chrome extension dashboard button
-  const hash = new URLSearchParams(window.location.hash.slice(1));
-  const hashAt = hash.get('access_token');
-  const hashRt = hash.get('refresh_token');
-  if (hashAt) {
+  // Tokens passed in URL hash by the Chrome extension's Dashboard button.
+  // Format: #access_token=...&refresh_token=...&token_type=bearer&type=magiclink
+  const hashParams = new URLSearchParams(window.location.hash.slice(1));
+  const at = hashParams.get('access_token');
+  const rt = hashParams.get('refresh_token');
+  if (at) {
+    // Strip hash immediately so it's not visible in the address bar
     history.replaceState(null, '', window.location.pathname + window.location.search);
-    const { data } = await _sb.auth.setSession({ access_token: hashAt, refresh_token: hashRt || '' });
-    if (data.session) {
+    const { data, error } = await _sb.auth.setSession({ access_token: at, refresh_token: rt || '' });
+    if (!error && data.session) {
       _token = data.session.access_token;
       showUserInfo(data.session.user.email);
       return;
     }
+    // Token invalid / expired → fall through to login form
   }
 
-  // Check for an existing persistent session
+  // Check for a persisted session in localStorage (returning visitor)
   const { data: { session } } = await _sb.auth.getSession();
   if (session) {
     _token = session.access_token;
@@ -51,7 +58,7 @@ async function initAuth() {
     return;
   }
 
-  // No session — show login and wait
+  // No session at all — show login form and wait
   showLoginOverlay();
   await new Promise(resolve => {
     const { data: { subscription } } = _sb.auth.onAuthStateChange((event, sess) => {
