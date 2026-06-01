@@ -32,7 +32,7 @@ $('testBtn').addEventListener('click', async () => {
   dot.className = 'connection-dot';
 
   try {
-    const resp = await fetch(`${serverUrl}/api/health`, { signal: AbortSignal.timeout(5000) });
+    const resp = await fetch(`${serverUrl}/api/config`, { signal: AbortSignal.timeout(5000) });
     if (resp.ok) {
       dot.className = 'connection-dot ok';
       label.textContent = 'Verbonden';

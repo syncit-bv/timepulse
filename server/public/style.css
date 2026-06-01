@@ -354,3 +354,63 @@ textarea { resize: vertical; }
   cursor: pointer;
 }
 .btn-secondary:hover { background: var(--border); }
+
+/* ─── User / logout ─── */
+
+.user-email {
+  font-size: 11px;
+  color: var(--subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 190px;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 2px 0;
+  margin-top: 2px;
+  font-family: inherit;
+}
+.logout-btn:hover { color: var(--red); }
+
+/* ─── Login overlay ─── */
+
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(4px);
+}
+
+.login-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 36px 40px;
+  width: 380px;
+  max-width: 95vw;
+  box-shadow: 0 24px 80px rgba(0,0,0,.25);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-logo { font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
+.login-title { font-size: 18px; font-weight: 700; margin-top: -4px; }
+
+.login-error {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
