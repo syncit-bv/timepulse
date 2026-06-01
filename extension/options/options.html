@@ -79,20 +79,15 @@
 </head>
 <body>
   <h1>TimePulse</h1>
-  <p class="subtitle">Verbind met jouw NAS-server en stel tijdsregistratie in.</p>
+  <p class="subtitle">Instellingen voor tijdsregistratie.</p>
 
   <div class="card">
     <h2>Server verbinding</h2>
-    <div class="row">
-      <label for="serverUrl">NAS server URL</label>
-      <input type="url" id="serverUrl" placeholder="http://192.168.1.100:3456" />
-      <p class="hint">Het adres van jouw Synology NAS op het lokale netwerk (of extern via DDNS).</p>
-    </div>
-    <div class="actions">
-      <button class="btn-secondary" id="testBtn">Verbinding testen</button>
+    <div class="actions" style="margin-top:0">
       <span class="connection-dot" id="connDot"></span>
-      <span id="connection-label">Niet getest</span>
+      <span id="connection-label">Verbinding controleren…</span>
     </div>
+    <p class="hint" style="margin-top:8px">Server: timepulse-api.onrender.com</p>
   </div>
 
   <div class="card">

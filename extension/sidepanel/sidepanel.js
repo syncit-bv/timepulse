@@ -1,10 +1,9 @@
 const $ = id => document.getElementById(id);
 let WORKDAY_HOURS = 8;
 
+const SERVER_URL = 'https://timepulse-api.onrender.com';
+
 // ─── Auth — officiële Supabase JS client ──────────────────────────────────────
-// De client beheert sessie, token-refresh en opslag automatisch.
-// Na elke auth-event sync'en we het token naar chrome.storage.local zodat
-// de background service worker (heartbeats) het kan gebruiken.
 
 let _sb = null;
 
@@ -16,10 +15,8 @@ async function initSupabase() {
   let sbKey = cached.tp_supabase_anon_key || '';
 
   if (!sbUrl) {
-    const { serverUrl } = await getSettings();
-    if (!serverUrl) return 'no-server-url';
     try {
-      const resp = await fetch(`${serverUrl}/api/config`, { signal: AbortSignal.timeout(8000) });
+      const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(8000) });
       if (!resp.ok) return 'server-error';
       const cfg = await resp.json();
       sbUrl = cfg.supabaseUrl    || '';
@@ -124,9 +121,9 @@ $('suBtn').addEventListener('click', async () => {
 });
 
 function supabaseStatusMsg(status) {
-  if (status === 'no-server-url') return 'Stel eerst de server-URL in via ⚙ Instellingen.';
-  if (status === 'server-unreachable') return 'Server niet bereikbaar. Controleer de URL in Instellingen.';
-  return 'Kan geen verbinding maken met de server. Controleer de instellingen.';
+  if (status === 'server-unreachable') return 'TimePulse server niet bereikbaar. Controleer je internetverbinding.';
+  if (status === 'server-error') return 'TimePulse server geeft een fout. Probeer later opnieuw.';
+  return 'Kan geen verbinding maken met de TimePulse server.';
 }
 
 async function handleSocialLogin(provider) {
@@ -320,11 +317,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
 
 // ─── Settings ─────────────────────────────────────────────────────────────────
 async function getSettings() {
-  const r = await chrome.storage.sync.get(['serverUrl', 'workdayHours']);
-  return {
-    serverUrl:    (r.serverUrl || '').replace(/\/$/, ''),
-    workdayHours: r.workdayHours || 8
-  };
+  const r = await chrome.storage.sync.get(['workdayHours']);
+  return { workdayHours: r.workdayHours || 8 };
 }
 
 // ─── Fetch helper ─────────────────────────────────────────────────────────────
@@ -362,19 +356,30 @@ function escHtml(str) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
-// ─── Harvest + connection ─────────────────────────────────────────────────────
-async function loadData() {
-  const { serverUrl } = await getSettings();
+// ─── Server status ────────────────────────────────────────────────────────────
+async function checkServerStatus() {
   const dot   = $('connDot');
   const label = $('connLabel');
-
-  if (!serverUrl) {
-    $('setupPrompt').style.display = 'block';
-    $('heroHours').textContent = '–';
+  dot.className = 'conn-dot pulse';
+  label.textContent = 'Verbinden…';
+  try {
+    const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) {
+      dot.className = 'conn-dot ok';
+      label.textContent = 'Server online';
+    } else {
+      throw new Error(`HTTP ${resp.status}`);
+    }
+  } catch {
     dot.className = 'conn-dot error';
-    label.textContent = 'Niet ingesteld';
-    return;
+    label.textContent = 'Server offline';
   }
+}
+
+// ─── Harvest + connection ─────────────────────────────────────────────────────
+async function loadData() {
+  const dot   = $('connDot');
+  const label = $('connLabel');
 
   // Active tab
   const session = await chrome.storage.session.get('activeTab');
@@ -385,16 +390,16 @@ async function loadData() {
 
   try {
     const [health, today, gapData] = await Promise.all([
-      fetchJson(`${serverUrl}/api/health`),
-      fetchJson(`${serverUrl}/api/today`).catch(() => ({ entries: [] })),
-      fetchJson(`${serverUrl}/api/gaps`).catch(() => ({ gaps: [] }))
+      fetchJson(`${SERVER_URL}/api/health`),
+      fetchJson(`${SERVER_URL}/api/today`).catch(() => ({ entries: [] })),
+      fetchJson(`${SERVER_URL}/api/gaps`).catch(() => ({ gaps: [] }))
     ]);
 
     dot.className = 'conn-dot ok';
     label.textContent = health.harvest ? 'Harvest verbonden' : 'Harvest niet ingesteld';
 
     renderHero(today.entries || []);
-    renderGaps(gapData.gaps || [], serverUrl);
+    renderGaps(gapData.gaps || []);
   } catch {
     dot.className = 'conn-dot error';
     label.textContent = 'Niet bereikbaar';
@@ -425,7 +430,7 @@ function renderHero(entries) {
   });
 }
 
-function renderGaps(gaps, serverUrl) {
+function renderGaps(gaps) {
   const section = $('gapsSection');
   if (!gaps.length) { section.style.display = 'none'; return; }
   section.style.display = 'block';
@@ -444,9 +449,8 @@ function renderGaps(gaps, serverUrl) {
       </div>
       <button class="gap-cta">Boeken →</button>
     `;
-    item.querySelector('.gap-cta').addEventListener('click', async () => {
-      const { serverUrl: url } = await getSettings();
-      chrome.tabs.create({ url: `${url}/?gap=${gap.start}-${gap.end}` });
+    item.querySelector('.gap-cta').addEventListener('click', () => {
+      chrome.tabs.create({ url: `${SERVER_URL}/?gap=${gap.start}-${gap.end}` });
     });
     list.appendChild(item);
   });
@@ -457,25 +461,19 @@ function showView(name) {
   $('viewAuth').style.display     = name === 'auth'     ? 'flex' : 'none';
   $('viewMain').style.display     = name === 'main'     ? 'flex' : 'none';
   $('viewSettings').style.display = name === 'settings' ? 'flex' : 'none';
-  $('backBtn').style.display      = name === 'main'     ? 'none' : (name === 'auth' ? 'none' : 'inline-block');
+  $('backBtn').style.display      = name === 'settings' ? 'inline-block' : 'none';
   $('optBtn').style.display       = name === 'main'     ? 'inline-block' : 'none';
-  $('connDot').style.display      = name === 'main'     ? 'inline-block' : 'none';
-  $('connLabel').style.display    = name === 'main'     ? 'inline-block' : 'none';
   $('refreshBtn').style.display   = name === 'main'     ? 'inline-block' : 'none';
-  // Dashboard alleen zichtbaar als aangemeld; Instellingen altijd (server-URL instellen vóór login)
-  const loggedIn = name !== 'auth';
-  $('dashBtn').style.display      = loggedIn ? 'inline-block' : 'none';
+  // Server LED always visible; Dashboard only when logged in
+  $('dashBtn').style.display      = name === 'main' ? 'inline-block' : 'none';
   if (name === 'settings') loadSettingsForm();
 }
 
 async function loadSettingsForm() {
-  const r = await chrome.storage.sync.get(['serverUrl', 'idleMinutes', 'excludedDomains', 'workdayHours']);
-  $('cfgServerUrl').value  = r.serverUrl || '';
-  $('cfgIdle').value       = r.idleMinutes || 5;
-  $('cfgWorkday').value    = r.workdayHours || 8;
-  $('cfgExcluded').value   = (r.excludedDomains || []).join('\n');
-  $('cfgTestLabel').textContent = 'Nog niet getest';
-  $('cfgDot').className = 'conn-dot';
+  const r = await chrome.storage.sync.get(['idleMinutes', 'excludedDomains', 'workdayHours']);
+  $('cfgIdle').value     = r.idleMinutes || 5;
+  $('cfgWorkday').value  = r.workdayHours || 8;
+  $('cfgExcluded').value = (r.excludedDomains || []).join('\n');
 
   if (_sb) {
     const { data: { session } } = await _sb.auth.getSession();
@@ -487,34 +485,13 @@ async function loadSettingsForm() {
   }
 }
 
-$('cfgTestBtn').addEventListener('click', async () => {
-  const url = $('cfgServerUrl').value.trim().replace(/\/$/, '');
-  const dot   = $('cfgDot');
-  const label = $('cfgTestLabel');
-  label.textContent = 'Testen…';
-  dot.className = 'conn-dot pulse';
-  try {
-    const resp = await fetch(`${url}/api/config`, { signal: AbortSignal.timeout(15000) });
-    if (resp.ok) {
-      dot.className = 'conn-dot ok';
-      label.textContent = 'Verbonden';
-    } else {
-      throw new Error(`HTTP ${resp.status}`);
-    }
-  } catch (err) {
-    dot.className = 'conn-dot error';
-    label.textContent = 'Niet bereikbaar';
-  }
-});
-
 $('cfgSaveBtn').addEventListener('click', async () => {
-  const serverUrl      = $('cfgServerUrl').value.trim().replace(/\/$/, '');
   const idleMinutes    = parseInt($('cfgIdle').value, 10) || 5;
   const workdayHours   = parseFloat($('cfgWorkday').value) || 8;
   const excludedDomains = $('cfgExcluded').value
     .split('\n').map(s => s.trim()).filter(Boolean);
 
-  await chrome.storage.sync.set({ serverUrl, idleMinutes, workdayHours, excludedDomains });
+  await chrome.storage.sync.set({ idleMinutes, workdayHours, excludedDomains });
 
   const msg = $('cfgSavedMsg');
   msg.textContent = 'Opgeslagen!';
@@ -530,9 +507,7 @@ $('cfgSignOutBtn').addEventListener('click', async () => {
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
 $('dashBtn').addEventListener('click', async () => {
-  const { serverUrl } = await getSettings();
-  if (!serverUrl) { showView('settings'); return; }
-  let url = serverUrl;
+  let url = SERVER_URL;
   if (_sb) {
     const { data: { session } } = await _sb.auth.getSession();
     if (session?.access_token) {
@@ -545,7 +520,6 @@ $('dashBtn').addEventListener('click', async () => {
 $('optBtn').addEventListener('click', () => showView('settings'));
 $('optFooterBtn').addEventListener('click', () => showView('settings'));
 $('refreshBtn').addEventListener('click', () => loadData());
-$('setupBtn')?.addEventListener('click', () => showView('settings'));
 
 // ─── Real-time active tab updates ────────────────────────────────────────────
 function updateNowBar(tab) {
@@ -575,13 +549,11 @@ async function init() {
   const pomoState = await getPomoState();
   if (pomoState.running) startPomoInterval();
 
+  // Ping server immediately to show LED status (non-blocking for auth init)
+  checkServerStatus();
+
   // Initialiseer Supabase client en controleer bestaande sessie
   const sbStatus = await initSupabase();
-  if (sbStatus === 'no-server-url') {
-    // Nieuwe installatie: stuur gebruiker direct naar instellingen om de server-URL in te stellen
-    showView('settings');
-    return;
-  }
   let hasSession = false;
   if (_sb) {
     const { data: { session } } = await _sb.auth.getSession();
@@ -596,7 +568,7 @@ async function init() {
   showView('main');
   await loadData();
 
-  // Auto-refresh Harvest data every 60 seconds (token refresh wordt automatisch gedaan door Supabase)
+  // Auto-refresh Harvest data every 60 seconds
   if (_refreshTimer) clearInterval(_refreshTimer);
   _refreshTimer = setInterval(async () => {
     if (_sb) {

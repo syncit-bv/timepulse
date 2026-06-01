@@ -14,7 +14,7 @@
       <span class="wordmark">⏱ TimePulse</span>
     </div>
     <div class="header-right">
-      <span class="conn-dot" id="connDot"></span>
+      <span class="conn-dot" id="connDot" title="TimePulse server status"></span>
       <span class="conn-label" id="connLabel">…</span>
       <button class="icon-btn" id="optBtn" title="Instellingen">⚙</button>
     </div>
@@ -116,28 +116,11 @@
       <div id="gapsList"></div>
     </section>
 
-    <!-- Not configured -->
-    <div id="setupPrompt" style="display:none" class="setup-prompt">
-      <div class="setup-icon">⚙️</div>
-      <div class="setup-msg">Stel de server-URL in om te starten.</div>
-      <button class="setup-btn" id="setupBtn">Instellingen openen</button>
-    </div>
 
   </main>
 
   <!-- ── Settings view ─────────────────────────────────────────────── -->
   <main id="viewSettings" style="display:none">
-
-    <div class="settings-section">
-      <div class="settings-label">Server URL</div>
-      <input class="settings-input" id="cfgServerUrl" type="url"
-             placeholder="http://nas.local:3456" autocomplete="off" spellcheck="false"/>
-      <div class="conn-test-row">
-        <span class="conn-dot" id="cfgDot"></span>
-        <span class="conn-test-label" id="cfgTestLabel">Nog niet getest</span>
-        <button class="settings-btn-small" id="cfgTestBtn">Verbinding testen</button>
-      </div>
-    </div>
 
     <div class="settings-section">
       <div class="settings-label">Werkdag (uren)</div>

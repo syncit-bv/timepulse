@@ -1,48 +1,43 @@
 const $ = id => document.getElementById(id);
 
+const SERVER_URL = 'https://timepulse-api.onrender.com';
+
 async function load() {
-  const result = await chrome.storage.sync.get(['serverUrl', 'idleMinutes', 'excludedDomains']);
-  $('serverUrl').value = result.serverUrl || '';
+  const result = await chrome.storage.sync.get(['idleMinutes', 'excludedDomains']);
   $('idleMinutes').value = result.idleMinutes || 5;
   $('excludedDomains').value = (result.excludedDomains || []).join('\n');
+
+  // Show server status on load
+  const dot = $('connDot');
+  const label = $('connection-label');
+  label.textContent = 'Verbinding testen…';
+  try {
+    const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) {
+      dot.className = 'connection-dot ok';
+      label.textContent = 'Server online';
+    } else {
+      throw new Error(`HTTP ${resp.status}`);
+    }
+  } catch {
+    dot.className = 'connection-dot error';
+    label.textContent = 'Server offline';
+  }
 }
 
 $('saveBtn').addEventListener('click', async () => {
-  const serverUrl = $('serverUrl').value.trim().replace(/\/$/, '');
   const idleMinutes = parseInt($('idleMinutes').value, 10) || 5;
   const excludedDomains = $('excludedDomains').value
     .split('\n')
     .map(s => s.trim())
     .filter(Boolean);
 
-  await chrome.storage.sync.set({ serverUrl, idleMinutes, excludedDomains });
+  await chrome.storage.sync.set({ idleMinutes, excludedDomains });
 
   const status = $('status');
   status.textContent = 'Opgeslagen!';
   status.className = 'success';
   setTimeout(() => { status.textContent = ''; status.className = ''; }, 2000);
-});
-
-$('testBtn').addEventListener('click', async () => {
-  const serverUrl = $('serverUrl').value.trim().replace(/\/$/, '');
-  const dot = $('connDot');
-  const label = $('connection-label');
-
-  label.textContent = 'Verbinding testen…';
-  dot.className = 'connection-dot';
-
-  try {
-    const resp = await fetch(`${serverUrl}/api/config`, { signal: AbortSignal.timeout(5000) });
-    if (resp.ok) {
-      dot.className = 'connection-dot ok';
-      label.textContent = 'Verbonden';
-    } else {
-      throw new Error(`HTTP ${resp.status}`);
-    }
-  } catch (err) {
-    dot.className = 'connection-dot error';
-    label.textContent = `Niet bereikbaar: ${err.message}`;
-  }
 });
 
 // ─── Custom platforms ─────────────────────────────────────────────────────────
@@ -110,11 +105,9 @@ $('addPlatformBtn').addEventListener('click', async () => {
 });
 
 async function syncCustomToServer(platforms) {
-  const { serverUrl } = await chrome.storage.sync.get('serverUrl');
-  if (!serverUrl) return;
   for (const p of platforms) {
     try {
-      await fetch(`${serverUrl.replace(/\/$/, '')}/api/platforms/custom`, {
+      await fetch(`${SERVER_URL}/api/platforms/custom`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(p),
