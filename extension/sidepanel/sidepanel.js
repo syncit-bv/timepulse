@@ -463,9 +463,9 @@ function showView(name) {
   $('viewSettings').style.display = name === 'settings' ? 'flex' : 'none';
   $('backBtn').style.display      = name === 'settings' ? 'inline-block' : 'none';
   $('optBtn').style.display       = name === 'main'     ? 'inline-block' : 'none';
-  $('refreshBtn').style.display   = name === 'main'     ? 'inline-block' : 'none';
-  // Server LED always visible; Dashboard only when logged in
-  $('dashBtn').style.display      = name === 'main' ? 'inline-block' : 'none';
+  $('refreshBtn').style.display    = name === 'main' ? 'inline-block' : 'none';
+  $('dashBtn').style.display       = name === 'main' ? 'inline-block' : 'none';
+  $('optFooterBtn').style.display  = name === 'main' ? 'inline-block' : 'none';
   if (name === 'settings') loadSettingsForm();
 }
 
