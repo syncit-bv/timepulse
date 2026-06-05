@@ -131,17 +131,25 @@ async function handleSocialLogin(provider) {
   try {
     const status = await initSupabase();
     if (status !== 'ok') return showAuthError(supabaseStatusMsg(status));
+
+    const redirectUrl = chrome.identity.getRedirectURL();
+
     // Vraag de OAuth-URL op zonder redirect (we sturen zelf via chrome.identity)
     const { data, error } = await _sb.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: chrome.identity.getRedirectURL(), skipBrowserRedirect: true },
+      options: { redirectTo: redirectUrl, skipBrowserRedirect: true },
     });
     if (error) throw error;
 
     const responseUrl = await new Promise((resolve, reject) => {
       chrome.identity.launchWebAuthFlow({ url: data.url, interactive: true }, url => {
-        if (chrome.runtime.lastError || !url) reject(new Error('Login geannuleerd'));
-        else resolve(url);
+        if (chrome.runtime.lastError) {
+          reject(new Error(`OAuth mislukt: ${chrome.runtime.lastError.message}\n\nVoeg toe aan Supabase redirect URLs:\n${redirectUrl}`));
+        } else if (!url) {
+          reject(new Error(`Login geannuleerd. Voeg toe aan Supabase redirect URLs:\n${redirectUrl}`));
+        } else {
+          resolve(url);
+        }
       });
     });
 
