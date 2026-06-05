@@ -16,7 +16,7 @@ async function initSupabase() {
 
   if (!sbUrl) {
     try {
-      const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(8000) });
+      const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(5000) });
       if (!resp.ok) return 'server-error';
       const cfg = await resp.json();
       sbUrl = cfg.supabaseUrl    || '';
