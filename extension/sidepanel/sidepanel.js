@@ -542,6 +542,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
 let _refreshTimer = null;
 
 async function init() {
+  // Toon aanmeldscherm direct zodat de gebruiker niet een leeg scherm ziet tijdens het laden
+  showView('auth');
+
   const { workdayHours } = await getSettings();
   WORKDAY_HOURS = workdayHours;
 
