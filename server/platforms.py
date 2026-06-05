@@ -99,7 +99,7 @@ BUILTIN_PLATFORMS = [
 
     # ── Boekhouding ───────────────────────────────────────────────────────────
     {"slug": "billtobox",     "name": "BillToBox",         "urls": ["billtobox.be"],                                        "categories": ["accounting"],                         "color": "#0D6EFD", "icon": "https://www.billtobox.be/favicon.ico"},
-    {"slug": "yuki",          "name": "Yuki",              "urls": ["yuki.nl", "app.yuki.nl"],                              "categories": ["accounting"],                         "color": "#E8650A", "icon": "https://app.yuki.nl/favicon.ico"},
+    {"slug": "yuki",          "name": "Yuki",              "urls": ["yuki.nl", "app.yuki.nl", "yukiworks.be", "yukiworks.nl", "yukicentral.yukiworks.nl"],  "categories": ["accounting"],  "color": "#E8650A", "icon": "https://app.yuki.nl/favicon.ico"},
     {"slug": "winbooks",      "name": "Winbooks",          "urls": ["winbooks.be"],                                         "categories": ["accounting"],                         "color": "#004B8D", "icon": "https://www.winbooks.be/favicon.ico"},
 
     # ── AI tools ──────────────────────────────────────────────────────────────
