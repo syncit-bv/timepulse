@@ -16,7 +16,7 @@ async function initSupabase() {
 
   if (!sbUrl) {
     try {
-      const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(5000) });
+      const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(60000) });
       if (!resp.ok) return 'server-error';
       const cfg = await resp.json();
       sbUrl = cfg.supabaseUrl    || '';
@@ -363,7 +363,8 @@ async function checkServerStatus() {
   dot.className = 'conn-dot pulse';
   label.textContent = 'Verbinden…';
   try {
-    const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(8000) });
+    // Render.com free tier kan tot 60s nodig hebben om op te starten
+    const resp = await fetch(`${SERVER_URL}/api/config`, { signal: AbortSignal.timeout(60000) });
     if (resp.ok) {
       dot.className = 'conn-dot ok';
       label.textContent = 'Server online';
